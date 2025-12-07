@@ -52,9 +52,6 @@ pGDProperty(NULL)
 }
 
 gdeDefaultPropertyValue::~gdeDefaultPropertyValue(){
-	if(pGDProperty){
-		pGDProperty->FreeReference();
-	}
 }
 
 

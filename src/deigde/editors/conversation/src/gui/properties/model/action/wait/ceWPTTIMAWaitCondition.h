@@ -36,7 +36,7 @@ class ceWPTTIMAWait;
  */
 class ceWPTTIMAWaitCondition : public ceWPTTIMConditionContainer{
 private:
-	ceCAWait *pAction;
+	ceCAWait::Ref pAction;
 	
 	
 	
@@ -58,7 +58,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Action. */
-	inline ceCAWait *GetAction() const{ return pAction; }
+	inline const ceCAWait::Ref &GetAction() const{ return pAction; }
 	
 	/** \brief Parent wait model. */
 	ceWPTTIMAWait *GetModelWait() const;

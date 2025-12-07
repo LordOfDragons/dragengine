@@ -62,12 +62,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentSetPlaybackController::~gdeUOCComponentSetPlaybackController(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

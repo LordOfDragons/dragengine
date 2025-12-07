@@ -51,9 +51,6 @@ ceUCCShotToggleAlignTargets::ceUCCShotToggleAlignTargets(ceCameraShot *cameraSho
 }
 
 ceUCCShotToggleAlignTargets::~ceUCCShotToggleAlignTargets(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

@@ -136,9 +136,6 @@ void deoglDSRenderableVideoFrame::DropVideoPlayer(){
 //////////////////////
 
 void deoglDSRenderableVideoFrame::pCleanUp(){
-	if(pRRenderableVideoFrame){
-		pRRenderableVideoFrame->FreeReference();
-	}
 	
 	if(pVideoPlayer){
 		pVideoPlayer->GetNotifyRenderables().Remove(this);

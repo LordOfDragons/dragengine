@@ -158,12 +158,8 @@ reWindowMain::~reWindowMain(){
 	
 	SetRig(NULL);
 	
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
 		pWindowProperties = NULL;
 	}
-	if(pView3D){
-		pView3D->FreeReference();
 		pView3D = NULL;
 	}
 	
@@ -172,9 +168,6 @@ reWindowMain::~reWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -206,7 +199,6 @@ void reWindowMain::SetRig(reRig *rig){
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
 		pRig->Dispose();
-		pRig->FreeReference();
 	}
 	
 	pRig = rig;

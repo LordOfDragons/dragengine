@@ -60,8 +60,6 @@ void detZFile::CleanUp(){
 		pTestBuffer = NULL;
 	}
 	
-	if(pMemoryFileCompressed){
-		pMemoryFileCompressed->FreeReference();
 		pMemoryFileCompressed = NULL;
 	}
 }
@@ -334,12 +332,8 @@ void detZFile::pCreateZWriter(){
 }
 
 void detZFile::pDestroyZWriter(){
-	if(pZWriter){
-		pZWriter->FreeReference();
 		pZWriter = NULL;
 	}
-	if(pMemoryFileWriter){
-		pMemoryFileWriter->FreeReference();
 		pMemoryFileWriter = NULL;
 	}
 }
@@ -353,12 +347,8 @@ void detZFile::pCreateZReader(){
 }
 
 void detZFile::pDestroyZReader(){
-	if(pZReader){
-		pZReader->FreeReference();
 		pZReader = NULL;
 	}
-	if(pMemoryFileReader){
-		pMemoryFileReader->FreeReference();
 		pMemoryFileReader = NULL;
 	}
 }

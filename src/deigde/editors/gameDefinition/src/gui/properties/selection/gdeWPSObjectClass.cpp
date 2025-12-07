@@ -1285,9 +1285,6 @@ pGameDefinition(NULL)
 gdeWPSObjectClass::~gdeWPSObjectClass(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1318,7 +1315,6 @@ void gdeWPSObjectClass::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

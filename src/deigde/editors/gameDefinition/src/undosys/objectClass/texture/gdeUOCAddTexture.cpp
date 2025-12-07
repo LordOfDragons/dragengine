@@ -58,12 +58,6 @@ pTexture(NULL)
 }
 
 gdeUOCAddTexture::~gdeUOCAddTexture(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

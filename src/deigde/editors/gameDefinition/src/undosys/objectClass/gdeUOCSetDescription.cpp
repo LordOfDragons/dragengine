@@ -56,9 +56,6 @@ pObjectClass(NULL)
 }
 
 gdeUOCSetDescription::~gdeUOCSetDescription(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

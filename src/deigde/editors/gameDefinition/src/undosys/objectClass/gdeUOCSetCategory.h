@@ -37,7 +37,7 @@ class gdeObjectClass;
  */
 class gdeUOCSetCategory : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decString pOldValue;
 	decString pNewValue;

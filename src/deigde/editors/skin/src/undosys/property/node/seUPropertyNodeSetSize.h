@@ -38,7 +38,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetSize : public igdeUndo{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	decPoint3 pOldValue;
 	decPoint3 pNewValue;

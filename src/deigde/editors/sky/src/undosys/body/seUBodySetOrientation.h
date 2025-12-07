@@ -37,7 +37,7 @@ class seBody;
  */
 class seUBodySetOrientation : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;

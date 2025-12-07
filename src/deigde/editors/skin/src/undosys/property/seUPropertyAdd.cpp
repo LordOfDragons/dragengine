@@ -62,9 +62,6 @@ seUPropertyAdd::seUPropertyAdd(seTexture *texture, const sePropertyList &propert
 
 seUPropertyAdd::~seUPropertyAdd(){
 	pProperties.RemoveAll();
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

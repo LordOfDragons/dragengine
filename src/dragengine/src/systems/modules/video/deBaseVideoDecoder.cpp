@@ -46,7 +46,4 @@ pFile(NULL)
 }
 
 deBaseVideoDecoder::~deBaseVideoDecoder(){
-	if(pFile){
-		pFile->FreeReference();
-	}
 }

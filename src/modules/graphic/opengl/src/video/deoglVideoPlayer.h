@@ -57,7 +57,7 @@ public:
 	deVideoDecoder::Ref pVideoDecoder;
 	deoglVideoDecodeThread *pDecodeThread;
 	
-	deoglRVideoPlayer *pRVideoPlayer;
+	deoglRVideoPlayer::Ref pRVideoPlayer;
 	
 	decPointerSet pNotifyRenderables;
 	decPointerSet pNotifyCanvas;
@@ -89,7 +89,7 @@ public:
 	inline int GetCurrentFrame() const{ return pCurFrame; }
 	
 	/** Render video player or \em NULL if not existing. */
-	inline deoglRVideoPlayer *GetRVideoPlayer() const{ return pRVideoPlayer; }
+	inline const deoglRVideoPlayer::Ref &GetRVideoPlayer() const{ return pRVideoPlayer; }
 	
 	/** Set current frame. */
 	void SetCurrentFrame(int frame);

@@ -50,9 +50,6 @@ pGameDefinition(NULL){
 gdeWPUndoHistory::~gdeWPUndoHistory(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -69,7 +66,6 @@ void gdeWPUndoHistory::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

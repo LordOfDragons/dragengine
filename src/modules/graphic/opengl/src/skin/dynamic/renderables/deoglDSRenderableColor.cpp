@@ -95,7 +95,4 @@ void deoglDSRenderableColor::SyncToRender(){
 //////////////////////
 
 void deoglDSRenderableColor::pCleanUp(){
-	if(pRRenderableColor){
-		pRRenderableColor->FreeReference();
-	}
 }

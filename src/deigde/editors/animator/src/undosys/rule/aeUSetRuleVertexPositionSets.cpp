@@ -46,13 +46,9 @@ pNewValue(newValue)
 	SetShortInfo("Set rule vertex position sets");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleVertexPositionSets::~aeUSetRuleVertexPositionSets(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

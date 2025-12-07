@@ -67,9 +67,6 @@ pLight(NULL)
 }
 
 gdeWPSTIMOCLight::~gdeWPSTIMOCLight(){
-	if(pLight){
-		pLight->FreeReference();
-	}
 }
 
 

@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACoordSysAddSetCoordSysID : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCACoordSystemAdd *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCACoordSystemAdd::Ref pAction;
 	decString pOldCoordSysID;
 	decString pNewCoordSysID;
 	

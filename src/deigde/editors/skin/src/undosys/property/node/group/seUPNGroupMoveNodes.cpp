@@ -81,7 +81,6 @@ pCount(0)
 	}
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPNGroupMoveNodes::~seUPNGroupMoveNodes(){
@@ -104,9 +103,6 @@ bool seUPNGroupMoveNodes::HasAnyEffect() const{
 
 void seUPNGroupMoveNodes::pCleanUp(){
 	pClearChildNodes();
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 void seUPNGroupMoveNodes::pClearChildNodes(){

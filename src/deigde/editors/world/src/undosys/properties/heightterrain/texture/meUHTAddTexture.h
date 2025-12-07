@@ -43,9 +43,9 @@ class meHeightTerrainTexture;
  */
 class meUHTAddTexture : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 public:
 	/** \brief Type holding strong reference. */

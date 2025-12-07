@@ -38,8 +38,8 @@ class gdeSkyController;
  */
 class gdeUSkyControllerSetName : public igdeUndo{
 private:
-	gdeSky *pSky;
-	gdeSkyController *pController;
+	gdeSky::Ref pSky;
+	gdeSkyController::Ref pController;
 	
 	decString pOldValue;
 	decString pNewValue;

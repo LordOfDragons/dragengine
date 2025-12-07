@@ -37,7 +37,7 @@ class peeType;
  */
 class peeUTypeSetSimulationType : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	deParticleEmitterType::eSimulationTypes pOldSimType;
 	deParticleEmitterType::eSimulationTypes pNewSimType;

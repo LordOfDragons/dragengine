@@ -62,12 +62,6 @@ pProperty(NULL)
 }
 
 gdeUOCPropertyRemove::~gdeUOCPropertyRemove(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

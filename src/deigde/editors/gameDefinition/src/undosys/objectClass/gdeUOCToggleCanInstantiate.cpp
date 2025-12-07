@@ -53,9 +53,6 @@ pObjectClass(NULL)
 }
 
 gdeUOCToggleCanInstantiate::~gdeUOCToggleCanInstantiate(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -62,12 +62,6 @@ pCategory(NULL)
 }
 
 gdeUCategoryAdd::~gdeUCategoryAdd(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
-	if(pParent){
-		pParent->FreeReference();
-	}
 }
 
 

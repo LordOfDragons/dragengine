@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetAmbientRatio : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	float pOldValue;
 	float pNewValue;

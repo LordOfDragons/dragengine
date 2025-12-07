@@ -38,7 +38,7 @@ class deoglRCamera;
  */
 class deoglRDSRenderableCamera : public deoglRDSRenderable{
 private:
-	deoglRCamera *pCamera;
+	deoglRCamera::Ref pCamera;
 	
 public:
 	/** \name Constructors and Destructors */

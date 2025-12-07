@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCNavigationBlocker *pOCNavBlocker;
+	gdeOCNavigationBlocker::Ref pOCNavBlocker;
 	
 	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSBlocker;
@@ -75,7 +75,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class navigation blocker. */
-	inline gdeOCNavigationBlocker *GetOCNavBlocker() const{ return pOCNavBlocker; }
+	inline const gdeOCNavigationBlocker::Ref &GetOCNavBlocker() const{ return pOCNavBlocker; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

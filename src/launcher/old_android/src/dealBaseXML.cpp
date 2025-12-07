@@ -55,7 +55,6 @@ dealBaseXML::dealBaseXML(deLogger *logger, const char *loggerSource){
 }
 
 dealBaseXML::~dealBaseXML(){
-	pLogger->FreeReference();
 }
 
 

@@ -58,12 +58,6 @@ pInherit(NULL)
 }
 
 gdeUOCAddInherit::~gdeUOCAddInherit(){
-	if(pInherit){
-		pInherit->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

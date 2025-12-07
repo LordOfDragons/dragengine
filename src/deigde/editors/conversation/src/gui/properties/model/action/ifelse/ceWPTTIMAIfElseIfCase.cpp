@@ -73,12 +73,6 @@ pActions(NULL)
 		AddChild(pActions);
 		
 	}catch(const deException &){
-		if(pCondition){
-			pCondition->FreeReference();
-		}
-		if(pActions){
-			pActions->FreeReference();
-		}
 		throw;
 	}
 	
@@ -92,9 +86,6 @@ pActions(NULL)
 }
 
 ceWPTTIMAIfElseIfCase::~ceWPTTIMAIfElseIfCase(){
-	if(pIfCase){
-		pIfCase->FreeReference();
-	}
 }
 
 

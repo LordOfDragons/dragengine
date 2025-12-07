@@ -43,7 +43,7 @@ class aeRuleInverseKinematic;
  */
 class aeURuleIKSetLocalPosition : public igdeUndo{
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	decVector pOldPos;
 	decVector pNewPos;

@@ -70,12 +70,6 @@ pPressed(false)
 }
 
 dealWidgetButton::~dealWidgetButton(){
-	if(pBgImageNormal){
-		pBgImageNormal->FreeReference();
-	}
-	if(pBgImagePressed){
-		pBgImagePressed->FreeReference();
-	}
 }
 
 

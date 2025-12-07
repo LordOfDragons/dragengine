@@ -196,7 +196,6 @@ void gdeViewActiveObject::SetGameDefinition(gdeGameDefinition *gameDefinition){
 			pGameDefinition->GetWorld()->RemoveDebugDrawer(pDebugDrawer);
 		}
 		
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;
@@ -338,8 +337,6 @@ void gdeViewActiveObject::ClearResources(){
 		pPreviewComponent = NULL;
 	}
 	
-	if(pObjectClass){
-		pObjectClass->FreeReference();
 		pObjectClass = NULL;
 	}
 }
@@ -822,7 +819,6 @@ void gdeViewActiveObject::pInitObjectClass(){
 	if(!pObjectClass){
 		return;
 	}
-	pObjectClass->AddReference();
 	pInitObjectClassOCs(*pObjectClass, "", igdeGDClass::FilterSubObjectsAll);
 	pAddComponentShadowIgnore();
 }

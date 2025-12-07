@@ -54,7 +54,7 @@ private:
 	
 	decString pName;
 	decString pSkinPath;
-	deSkin *pEngSkin;
+	deSkin::Ref pEngSkin;
 	decVector2 pTexCoordOffset;
 	decVector2 pTexCoordScaling;
 	float pTexCoordRotation;
@@ -64,7 +64,7 @@ private:
 	decStringDictionary pProperties;
 	decString pActiveProperty;
 	
-	deDynamicSkin *pDynamicSkin;
+	deDynamicSkin::Ref pDynamicSkin;
 	
 	
 	
@@ -109,7 +109,7 @@ public:
 	void LoadSkin();
 	
 	/** \brief Engine skin or \em NULL if not found. */
-	inline deSkin *GetEngineSkin() const{ return pEngSkin; }
+	inline const deSkin::Ref &GetEngineSkin() const{ return pEngSkin; }
 	
 	
 	
@@ -142,7 +142,7 @@ public:
 	
 	
 	/** \brief Dynamic skin or \em NULL if not used. */
-	inline deDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** \brief Update dynamic skin. */
 	void UpdateDynamicSkin();

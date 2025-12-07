@@ -62,12 +62,6 @@ pObjectClass(NULL)
 }
 
 gdeURemoveObjectClass::~gdeURemoveObjectClass(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

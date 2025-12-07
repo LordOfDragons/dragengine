@@ -37,8 +37,8 @@ class peeEmitter;
  */
 class peeUControllerRemove : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
-	peeController *pController;
+	peeEmitter::Ref pEmitter;
+	peeController::Ref pController;
 	int pIndex;
 	
 	

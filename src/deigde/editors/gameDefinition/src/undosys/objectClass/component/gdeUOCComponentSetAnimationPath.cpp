@@ -62,12 +62,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentSetAnimationPath::~gdeUOCComponentSetAnimationPath(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

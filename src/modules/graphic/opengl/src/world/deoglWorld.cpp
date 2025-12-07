@@ -644,8 +644,6 @@ void deoglWorld::AllDebugDrawersRemoved(){
 //////////////////////
 
 void deoglWorld::pCleanUp(){
-	if(pRWorld){
-		pRWorld->FreeReference();
 		pRWorld = NULL;
 	}
 	

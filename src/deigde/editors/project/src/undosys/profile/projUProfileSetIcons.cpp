@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 projUProfileSetIcons::~projUProfileSetIcons(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

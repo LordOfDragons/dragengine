@@ -46,7 +46,7 @@ class deCollisionInfo;
  */
 class aeALGroundChecker : public deBaseScriptingCollider{
 private:
-	deCollisionInfo *pColInfo;
+	deCollisionInfo::Ref pColInfo;
 	bool pHasCollision;
 	
 public:

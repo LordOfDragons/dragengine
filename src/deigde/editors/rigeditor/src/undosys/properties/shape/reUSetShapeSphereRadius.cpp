@@ -44,11 +44,9 @@ reUSetShapeSphereRadius::reUSetShapeSphereRadius(reRigShapeSphere *shape, float 
 	
 	SetShortInfo("Set Sphere Shape Radius");
 	
-	pShape->AddReference();
 }
 
 reUSetShapeSphereRadius::~reUSetShapeSphereRadius(){
-	pShape->FreeReference();
 }
 
 

@@ -37,8 +37,8 @@ class reRigPush;
  */
 class reUAddPush : public igdeUndo{
 private:
-	reRig *pRig;
-	reRigPush *pPush;
+	reRig::Ref pRig;
+	reRigPush::Ref pPush;
 	
 	
 	

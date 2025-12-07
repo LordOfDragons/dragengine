@@ -237,9 +237,6 @@ pListener(NULL)
 feWPFont::~feWPFont(){
 	SetFont(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -254,7 +251,6 @@ void feWPFont::SetFont(feFont *font){
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
 		pFont = NULL;
 	}
 	

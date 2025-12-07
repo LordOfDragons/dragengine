@@ -59,12 +59,6 @@ pBillboard(NULL)
 }
 
 gdeUOCAddBillboard::~gdeUOCAddBillboard(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

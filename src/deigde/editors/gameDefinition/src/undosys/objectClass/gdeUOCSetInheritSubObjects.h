@@ -39,7 +39,7 @@
  */
 class gdeUOCSetInheritSubObjects : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	int pOldValue;
 	int pNewValue;

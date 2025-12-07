@@ -66,7 +66,7 @@ public:
 	deoglRenderThread &pRenderThread;
 	decString pFilename;
 	
-	deoglSharedVBOBlock *pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlock;
 	
 	sWeight *pWeightsEntries;
 	int pWeightsEntryCount;
@@ -111,7 +111,7 @@ public:
 	inline const decString &GetFilename() const{ return pFilename; }
 	
 	/** VBO block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlock() const{ return pVBOBlock; }
 	
 	/** Prepare VBO block. */
 	void PrepareVBOBlock();

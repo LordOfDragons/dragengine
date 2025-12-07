@@ -54,21 +54,13 @@ pLink(NULL)
 	SetShortInfo("Effect target remove link");
 	
 	pEffect = effect;
-	pEffect->AddReference();
 	
 	pTarget = target;
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seUEffectTargetRemoveLink::~seUEffectTargetRemoveLink(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pEffect){
-		pEffect->FreeReference();
-	}
 }
 
 

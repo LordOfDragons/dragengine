@@ -43,7 +43,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deSky &pSky;
 	
-	deoglRSky *pRSky;
+	deoglRSky::Ref pRSky;
 	
 	bool pDirtyParameters;
 	unsigned int pUpdateTracker;
@@ -71,7 +71,7 @@ public:
 	inline const deSky &GetSky() const{ return pSky; }
 	
 	/** Render sky. */
-	inline deoglRSky *GetRSky() const{ return pRSky; }
+	inline const deoglRSky::Ref &GetRSky() const{ return pRSky; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

@@ -36,7 +36,7 @@ class feFontImage;
  */
 class feUFontSetImagePath : public igdeUndo{
 private:
-	feFontImage *pImage;
+	feFontImage::Ref pImage;
 	decString pOldPath;
 	decString pNewPath;
 	

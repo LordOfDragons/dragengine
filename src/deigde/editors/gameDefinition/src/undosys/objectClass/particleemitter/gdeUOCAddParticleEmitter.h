@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCAddParticleEmitter : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	
 	

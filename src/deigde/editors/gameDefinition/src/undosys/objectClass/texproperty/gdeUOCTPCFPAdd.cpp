@@ -64,15 +64,6 @@ pFilePattern(NULL)
 }
 
 gdeUOCTPCFPAdd::~gdeUOCTPCFPAdd(){
-	if(pFilePattern){
-		pFilePattern->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

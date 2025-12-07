@@ -65,12 +65,6 @@ pNewValue(newValue)
 }
 
 gdeUSkyControllerSetValue::~gdeUSkyControllerSetValue(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

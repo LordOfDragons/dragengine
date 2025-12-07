@@ -38,8 +38,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakSetTextBoxTextTranslate : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	decString pOldText;
 	decString pNewText;
 	

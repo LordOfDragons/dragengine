@@ -133,9 +133,6 @@ void reUBoneMassFromVolume::pCleanUp(){
 		delete [] pBones;
 	}
 	
-	if(pRig){
-		pRig->FreeReference();
-	}
 }
 
 float reUBoneMassFromVolume::pCalcVolume(const reRigBone &bone) const{

@@ -62,12 +62,6 @@ pProperty(property)
 }
 
 gdeUOCNavBlockerSetPropertyName::~gdeUOCNavBlockerSetPropertyName(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

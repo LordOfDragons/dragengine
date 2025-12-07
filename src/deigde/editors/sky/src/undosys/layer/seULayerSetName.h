@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerSetName : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	decString pOldName;
 	decString pNewName;

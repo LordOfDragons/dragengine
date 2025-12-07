@@ -58,9 +58,6 @@ pNewValue(newValue)
 }
 
 seUPropertySetConstructedSize::~seUPropertySetConstructedSize(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

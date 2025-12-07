@@ -42,7 +42,7 @@ class gdeWindowMain;
 class gdeUGDSetBaseGameDefIDs : public igdeUndo{
 private:
 	gdeWindowMain &pWindowMain;
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decStringList pOldValue;
 	decStringList pNewValue;

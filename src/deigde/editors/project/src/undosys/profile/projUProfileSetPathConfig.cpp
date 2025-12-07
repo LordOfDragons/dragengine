@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 projUProfileSetPathConfig::~projUProfileSetPathConfig(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

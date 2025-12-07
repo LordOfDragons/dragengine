@@ -64,8 +64,6 @@ deoglSkin::~deoglSkin(){
 ///////////////
 
 void deoglSkin::RecreateRSkin(){
-	if(pRSkin){
-		pRSkin->FreeReference();
 		pRSkin = nullptr;
 	}
 
@@ -80,6 +78,5 @@ void deoglSkin::RecreateRSkin(){
 void deoglSkin::pCleanUp(){
 	if(pRSkin){
 		pRSkin->DropOwnerSkin();
-		pRSkin->FreeReference();
 	}
 }

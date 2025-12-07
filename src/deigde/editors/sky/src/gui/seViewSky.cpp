@@ -104,9 +104,6 @@ void seViewSky::SetSky(seSky *sky){
 	pCameraInteraction->SetCamera(NULL);
 	SetRenderWorld(NULL);
 	
-	if(pSky){
-		pSky->FreeReference();
-	}
 	
 	pSky = sky;
 	

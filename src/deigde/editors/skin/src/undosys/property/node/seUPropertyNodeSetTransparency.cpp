@@ -55,9 +55,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeSetTransparency::~seUPropertyNodeSetTransparency(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

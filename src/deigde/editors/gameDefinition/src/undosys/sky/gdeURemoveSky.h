@@ -38,8 +38,8 @@ class gdeSky;
  */
 class gdeURemoveSky : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeSky *pSky;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeSky::Ref pSky;
 	
 	
 	

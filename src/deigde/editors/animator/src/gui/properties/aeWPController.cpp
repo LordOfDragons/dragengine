@@ -556,9 +556,6 @@ pAnimator(nullptr)
 aeWPController::~aeWPController(){
 	SetAnimator(nullptr);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -573,7 +570,6 @@ void aeWPController::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;

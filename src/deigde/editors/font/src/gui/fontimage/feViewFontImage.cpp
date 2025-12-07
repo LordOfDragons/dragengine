@@ -138,15 +138,11 @@ pViewImage(NULL)
 	
 	pViewImage = new feViewFIImage(windowMain);
 	AddChild(pViewImage, igdeContainerBorder::eaCenter);
-	pViewImage->FreeReference();
 }
 
 feViewFontImage::~feViewFontImage(){
 	SetFont(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -161,7 +157,6 @@ void feViewFontImage::SetFont(feFont *font){
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
 	}
 	
 	pFont = font;

@@ -314,9 +314,6 @@ void deoglRLight::SetLightSkin(deoglRSkin *skin){
 	
 	pUseSkinTexture = NULL;
 	
-	if(pLightSkin){
-		pLightSkin->FreeReference();
-	}
 	
 	pLightSkin = skin;
 	
@@ -340,9 +337,6 @@ void deoglRLight::SetLightCanvas(deoglRCanvasView *canvas){
 		return;
 	}
 	
-	if(pLightCanvas){
-		pLightCanvas->FreeReference();
-	}
 	
 	pLightCanvas = canvas;
 	
@@ -358,9 +352,6 @@ void deoglRLight::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 		return;
 	}
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	
 	pDynamicSkin = dynamicSkin;
 	
@@ -1102,15 +1093,6 @@ void deoglRLight::pCleanUp(){
 		delete pColVol;
 	}
 	
-	if(pLightCanvas){
-		pLightCanvas->FreeReference();
-	}
-	if(pLightSkin){
-		pLightSkin->FreeReference();
-	}
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	
 	if(pLightVolume){
 		delete pLightVolume;

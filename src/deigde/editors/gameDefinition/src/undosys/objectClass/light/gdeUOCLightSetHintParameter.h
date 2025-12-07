@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetHintParameter : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	deLight::eParameterHints pOldValue;
 	deLight::eParameterHints pNewValue;

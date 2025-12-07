@@ -36,7 +36,7 @@ class feFontGlyph;
  */
 class feUGlyphSetV : public igdeUndo{
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	
 	int pOldV;
 	int pNewV;

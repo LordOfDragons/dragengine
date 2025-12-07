@@ -67,9 +67,6 @@ void cePlaybackActionStackEntry::SetParentTopic(ceConversationTopic *topic){
 		return;
 	}
 	
-	if(pParentTopic){
-		pParentTopic->FreeReference();
-	}
 	
 	pParentTopic = topic;
 	
@@ -93,9 +90,6 @@ void cePlaybackActionStackEntry::SetLoopCondition(ceConversationCondition *condi
 		return;
 	}
 	
-	if(pLoopCondition){
-		pLoopCondition->FreeReference();
-	}
 	
 	pLoopCondition = condition;
 	

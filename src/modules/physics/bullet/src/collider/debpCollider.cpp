@@ -670,7 +670,6 @@ void debpCollider::UpdateDebugDrawer(){
 			
 			pDDSShape = NULL;
 			
-			pDebugDrawer->FreeReference();
 			pDebugDrawer = NULL;
 		}
 	}
@@ -890,9 +889,6 @@ void debpCollider::pCleanUp(){
 		delete [] pAttachments;
 	}
 	
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
 }
 
 void debpCollider::pRemoveFromAllTrackingTouchSensors(){

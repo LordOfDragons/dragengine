@@ -53,16 +53,13 @@ aeURuleSASetConController::aeURuleSASetConController(aeRuleSubAnimator *rule, in
 	
 	pOldController = rule->GetControllerAt(target);
 	if(pOldController){
-		pOldController->AddReference();
 	}
 	
 	pNewController = newController;
 	if(pNewController){
-		pNewController->AddReference();
 	}
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleSASetConController::~aeURuleSASetConController(){

@@ -40,7 +40,7 @@ class seTexture;
 class seUPropertyAdd : public igdeUndo{
 private:
 	sePropertyList pProperties;
-	seTexture *pTexture;
+	seTexture::Ref pTexture;
 	
 public:
 	/** \brief Type holding strong reference. */

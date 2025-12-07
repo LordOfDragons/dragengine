@@ -44,7 +44,7 @@ class deoalWorld : public deBaseAudioWorld{
 private:
 	deAudioOpenAL &pOal;
 	deWorld &pWorld;
-	deoalAWorld *pAWorld;
+	deoalAWorld::Ref pAWorld;
 	
 	bool pDirtyComponents;
 	bool pDirtySpeakers;
@@ -81,7 +81,7 @@ public:
 	inline deWorld &GetWorld() const{ return pWorld; }
 	
 	/** \brief Audio world. */
-	inline deoalAWorld *GetAWorld() const{ return pAWorld; }
+	inline const deoalAWorld::Ref &GetAWorld() const{ return pAWorld; }
 	
 	
 	

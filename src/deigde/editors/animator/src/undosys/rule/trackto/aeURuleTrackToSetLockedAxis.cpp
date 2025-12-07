@@ -51,13 +51,9 @@ aeURuleTrackToSetLockedAxis::aeURuleTrackToSetLockedAxis(aeRuleTrackTo *rule, de
 	SetShortInfo("TrackTo Set Locked Axis");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleTrackToSetLockedAxis::~aeURuleTrackToSetLockedAxis(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

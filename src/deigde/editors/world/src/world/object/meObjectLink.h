@@ -55,11 +55,11 @@ private:
 	igdeEnvironment *pEnvironment;
 	meWorld *pWorld;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWConnection *pDDSConnection;
 	
-	meObject *pAnchor;
-	meObject *pTarget;
+	meObject::Ref pAnchor;
+	meObject::Ref pTarget;
 	decString pAnchorProperty;
 	decString pTargetProperty;
 	
@@ -77,7 +77,7 @@ public:
 	/** \brief Retrieves the environment. */
 	inline igdeEnvironment *GetEnvironment() const{ return pEnvironment; }
 	/** \brief Retrieves the anchor object. */
-	inline meObject *GetAnchor() const{ return pAnchor; }
+	inline const meObject::Ref &GetAnchor() const{ return pAnchor; }
 	/** \brief Retrieves the target object. */
 	inline meObject *GetTarget() const{ return pTarget; }
 	

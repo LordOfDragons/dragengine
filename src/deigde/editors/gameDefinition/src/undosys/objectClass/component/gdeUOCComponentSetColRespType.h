@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentSetColRespType : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	deCollider::eResponseType pOldValue;
 	deCollider::eResponseType pNewValue;

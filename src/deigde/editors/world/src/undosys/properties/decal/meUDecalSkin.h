@@ -40,7 +40,7 @@ class meDecalList;
 class meUDecalSkin : public igdeUndo{
 private:
 	struct sDecal{
-		meDecal *decal;
+		meDecal::Ref decal;
 		decString oldskin;
 		decString newskin;
 	};

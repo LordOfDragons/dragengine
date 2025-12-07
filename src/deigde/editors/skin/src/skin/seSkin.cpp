@@ -529,7 +529,6 @@ void seSkin::SetActiveMapped(seMapped *mapped){
 	
 	if(pActiveMapped){
 		pActiveMapped->SetActive(false);
-		pActiveMapped->FreeReference();
 	}
 	
 	pActiveMapped = mapped;
@@ -601,7 +600,6 @@ void seSkin::SetActiveTexture(seTexture *texture){
 	if(texture != pActiveTexture){
 		if(pActiveTexture){
 			pActiveTexture->SetActive(false);
-			pActiveTexture->FreeReference();
 		}
 		
 		pActiveTexture = texture;
@@ -955,17 +953,10 @@ void seSkin::pCleanUp(){
 	SetActiveMapped(nullptr);
 	RemoveAllMapped();
 	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetComponent(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	pEngAnimatorAnim = nullptr;
-	if(pEngAnimator){
-		pEngAnimator->FreeReference();
-	}
 	
 	if(pDynamicSkin){
 		delete pDynamicSkin;
@@ -977,9 +968,7 @@ void seSkin::pCleanUp(){
 		}
 		if(pEngComponent && pEngComponent->GetParentWorld()){
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 		}
-		pEngWorld->FreeReference();
 	}
 }
 
@@ -1073,7 +1062,6 @@ void seSkin::pUpdateComponent(){
 			
 		}else if(pEngComponent){
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 			pEngComponent = NULL;
 		}
 		

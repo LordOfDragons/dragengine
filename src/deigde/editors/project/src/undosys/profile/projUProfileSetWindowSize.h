@@ -39,7 +39,7 @@ class projProfile;
  */
 class projUProfileSetWindowSize : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decPoint pOldValue;
 	decPoint pNewValue;

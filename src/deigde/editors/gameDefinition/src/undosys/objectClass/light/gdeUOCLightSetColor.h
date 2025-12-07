@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetColor : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	decColor pOldValue;
 	decColor pNewValue;

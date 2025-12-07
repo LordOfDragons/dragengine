@@ -36,7 +36,7 @@ class meHeightTerrain;
  */
 class meUHTSetSectorSize : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
 	
 	float pOldSectorSize;

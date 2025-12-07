@@ -86,7 +86,6 @@ pConnections(copy.pConnections)
 {
 	pSubAnimator = copy.pSubAnimator;
 	if(pSubAnimator){
-		pSubAnimator->AddReference();
 	}
 }
 
@@ -123,8 +122,6 @@ void aeRuleSubAnimator::LoadSubAnimator(){
 	}
 	
 	// release the sub animator
-	if(pSubAnimator){
-		pSubAnimator->FreeReference();
 		pSubAnimator = NULL;
 	}
 	
@@ -378,13 +375,10 @@ aeRuleSubAnimator &aeRuleSubAnimator::operator=(const aeRuleSubAnimator &copy){
 	SetEnableSize(copy.pEnableSize);
 	SetEnableVertexPositionSet(copy.pEnableVertexPositionSet);
 	
-	if(pSubAnimator){
-		pSubAnimator->FreeReference();
 		pSubAnimator = NULL;
 	}
 	pSubAnimator = copy.pSubAnimator;
 	if(pSubAnimator){
-		pSubAnimator->AddReference();
 	}
 	
 	pConnections = copy.pConnections;

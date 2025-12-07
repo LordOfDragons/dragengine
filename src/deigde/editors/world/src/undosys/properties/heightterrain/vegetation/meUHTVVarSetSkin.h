@@ -43,7 +43,7 @@ class meHTVVariation;
  */
 class meUHTVVarSetSkin : public igdeUndo{
 private:
-	meHTVVariation *pVariation;
+	meHTVVariation::Ref pVariation;
 	decString pOldPath;
 	decString pNewPath;
 	

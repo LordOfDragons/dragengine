@@ -36,7 +36,7 @@ class reRigShape;
  */
 class reUndoDataShape{
 private:
-	reRigShape *pShape;
+	reRigShape::Ref pShape;
 	decVector pOldPosition;
 	decVector pOldOrientation;
 	decVector pOldSize;
@@ -60,7 +60,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the shape. */
-	inline reRigShape *GetShape() const{ return pShape; }
+	inline const reRigShape::Ref &GetShape() const{ return pShape; }
 	
 	/** Retrieves the position before the action took place. */
 	inline const decVector &GetOldPosition() const{ return pOldPosition; }

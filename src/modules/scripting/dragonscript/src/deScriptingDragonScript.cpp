@@ -745,8 +745,6 @@ void deScriptingDragonScript::ShutDown(){
 	
 	pRemoveVFSContainerHideScriptDirectory();
 	
-	if(pColInfo){
-		pColInfo->FreeReference();
 		pColInfo = nullptr;
 	}
 	

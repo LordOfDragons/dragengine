@@ -37,7 +37,7 @@ class seSource;
  */
 class seUSetSourceName : public igdeUndo{
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	decString pOldName;
 	decString pNewName;

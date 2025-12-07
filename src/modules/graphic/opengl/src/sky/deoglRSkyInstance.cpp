@@ -77,9 +77,6 @@ deoglRSkyInstance::~deoglRSkyInstance(){
 		delete [] pControllerStates;
 	}
 	
-	if(pRSky){
-		pRSky->FreeReference();
-	}
 }
 
 
@@ -107,9 +104,6 @@ void deoglRSkyInstance::SetRSky(deoglRSky *rsky){
 		return;
 	}
 	
-	if(pRSky){
-		pRSky->FreeReference();
-	}
 	
 	pRSky = rsky;
 	

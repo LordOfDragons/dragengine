@@ -50,9 +50,6 @@ pDirtyEnabled(true){
 }
 
 deoglEffect::~deoglEffect(){
-	if(pREffect){
-		pREffect->FreeReference();
-	}
 }
 
 

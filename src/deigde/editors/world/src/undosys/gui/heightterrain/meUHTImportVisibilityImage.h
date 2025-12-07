@@ -47,7 +47,7 @@ class deImage;
  */
 class meUHTImportVisibilityImage : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
 	
 	meBitArray *pOldVis;

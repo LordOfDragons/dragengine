@@ -132,16 +132,10 @@ seWindowMain::~seWindowMain(){
 	
 	SetSky(NULL);
 	
-	if(pWindowCurves){
-		pWindowCurves->FreeReference();
 		pWindowCurves = NULL;
 	}
-	if(pViewSky){
-		pViewSky->FreeReference();
 		pViewSky = NULL;
 	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
 		pWindowProperties = NULL;
 	}
 	
@@ -150,9 +144,6 @@ seWindowMain::~seWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -186,7 +177,6 @@ void seWindowMain::SetSky(seSky *sky){
 		pSky->RemoveListener(pListener);
 		
 		pSky->Dispose();
-		pSky->FreeReference();
 	}
 	
 	pSky = sky;

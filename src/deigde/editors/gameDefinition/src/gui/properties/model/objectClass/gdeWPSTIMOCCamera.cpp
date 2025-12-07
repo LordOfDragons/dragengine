@@ -66,9 +66,6 @@ pCamera(NULL)
 }
 
 gdeWPSTIMOCCamera::~gdeWPSTIMOCCamera(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
 }
 
 

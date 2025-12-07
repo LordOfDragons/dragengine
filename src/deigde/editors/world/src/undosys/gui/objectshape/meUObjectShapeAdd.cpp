@@ -88,9 +88,6 @@ meUObjectShapeAdd::meUObjectShapeAdd(meObject *object, const char *property, con
 }
 
 meUObjectShapeAdd::~meUObjectShapeAdd(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

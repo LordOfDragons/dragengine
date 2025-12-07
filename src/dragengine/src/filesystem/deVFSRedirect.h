@@ -47,8 +47,8 @@ public:
 	
 private:
 	const decPath pRedirectPath;
-	deVFSContainer *pContainer;
-	deVirtualFileSystem *pVFS;
+	deVFSContainer::Ref pContainer;
+	deVirtualFileSystem::Ref pVFS;
 	bool pHoldVFSReference;
 	
 	

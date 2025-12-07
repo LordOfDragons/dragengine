@@ -52,9 +52,9 @@ private:
 	int pOwnerShape;
 	int pOwnerFace;
 	
-	deHeightTerrain *pHeightTerrain;
+	deHeightTerrain::Ref pHeightTerrain;
 	deHeightTerrainSector *pHTSector;
-	deCollider *pCollider;
+	deCollider::Ref pCollider;
 	int pBone;
 	int pShape;
 	int pFace;
@@ -117,13 +117,13 @@ public:
 	void SetOwnerFace(int face);
 	
 	/** \brief Height terrain or NULL if none is hit. */
-	inline deHeightTerrain *GetHeightTerrain() const{ return pHeightTerrain; }
+	inline const deHeightTerrain::Ref &GetHeightTerrain() const{ return pHeightTerrain; }
 	
 	/** \brief Height terrain sector or NULL if none is hit. */
 	inline deHeightTerrainSector *GetHTSector() const{ return pHTSector; }
 	
 	/** \brief Collider or NULL if none is hit. */
-	inline deCollider *GetCollider() const{ return pCollider; }
+	inline const deCollider::Ref &GetCollider() const{ return pCollider; }
 	
 	/**
 	 * \brief Bone index or -1 if none is hit.

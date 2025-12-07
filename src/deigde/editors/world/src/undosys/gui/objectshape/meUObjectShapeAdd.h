@@ -36,7 +36,7 @@ class meObject;
  */
 class meUObjectShapeAdd : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;

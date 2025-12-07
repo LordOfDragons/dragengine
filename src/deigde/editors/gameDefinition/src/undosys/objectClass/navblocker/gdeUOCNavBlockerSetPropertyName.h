@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavBlockerSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	gdeOCNavigationBlocker::eProperties pProperty;
 	decString pOldValue;

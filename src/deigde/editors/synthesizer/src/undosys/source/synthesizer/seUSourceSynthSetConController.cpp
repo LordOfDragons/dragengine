@@ -56,28 +56,16 @@ pSource(NULL)
 	
 	pOldController = source->GetControllerAt(target);
 	if(pOldController){
-		pOldController->AddReference();
 	}
 	
 	pNewController = newController;
 	if(pNewController){
-		pNewController->AddReference();
 	}
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceSynthSetConController::~seUSourceSynthSetConController(){
-	if(pNewController){
-		pNewController->FreeReference();
-	}
-	if(pOldController){
-		pOldController->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

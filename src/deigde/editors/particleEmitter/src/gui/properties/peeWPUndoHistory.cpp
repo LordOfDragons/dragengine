@@ -49,9 +49,6 @@ pEmitter(NULL){
 peeWPUndoHistory::~peeWPUndoHistory(){
 	SetEmitter(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -68,7 +65,6 @@ void peeWPUndoHistory::SetEmitter(peeEmitter *emitter){
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;

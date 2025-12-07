@@ -39,8 +39,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakFaceClear : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	ceStripList pOldFaces;
 	
 	

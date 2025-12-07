@@ -43,9 +43,9 @@ class meHeightTerrainTexture;
  */
 class meUHTSetTexUVRotation : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	float pOldRotation;
 	float pNewRotation;

@@ -280,9 +280,6 @@ void cePlayerChoiceBox::UpdateCanvas(){
 void cePlayerChoiceBox::pCleanUp(){
 	pOptions.RemoveAll();
 	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 }
 
 

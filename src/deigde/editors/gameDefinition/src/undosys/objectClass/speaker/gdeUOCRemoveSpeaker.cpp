@@ -63,12 +63,6 @@ pSpeaker(NULL)
 }
 
 gdeUOCRemoveSpeaker::~gdeUOCRemoveSpeaker(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

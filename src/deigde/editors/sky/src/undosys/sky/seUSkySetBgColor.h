@@ -38,7 +38,7 @@ class seSky;
  */
 class seUSkySetBgColor : public igdeUndo{
 private:
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	decColor pOldColor;
 	decColor pNewColor;

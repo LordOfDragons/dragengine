@@ -52,13 +52,9 @@ reUConstraintSetDampingAngular::reUConstraintSetDampingAngular(reRigConstraint *
 	
 	SetShortInfo("Constraint set angular damping");
 	
-	pConstraint->AddReference();
 }
 
 reUConstraintSetDampingAngular::~reUConstraintSetDampingAngular(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

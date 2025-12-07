@@ -38,7 +38,7 @@ class meObjectTexture;
  */
 class meUObjectTextureTCScaling : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decVector2 pOldScaling;
 	decVector2 pNewScaling;
 	

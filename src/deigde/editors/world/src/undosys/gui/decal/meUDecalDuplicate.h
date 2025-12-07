@@ -40,7 +40,7 @@ class meUndoDataDecal;
  */
 class meUDecalDuplicate : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	meUndoDataDecal **pDecals;
 	int pDecalCount;

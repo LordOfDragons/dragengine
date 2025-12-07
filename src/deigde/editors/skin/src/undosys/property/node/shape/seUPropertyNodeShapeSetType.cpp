@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeShapeSetType::~seUPropertyNodeShapeSetType(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

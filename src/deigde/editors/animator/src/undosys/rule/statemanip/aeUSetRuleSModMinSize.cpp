@@ -46,7 +46,6 @@ aeUSetRuleSModMinSize::aeUSetRuleSModMinSize(aeRuleStateManipulator *rule, const
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldMin = rule->GetMinimumSize();
 		pNewMin = newMin;

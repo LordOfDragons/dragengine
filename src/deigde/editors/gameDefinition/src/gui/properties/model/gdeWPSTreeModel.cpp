@@ -386,7 +386,4 @@ void gdeWPSTreeModel::pCleanUp(){
 	
 	pTreeList.RemoveAllItems();
 	
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }

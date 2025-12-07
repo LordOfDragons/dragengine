@@ -59,12 +59,6 @@ pBillboard(NULL)
 }
 
 gdeUOCBillboardToggleSizeFixedToScreen::~gdeUOCBillboardToggleSizeFixedToScreen(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

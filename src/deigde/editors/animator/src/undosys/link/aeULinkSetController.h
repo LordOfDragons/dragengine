@@ -42,10 +42,10 @@ class aeController;
  */
 class aeULinkSetController : public igdeUndo{
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
-	aeController *pOldController;
-	aeController *pNewController;
+	aeController::Ref pOldController;
+	aeController::Ref pNewController;
 	
 public:
 	/** \brief Type holding strong reference. */

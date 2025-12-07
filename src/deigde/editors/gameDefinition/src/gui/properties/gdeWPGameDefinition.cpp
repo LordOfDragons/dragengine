@@ -540,9 +540,6 @@ pListener(NULL)
 gdeWPGameDefinition::~gdeWPGameDefinition(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -577,7 +574,6 @@ void gdeWPGameDefinition::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

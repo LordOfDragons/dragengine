@@ -66,15 +66,6 @@ ceUCAPChoiceOptionSetText::ceUCAPChoiceOptionSetText(ceConversationTopic *topic,
 }
 
 ceUCAPChoiceOptionSetText::~ceUCAPChoiceOptionSetText(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

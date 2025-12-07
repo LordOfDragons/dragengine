@@ -44,7 +44,7 @@ private:
 	deEngine *pEngine;
 	
 	decString pPathSynthesizer;
-	deSynthesizer *pChildSynthesizer;
+	deSynthesizer::Ref pChildSynthesizer;
 	decString *pControllerNames;
 	int pControllerNameCount;
 	
@@ -77,7 +77,7 @@ public:
 	void SetPathSynthesizer(const char *path);
 	
 	/** \brief Child synthesizer or \em NULL if absent. */
-	inline deSynthesizer *GetChildSynthesizer() const{ return pChildSynthesizer; }
+	inline const deSynthesizer::Ref &GetChildSynthesizer() const{ return pChildSynthesizer; }
 	
 	/** \brief Update child synthesizer using stored path. */
 	void UpdateChildSynthesizer();

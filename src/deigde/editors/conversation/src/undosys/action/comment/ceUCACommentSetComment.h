@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACommentSetComment : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAComment *pComment;
+	ceConversationTopic::Ref pTopic;
+	ceCAComment::Ref pComment;
 	decString pOldComment;
 	decString pNewComment;
 	

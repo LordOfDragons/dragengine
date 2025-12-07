@@ -48,7 +48,7 @@ public:
 	
 	
 private:
-	gdeOCComponent *pOCComponent;
+	gdeOCComponent::Ref pOCComponent;
 	
 	deCollider::Ref pCollider;
 	deComponent::Ref pComponent;
@@ -80,7 +80,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class component. */
-	inline gdeOCComponent *GetOCComponent() const{ return pOCComponent; }
+	inline const gdeOCComponent::Ref &GetOCComponent() const{ return pOCComponent; }
 	
 	/** \brief Component or \em NULL if not present. */
 	inline deComponent *GetComponent() const{ return pComponent; }

@@ -60,9 +60,6 @@ pElse(NULL)
 		AddChild(pElse);
 		
 	}catch(const deException &){
-		if(pElse){
-			pElse->FreeReference();
-		}
 		throw;
 	}
 	

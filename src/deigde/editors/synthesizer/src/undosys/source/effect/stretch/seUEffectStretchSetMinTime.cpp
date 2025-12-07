@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewTime = newTime;
 	
 	pSource = effect;
-	pSource->AddReference();
 }
 
 seUEffectStretchSetMinTime::~seUEffectStretchSetMinTime(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

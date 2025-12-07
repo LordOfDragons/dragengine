@@ -61,7 +61,7 @@ private:
 	
 	decConvexVolumeList pConvexVolumeList;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSBlocker;
 	
 	

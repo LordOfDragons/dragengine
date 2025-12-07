@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCASnippetSetFile : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASnippet *pSnippet;
+	ceConversationTopic::Ref pTopic;
+	ceCASnippet::Ref pSnippet;
 	decString pOldFile;
 	decString pNewFile;
 	

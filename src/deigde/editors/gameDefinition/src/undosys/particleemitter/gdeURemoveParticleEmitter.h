@@ -38,8 +38,8 @@ class gdeParticleEmitter;
  */
 class gdeURemoveParticleEmitter : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeParticleEmitter *pParticleEmitter;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeParticleEmitter::Ref pParticleEmitter;
 	
 	
 	

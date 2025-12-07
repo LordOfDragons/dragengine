@@ -36,7 +36,7 @@ class meNavigationSpace;
  */
 class meUNavSpaceSetPath : public igdeUndo{
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	
 	decString pOldPath;
 	decString pNewPath;

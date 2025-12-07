@@ -51,9 +51,6 @@ meUndoDataDecalProperty::meUndoDataDecalProperty(meDecal *decal){
 }
 
 meUndoDataDecalProperty::~meUndoDataDecalProperty(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

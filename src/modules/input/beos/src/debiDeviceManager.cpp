@@ -193,12 +193,6 @@ decString debiDeviceManager::NormalizeID(const char *id){
 
 void debiDeviceManager::pCleanUp(){
 	pDevices.RemoveAll();
-	if(pKeyboard){
-		pKeyboard->FreeReference();
-	}
-	if(pMouse){
-		pMouse->FreeReference();
-	}
 }
 
 

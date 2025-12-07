@@ -69,9 +69,6 @@ pIfCase(NULL)
 }
 
 ceWPTTIMAIfElseIfCaseCondition::~ceWPTTIMAIfElseIfCaseCondition(){
-	if(pIfCase){
-		pIfCase->FreeReference();
-	}
 }
 
 

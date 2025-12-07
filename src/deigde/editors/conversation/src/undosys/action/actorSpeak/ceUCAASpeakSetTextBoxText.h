@@ -39,8 +39,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakSetTextBoxText : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	decUnicodeString pOldText;
 	decUnicodeString pNewText;
 	

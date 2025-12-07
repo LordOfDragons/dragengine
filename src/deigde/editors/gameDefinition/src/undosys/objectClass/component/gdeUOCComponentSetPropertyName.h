@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	gdeOCComponent::eProperties pProperty;
 	decString pOldValue;

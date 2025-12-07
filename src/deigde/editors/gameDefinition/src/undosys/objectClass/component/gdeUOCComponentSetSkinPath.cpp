@@ -62,12 +62,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentSetSkinPath::~gdeUOCComponentSetSkinPath(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

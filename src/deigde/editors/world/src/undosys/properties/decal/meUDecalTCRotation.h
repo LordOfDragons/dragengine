@@ -36,7 +36,7 @@ class meDecal;
  */
 class meUDecalTCRotation : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	float pOldRotation;
 	float pNewRotation;
 	

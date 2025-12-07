@@ -37,7 +37,7 @@ class reRigConstraint;
  */
 class reUConstraintSetOrientation : public igdeUndo{
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;

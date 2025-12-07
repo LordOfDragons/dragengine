@@ -110,7 +110,6 @@ void deCanvasView::RemoveAllCanvas(){
 	while(pCanvasTail){
 		deCanvas * const next = pCanvasTail->GetLLViewPrev();
 		pCanvasTail->SetParentView(NULL);
-		pCanvasTail->FreeReference();
 		pCanvasTail = next;
 		pCanvasCount--;
 	}

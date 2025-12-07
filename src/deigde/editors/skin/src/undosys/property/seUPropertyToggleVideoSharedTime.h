@@ -36,7 +36,7 @@ class seProperty;
  */
 class seUPropertyToggleVideoSharedTime : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	
 	

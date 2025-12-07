@@ -39,7 +39,7 @@
  */
 class gdeUOCSetScaleMode : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	gdeObjectClass::eScaleModes pOldValue;
 	gdeObjectClass::eScaleModes pNewValue;

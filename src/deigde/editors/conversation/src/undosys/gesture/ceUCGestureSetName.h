@@ -40,7 +40,7 @@ class ceConversationTopic;
  */
 class ceUCGestureSetName : public igdeUndo{
 private:
-	ceGesture *pGesture;
+	ceGesture::Ref pGesture;
 	
 	decString pOldName;
 	decString pNewName;

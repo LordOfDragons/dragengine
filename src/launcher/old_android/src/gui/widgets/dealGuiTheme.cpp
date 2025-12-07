@@ -149,30 +149,9 @@ pOptionBoxImageSelectedColorize(copy.pOptionBoxImageSelectedColorize)
 }
 
 dealGuiTheme::~dealGuiTheme(){
-	if(pWidgetTextFont){
-		pWidgetTextFont->FreeReference();
-	}
 	
-	if(pButtonBackgroundImage){
-		pButtonBackgroundImage->FreeReference();
-	}
-	if(pButtonPressedBackgroundImage){
-		pButtonPressedBackgroundImage->FreeReference();
-	}
 	
-	if(pCheckBoxImageUnchecked){
-		pCheckBoxImageUnchecked->FreeReference();
-	}
-	if(pCheckBoxImageChecked){
-		pCheckBoxImageChecked->FreeReference();
-	}
 	
-	if(pOptionBoxImageDeselected){
-		pOptionBoxImageDeselected->FreeReference();
-	}
-	if(pOptionBoxImageSelected){
-		pOptionBoxImageSelected->FreeReference();
-	}
 }
 
 
@@ -193,9 +172,6 @@ void dealGuiTheme::SetWidgetTextFont(dealFont *font){
 		return;
 	}
 	
-	if(pWidgetTextFont){
-		pWidgetTextFont->FreeReference();
-	}
 	
 	pWidgetTextFont = font;
 	
@@ -223,9 +199,6 @@ void dealGuiTheme::SetButtonBackgroundImage(dealImage *image){
 		return;
 	}
 	
-	if(pButtonBackgroundImage){
-		pButtonBackgroundImage->FreeReference();
-	}
 	
 	pButtonBackgroundImage = image;
 	
@@ -273,9 +246,6 @@ void dealGuiTheme::SetButtonPressedBackgroundImage(dealImage *image){
 		return;
 	}
 	
-	if(pButtonPressedBackgroundImage){
-		pButtonPressedBackgroundImage->FreeReference();
-	}
 	
 	pButtonPressedBackgroundImage = image;
 	
@@ -323,9 +293,6 @@ void dealGuiTheme::SetCheckBoxImageUnchecked(dealImage *image){
 		return;
 	}
 	
-	if(pCheckBoxImageUnchecked){
-		pCheckBoxImageUnchecked->FreeReference();
-	}
 	
 	pCheckBoxImageUnchecked = image;
 	
@@ -339,9 +306,6 @@ void dealGuiTheme::SetCheckBoxImageChecked(dealImage *image){
 		return;
 	}
 	
-	if(pCheckBoxImageChecked){
-		pCheckBoxImageChecked->FreeReference();
-	}
 	
 	pCheckBoxImageChecked = image;
 	
@@ -377,9 +341,6 @@ void dealGuiTheme::SetOptionBoxImageDeselected(dealImage *image){
 		return;
 	}
 	
-	if(pOptionBoxImageDeselected){
-		pOptionBoxImageDeselected->FreeReference();
-	}
 	
 	pOptionBoxImageDeselected = image;
 	
@@ -393,9 +354,6 @@ void dealGuiTheme::SetOptionBoxImageSelected(dealImage *image){
 		return;
 	}
 	
-	if(pOptionBoxImageSelected){
-		pOptionBoxImageSelected->FreeReference();
-	}
 	
 	pOptionBoxImageSelected = image;
 	

@@ -37,7 +37,7 @@ class aeRuleAnimation;
  */
 class aeURuleAnimToggleEnableVertexPositionSet : public igdeUndo{
 private:
-	aeRuleAnimation *pRule;
+	aeRuleAnimation::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

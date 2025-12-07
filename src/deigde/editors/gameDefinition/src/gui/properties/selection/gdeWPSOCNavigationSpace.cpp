@@ -422,9 +422,6 @@ pGameDefinition(NULL)
 gdeWPSOCNavigationSpace::~gdeWPSOCNavigationSpace(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -439,7 +436,6 @@ void gdeWPSOCNavigationSpace::SetGameDefinition(gdeGameDefinition *gameDefinitio
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

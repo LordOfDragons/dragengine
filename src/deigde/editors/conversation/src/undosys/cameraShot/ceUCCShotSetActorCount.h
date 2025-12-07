@@ -36,7 +36,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetActorCount : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	int pOldCount;
 	int pNewCount;

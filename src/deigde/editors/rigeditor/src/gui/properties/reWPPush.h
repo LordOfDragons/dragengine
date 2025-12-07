@@ -43,9 +43,9 @@ class reWPPushListener;
 class reWPPush : public igdeContainerScroll{
 private:
 	reWindowProperties &pWindowProperties;
-	reRig *pRig;
-	reRigPush *pPush;
-	reWPPushListener *pListener;
+	reRig::Ref pRig;
+	reRigPush::Ref pPush;
+	reWPPushListener::Ref pListener;
 	
 	igdeComboBox::Ref pCBType;
 	igdeEditVector::Ref pEditPosition;
@@ -73,13 +73,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);
 	
 	/** \brief Push. */
-	inline reRigPush *GetPush() const{ return pPush; }
+	inline const reRigPush::Ref &GetPush() const{ return pPush; }
 	
 	/** \brief Set push. */
 	void SetPush(reRigPush *push);

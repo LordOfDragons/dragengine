@@ -37,7 +37,7 @@ class projProject;
  */
 class projUProjectSetScriptDirectory : public igdeUndo{
 private:
-	projProject *pProject;
+	projProject::Ref pProject;
 	
 	decString pOldValue;
 	decString pNewValue;

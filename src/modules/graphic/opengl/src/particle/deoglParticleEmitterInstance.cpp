@@ -253,8 +253,6 @@ void deoglParticleEmitterInstance::pCleanUp(){
 	}
 	
 	// types holds a reference to pRInstance. do not remove it earlier
-	if(pRInstance){
-		pRInstance->FreeReference();
 		pRInstance = NULL;
 	}
 }

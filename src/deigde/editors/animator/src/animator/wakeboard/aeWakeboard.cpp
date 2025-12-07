@@ -238,12 +238,10 @@ void aeWakeboard::pCleanUp(){
 		
 		if(pEngCollider){
 			engWorld.RemoveCollider(pEngCollider);
-			pEngCollider->FreeReference();
 		}
 		
 		if(pEngComponent){
 			engWorld.RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 		}
 	}
 }

@@ -57,7 +57,7 @@ private:
 	
 	dedaiLayer *pLayer;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSPath;
 	deDebugDrawerShape *pDDSPathFaces;
 	deDebugDrawerShape *pDDSPathFacesOpen;

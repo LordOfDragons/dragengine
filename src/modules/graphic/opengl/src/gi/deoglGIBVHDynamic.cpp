@@ -177,12 +177,6 @@ void deoglGIBVHDynamic::RemoveBlockUsage(){
 void deoglGIBVHDynamic::pCleanUp(){
 	DropBlocks();
 	
-	if(pTBONodeBox){
-		pTBONodeBox->FreeReference();
-	}
-	if(pTBOVertex){
-		pTBOVertex->FreeReference();
-	}
 }
 
 void deoglGIBVHDynamic::pCalcNodeExtends(const deoglBVHNode &node, decVector &minExtend, decVector &maxExtend){

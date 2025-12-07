@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeTextSetText::~seUPropertyNodeTextSetText(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

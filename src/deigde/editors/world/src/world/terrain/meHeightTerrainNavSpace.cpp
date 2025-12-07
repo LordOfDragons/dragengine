@@ -747,9 +747,6 @@ void meHeightTerrainNavSpace::pCleanUp(){
 	
 	RemoveAllTypes();
 	
-	if(pDDTypeFaces){
-		pDDTypeFaces->FreeReference();
-	}
 }
 
 

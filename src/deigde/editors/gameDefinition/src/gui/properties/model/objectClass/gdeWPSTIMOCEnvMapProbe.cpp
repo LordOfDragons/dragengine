@@ -66,9 +66,6 @@ pEnvMapProbe(NULL)
 }
 
 gdeWPSTIMOCEnvMapProbe::~gdeWPSTIMOCEnvMapProbe(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
 }
 
 

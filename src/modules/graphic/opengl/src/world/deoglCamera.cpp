@@ -313,9 +313,6 @@ void deoglCamera::VRRenderParametersChanged(){
 void deoglCamera::pCleanUp(){
 	SetParentWorld(NULL);
 	
-	if(pRCamera){
-		pRCamera->FreeReference();
-	}
 	
 	// notify owners we are about to be deleted. required since owners hold only a weak pointer
 	// to the dynamic skin and are notified only after switching to a new dynamic skin. in this

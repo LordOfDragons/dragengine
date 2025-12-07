@@ -53,9 +53,6 @@ seUPropertySetImagePath::seUPropertySetImagePath(seProperty *property, const cha
 }
 
 seUPropertySetImagePath::~seUPropertySetImagePath(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

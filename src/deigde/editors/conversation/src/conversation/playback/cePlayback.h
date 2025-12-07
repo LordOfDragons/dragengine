@@ -67,14 +67,14 @@ public:
 private:
 	ceConversation &pConversation;
 	
-	ceConversationTopic *pTopic;
+	ceConversationTopic::Ref pTopic;
 	cePlaybackActor *pActors;
 	int pActorCount;
 	bool pRunning;
 	bool pPaused;
 	bool pAutoAdvanceCommands;
 	eCameraHandling pCameraHandling;
-	ceTextBoxText *pTextBoxText;
+	ceTextBoxText::Ref pTextBoxText;
 	cePlaybackCamera *pCamera;
 	cePlaybackActionStack::Ref pMainActionStack, pActiveActionStack;
 	decObjectOrderedSet pSideActionStacks;
@@ -84,8 +84,8 @@ private:
 	igdeTriggerTargetList pTriggerTable;
 	decStringSet pMissingWords;
 	
-	ceConversationAction *pLastPlayedAction;
-	ceConversationTopic *pLastPlayedActionTopic;
+	ceConversationAction::Ref pLastPlayedAction;
+	ceConversationTopic::Ref pLastPlayedActionTopic;
 	
 	
 	
@@ -113,7 +113,7 @@ public:
 	
 	
 	/** Topic to play back. */
-	inline ceConversationTopic *GetTopic() const{ return pTopic; }
+	inline const ceConversationTopic::Ref &GetTopic() const{ return pTopic; }
 	
 	/** Set topic to play back. */
 	void SetTopic(ceConversationTopic *topic);
@@ -217,10 +217,10 @@ public:
 	void CancelLoopingLayer(int stackDepth);
 	
 	/** Last action played back or \em NULL if not set. */
-	inline ceConversationAction *GetLastPlayedAction() const{ return pLastPlayedAction; }
+	inline const ceConversationAction::Ref &GetLastPlayedAction() const{ return pLastPlayedAction; }
 	
 	/** Last action played back parent topic or \em NULL if not set. */
-	inline ceConversationTopic *GetLastPlayedActionTopic() const{ return pLastPlayedActionTopic; }
+	inline const ceConversationTopic::Ref &GetLastPlayedActionTopic() const{ return pLastPlayedActionTopic; }
 	
 	
 	

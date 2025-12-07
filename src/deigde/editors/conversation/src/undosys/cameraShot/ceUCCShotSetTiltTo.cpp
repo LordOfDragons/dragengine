@@ -54,9 +54,6 @@ ceUCCShotSetTiltTo::ceUCCShotSetTiltTo(ceCameraShot *cameraShot, float newTilt){
 }
 
 ceUCCShotSetTiltTo::~ceUCCShotSetTiltTo(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

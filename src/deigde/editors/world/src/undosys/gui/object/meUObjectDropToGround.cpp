@@ -91,7 +91,6 @@ pAlign(false)
 			pObjects[pObjectCount].oldpos = object->GetPosition();
 			pObjects[pObjectCount].oldrot = object->GetRotation();
 			pObjects[pObjectCount].object = object;
-			object->AddReference();
 		}
 		
 	}catch(const deException &){

@@ -79,12 +79,6 @@ pRandomRotationMax(0.0f, 30.0f, 0.0f)
 }
 
 meHeightTerrainPFType::~meHeightTerrainPFType(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pModel){
-		pModel->FreeReference();
-	}
 }
 
 
@@ -125,8 +119,6 @@ void meHeightTerrainPFType::SetPathModel(const char *path){
 	
 	pPathModel = path;
 	
-	if(pModel){
-		pModel->FreeReference();
 		pModel = NULL;
 	}
 	
@@ -155,8 +147,6 @@ void meHeightTerrainPFType::SetPathSkin(const char *path){
 	
 	pPathSkin = path;
 	
-	if(pSkin){
-		pSkin->FreeReference();
 		pSkin = NULL;
 	}
 	
@@ -168,7 +158,6 @@ void meHeightTerrainPFType::SetPathSkin(const char *path){
 			if(pPFLayer && pPFLayer->GetHTSector() && pPFLayer->GetHTSector()->GetHeightTerrain()){
 				pSkin = pPFLayer->GetHTSector()->GetHeightTerrain()->GetWorld().
 					GetEnvironment()->GetStockSkin(igdeEnvironment::essError);
-				pSkin->AddReference();
 			}
 		}
 	}

@@ -64,13 +64,11 @@ pFile(writer.pFile),
 pPosition(writer.pPosition)
 {
 	pFile->Touch();
-	pFile->AddReference();
 }
 
 decMemoryFileWriter::~decMemoryFileWriter(){
 	if(pFile){
 		pFile->Touch();
-		pFile->FreeReference();
 	}
 }
 

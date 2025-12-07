@@ -415,9 +415,6 @@ pActivePanel(NULL)
 aeWPRule::~aeWPRule(){
 	SetAnimator(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -432,7 +429,6 @@ void aeWPRule::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;

@@ -1003,9 +1003,6 @@ void debpWorld::pCleanUp(){
 	if(pUnstuckCollider){
 		delete pUnstuckCollider;
 	}
-	if(pColInfo){
-		pColInfo->FreeReference();
-	}
 	
 	if(pUpdateOctreeColliders){
 		delete [] pUpdateOctreeColliders;

@@ -62,12 +62,6 @@ pBillboard(NULL)
 }
 
 gdeUOCBillboardSetPosition::~gdeUOCBillboardSetPosition(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

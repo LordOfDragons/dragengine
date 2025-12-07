@@ -38,7 +38,7 @@ class meObjectTexture;
  */
 class meUObjectTextureTCOffset : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decVector2 pOldOffset;
 	decVector2 pNewOffset;
 	

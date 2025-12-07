@@ -59,12 +59,6 @@ pProperty(NULL)
 }
 
 gdeUOCPToggleIdentifierUsage::~gdeUOCPToggleIdentifierUsage(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

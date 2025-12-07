@@ -40,7 +40,7 @@ class aeRuleGroup;
  */
 class aeURuleGroupPasteRule : public igdeUndo{
 private:
-	aeRuleGroup *pGroup;
+	aeRuleGroup::Ref pGroup;
 	aeRuleList pRuleList;
 	aeLinkList pRemoveLinkList;
 	aeControllerList pRemoveControllerList;

@@ -52,7 +52,6 @@ pSource(NULL)
 	
 	try{
 		pSource = source;
-		pSource->AddReference();
 		
 		SetShortInfo("Source set blend factor");
 		
@@ -85,7 +84,4 @@ void seUSetSourceBlendFactor::Redo(){
 //////////////////////
 
 void seUSetSourceBlendFactor::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

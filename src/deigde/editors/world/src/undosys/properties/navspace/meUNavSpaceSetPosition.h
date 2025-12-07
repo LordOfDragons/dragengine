@@ -38,7 +38,7 @@ class meNavigationSpace;
  */
 class meUNavSpaceSetPosition : public igdeUndo{
 private:
-	meNavigationSpace *pNavSpace;
+	meNavigationSpace::Ref pNavSpace;
 	
 	decDVector pOldPosition;
 	decDVector pNewPosition;

@@ -111,12 +111,12 @@ public:
 	int pVertPosSetCount;
 	int pVertPosSetPosCount;
 	
-	deoglSharedVBOBlock *pVBOBlock;
-	deoglSharedVBOBlock *pVBOBlockPositionWeight;
-	deoglSharedVBOBlock *pVBOBlockCalcNormalTangent;
-	deoglSharedVBOBlock *pVBOBlockWriteSkinnedVBO;
-	deoglSharedVBOBlock *pVBOBlockWithWeight;
-	deoglSharedVBOBlock *pVBOBlockVertPosSet;
+	deoglSharedVBOBlock::Ref pVBOBlock;
+	deoglSharedVBOBlock::Ref pVBOBlockPositionWeight;
+	deoglSharedVBOBlock::Ref pVBOBlockCalcNormalTangent;
+	deoglSharedVBOBlock::Ref pVBOBlockWriteSkinnedVBO;
+	deoglSharedVBOBlock::Ref pVBOBlockWithWeight;
+	deoglSharedVBOBlock::Ref pVBOBlockVertPosSet;
 	GLuint pIBO;
 	deoglVBOLayout::eIndexTypes pIBOType;
 	
@@ -161,9 +161,9 @@ public:
 	void PrepareVBOBlockVertPosSet();
 	
 	/** VBO block. */
-	inline deoglSharedVBOBlock *GetVBOBlock() const{ return pVBOBlock; }
-	// inline deoglSharedVBOBlock *GetVBOBlockPositionWeight() const{ return pVBOBlockPositionWeight; }
-	// inline deoglSharedVBOBlock *GetVBOBlockCalcNormalTangent() const{ return pVBOBlockCalcNormalTangent; }
+	inline const deoglSharedVBOBlock::Ref &GetVBOBlock() const{ return pVBOBlock; }
+	// inline const deoglSharedVBOBlock::Ref &GetVBOBlockPositionWeight() const{ return pVBOBlockPositionWeight; }
+	// inline const deoglSharedVBOBlock::Ref &GetVBOBlockCalcNormalTangent() const{ return pVBOBlockCalcNormalTangent; }
 	// inline deoglSharedVBOBlock *GetVBOBlockWriteSkinnedVBO() const{ return pVBOBlockWriteSkinnedVBO; }
 	inline deoglSharedVBOBlock *GetVBOBlockWithWeight() const{ return pVBOBlockWithWeight; }
 	inline deoglSharedVBOBlock *GetVBOBlockVertPosSet() const{ return pVBOBlockVertPosSet; }

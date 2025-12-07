@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCACommandToggleNegate : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionActorCommand *pActorCommand;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionActorCommand::Ref pActorCommand;
 	
 public:
 	/** \brief Type holding strong reference. */

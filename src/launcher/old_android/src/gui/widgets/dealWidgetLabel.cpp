@@ -71,9 +71,6 @@ pDirtyTextSize(true)
 }
 
 dealWidgetLabel::~dealWidgetLabel(){
-	if(pFont){
-		pFont->FreeReference();
-	}
 }
 
 
@@ -86,9 +83,6 @@ void dealWidgetLabel::SetFont(dealFont *font){
 		return;
 	}
 	
-	if(pFont){
-		pFont->FreeReference();
-	}
 	
 	pFont = font;
 	

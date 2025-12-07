@@ -301,6 +301,5 @@ void deainpOverlaySystem::pCleanUp(){
 	
 	if(pCanvas){
 		pCanvas->RemoveAllCanvas();
-		pCanvas->FreeReference();
 	}
 }

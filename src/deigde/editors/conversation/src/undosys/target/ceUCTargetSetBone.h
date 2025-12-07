@@ -36,7 +36,7 @@ class ceTarget;
  */
 class ceUCTargetSetBone : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decString pOldBone;
 	decString pNewBone;

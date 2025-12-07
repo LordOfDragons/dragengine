@@ -42,8 +42,8 @@ class aeAnimator;
  */
 class aeULinkAdd : public igdeUndo{
 private:
-	aeAnimator *pAnimator;
-	aeLink *pLink;
+	aeAnimator::Ref pAnimator;
+	aeLink::Ref pLink;
 	
 public:
 	/** \brief Type holding strong reference. */

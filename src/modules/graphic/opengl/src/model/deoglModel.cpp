@@ -65,7 +65,4 @@ deoglModel::~deoglModel(){
 //////////////////////
 
 void deoglModel::pCleanUp(){
-	if(pRModel){
-		pRModel->FreeReference();
-	}
 }

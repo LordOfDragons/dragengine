@@ -59,9 +59,9 @@ private:
 	float pOrder;
 	float pTransparency;
 	deCanvas::eBlendModes pBlendMode;
-	deoglRCanvas *pMask;
+	deoglRCanvas::Ref pMask;
 	bool pVisible;
-	deoglRenderTarget *pMaskRenderTarget;
+	deoglRenderTarget::Ref pMaskRenderTarget;
 	
 	
 	
@@ -125,7 +125,7 @@ public:
 	void SetBlendMode(deCanvas::eBlendModes mode);
 	
 	/** Mask. */
-	inline deoglRCanvas *GetMask() const{ return pMask; }
+	inline const deoglRCanvas::Ref &GetMask() const{ return pMask; }
 	
 	/** Set mask. */
 	void SetMask(deoglRCanvas *mask);
@@ -137,7 +137,7 @@ public:
 	void SetVisible(bool visible);
 	
 	/** Mask render target or \em NULL if not ready. */
-	inline deoglRenderTarget *GetMaskRenderTarget() const{ return pMaskRenderTarget; }
+	inline const deoglRenderTarget::Ref &GetMaskRenderTarget() const{ return pMaskRenderTarget; }
 	
 	/** Dirty mask render target if present. */
 	void DirtyMaskRenderTarget();

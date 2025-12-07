@@ -49,9 +49,6 @@ meUCameraRotateObject::meUCameraRotateObject(meObject *object){
 }
 
 meUCameraRotateObject::~meUCameraRotateObject(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

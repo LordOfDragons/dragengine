@@ -36,7 +36,7 @@ class ceTarget;
  */
 class ceUCTargetSetEntityID : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decString pOldID;
 	decString pNewID;

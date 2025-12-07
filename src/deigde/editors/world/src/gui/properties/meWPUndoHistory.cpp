@@ -49,9 +49,6 @@ pListener(new meWPUndoHistoryListener(*this)){
 meWPUndoHistory::~meWPUndoHistory(){
 	SetWorld(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -68,7 +65,6 @@ void meWPUndoHistory::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

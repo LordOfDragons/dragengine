@@ -63,12 +63,6 @@ pParticleEmitter(NULL)
 }
 
 gdeUOCRemoveParticleEmitter::~gdeUOCRemoveParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

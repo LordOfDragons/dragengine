@@ -41,8 +41,8 @@ public:
 	
 	
 private:
-	igdeGDProperty *pProperty;
-	meIDGroup *pGroup;
+	igdeGDProperty::Ref pProperty;
+	meIDGroup::Ref pGroup;
 	const decString pPropertyPrefix;
 	
 	
@@ -62,10 +62,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Game definition property. */
-	inline igdeGDProperty *GetProperty() const{ return pProperty; }
+	inline const igdeGDProperty::Ref &GetProperty() const{ return pProperty; }
 	
 	/** Identifier group. */
-	inline meIDGroup *GetGroup() const{ return pGroup; }
+	inline const meIDGroup::Ref &GetGroup() const{ return pGroup; }
 	
 	/** Property prefix. */
 	inline const decString &GetPropertyPrefix() const{ return pPropertyPrefix; }

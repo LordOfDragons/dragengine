@@ -142,24 +142,15 @@ projWindowMain::~projWindowMain(){
 	
 	SetProject(nullptr);
 	
-	if(pPanelProfiles){
-		pPanelProfiles->FreeReference();
 		pPanelProfiles = nullptr;
 	}
-	if(pPanelTestRun){
-		pPanelTestRun->FreeReference();
 		pPanelTestRun = nullptr;
 	}
-	if(pPanelUndoHistory){
-		pPanelUndoHistory->FreeReference();
 		pPanelUndoHistory = nullptr;
 	}
 	
 	if(pConfiguration){
 		delete pConfiguration;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -191,7 +182,6 @@ void projWindowMain::SetProject(projProject *project){
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
-		pProject->FreeReference();
 	}
 	
 	pProject = project;

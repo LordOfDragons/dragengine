@@ -56,9 +56,6 @@ pNewLayer(newLayer)
 }
 
 meUHTNavSpaceSetLayer::~meUHTNavSpaceSetLayer(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

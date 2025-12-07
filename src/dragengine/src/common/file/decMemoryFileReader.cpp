@@ -54,13 +54,9 @@ decMemoryFileReader::decMemoryFileReader(const decMemoryFileReader &reader) :
 pFile(reader.pFile),
 pPosition(reader.pPosition)
 {
-	pFile->AddReference();
 }
 
 decMemoryFileReader::~decMemoryFileReader(){
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 

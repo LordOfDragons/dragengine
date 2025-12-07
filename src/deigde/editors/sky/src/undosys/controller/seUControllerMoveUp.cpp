@@ -65,9 +65,6 @@ pIndex(0)
 }
 
 seUControllerMoveUp::~seUControllerMoveUp(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

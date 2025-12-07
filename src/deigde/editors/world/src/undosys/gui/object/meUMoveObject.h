@@ -38,7 +38,7 @@ class meWorld;
  */
 class meUMoveObject : public meBaseUndoMove{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	
 	

@@ -37,7 +37,7 @@ class aeLink;
  */
 class aeULinkSetBoneParameter : public igdeUndo{
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	deAnimatorLink::eBoneParameter pOldValue;
 	deAnimatorLink::eBoneParameter pNewValue;

@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAGameCmdSetCommand : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAGameCommand *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAGameCommand::Ref pAction;
 	decString pOldCommand;
 	decString pNewCommand;
 	

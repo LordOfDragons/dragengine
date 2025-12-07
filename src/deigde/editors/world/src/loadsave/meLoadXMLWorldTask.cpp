@@ -261,9 +261,6 @@ bool meLoadXMLWorldTask::Step(){
 //////////////////////
 
 void meLoadXMLWorldTask::pCleanUp(){
-	if(pReader){
-		pReader->FreeReference();
-	}
 }
 
 

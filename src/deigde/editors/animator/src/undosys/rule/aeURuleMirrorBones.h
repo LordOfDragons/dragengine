@@ -45,7 +45,7 @@ class aeRule;
  */
 class aeURuleMirrorBones : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	decStringList pPatterns;
 	
 public:

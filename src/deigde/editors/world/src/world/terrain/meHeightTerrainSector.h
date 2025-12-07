@@ -145,7 +145,7 @@ private:
 	meHeightTerrainNavSpace *pActiveNavSpace;
 	decIntList pSelectedNavPoints;
 	
-	deDebugDrawer *pDDSelNavPoints;
+	deDebugDrawer::Ref pDDSelNavPoints;
 	
 	
 	

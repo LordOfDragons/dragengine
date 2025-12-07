@@ -83,10 +83,4 @@ void seUMoveControllerUp::Redo(){
 //////////////////////
 
 void seUMoveControllerUp::pCleanUp(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

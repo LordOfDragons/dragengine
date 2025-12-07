@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetName : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	decString pOldName;
 	decString pNewName;

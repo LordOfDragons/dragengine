@@ -41,7 +41,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deEnvMapProbe &pEnvMapProbe;
 	
-	deoglREnvMapProbe *pREnvMapProbe;
+	deoglREnvMapProbe::Ref pREnvMapProbe;
 	
 	bool pDirtyOctreeNode;
 	bool pDirtyEnvMapProbe;
@@ -72,7 +72,7 @@ public:
 	
 	
 	/** Render environment map probe. */
-	inline deoglREnvMapProbe *GetREnvMapProbe() const{ return pREnvMapProbe; }
+	inline const deoglREnvMapProbe::Ref &GetREnvMapProbe() const{ return pREnvMapProbe; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

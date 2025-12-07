@@ -37,7 +37,7 @@ class meWorld;
  */
 class meUWorldSetGravity : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	decVector pOldValue;
 	decVector pNewValue;

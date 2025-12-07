@@ -156,7 +156,4 @@ void meUDecalDuplicate::pCleanUp(){
 		delete [] pDecals;
 	}
 	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ParticleEmitter. */
-	gdeOCParticleEmitter *GetParticleEmitter() const{ return pParticleEmitter; }
+	const gdeOCParticleEmitter::Ref &GetParticleEmitter() const{ return pParticleEmitter; }
 	/*@}*/
 };
 

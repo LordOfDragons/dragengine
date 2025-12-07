@@ -48,10 +48,10 @@ class seWPViewListener;
 class seWPView : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seWPViewListener *pListener;
+	seWPViewListener::Ref pListener;
 	bool pPreventUpdate;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	
 	igdeComboBox::Ref pCBPreviewMode;
 	
@@ -89,7 +89,7 @@ public:
 	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(seSkin *sky);

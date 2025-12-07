@@ -70,14 +70,12 @@ pPathAnimator(gesture.pPathAnimator)
 {
 	pEngAnimator = gesture.pEngAnimator;
 	if(pEngAnimator){
-		pEngAnimator->AddReference();
 	}
 }
 
 ceActorGesture::~ceActorGesture(){
 	if(pEngAnimator){
 		pEngAnimator->SetRig(NULL);
-		pEngAnimator->FreeReference();
 	}
 }
 
@@ -121,9 +119,6 @@ void ceActorGesture::pLoadAnimator(){
 		igdeLoadAnimator(pEnvironment, pEnvironment.GetLogger(), LOGSOURCE).
 			Load(pPathAnimator, *animator, reader);
 		
-		if(pEngAnimator){
-			pEngAnimator->FreeReference();
-		}
 		pEngAnimator = animator;
 		
 	}catch(const deException &e){
@@ -133,9 +128,6 @@ void ceActorGesture::pLoadAnimator(){
 		pEnvironment.GetLogger()->LogException(LOGSOURCE, e);
 		
 		// ignore missing or broken animators. this can easily happen during development
-		if(pEngAnimator){
-			pEngAnimator->FreeReference();
-		}
 		pEngAnimator = nullptr;
 	}
 }

@@ -52,7 +52,7 @@ class igdeStepableTask;
  */
 class seWindowMain : public igdeEditorWindow{
 private:
-	seWindowMainListener *pListener;
+	seWindowMainListener::Ref pListener;
 	
 	//igdeIcon::Ref pIconSkyNew;
 	
@@ -76,11 +76,11 @@ private:
 	igdeClipboard pClipboard;
 	seLoadSaveSystem *pLoadSaveSystem;
 	
-	seViewSky *pViewSky;
-	seWindowProperties *pWindowProperties;
-	seWindowCurves *pWindowCurves;
+	seViewSky::Ref pViewSky;
+	seWindowProperties::Ref pWindowProperties;
+	seWindowCurves::Ref pWindowCurves;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	
 	
@@ -138,7 +138,7 @@ public:
 	
 	
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *Sky);

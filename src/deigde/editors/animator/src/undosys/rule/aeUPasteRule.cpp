@@ -162,7 +162,4 @@ void aeUPasteRule::Redo(){
 //////////////////////
 
 void aeUPasteRule::pCleanUp(){
-	if(pAnimator){
-		pAnimator->FreeReference();
-	}
 }

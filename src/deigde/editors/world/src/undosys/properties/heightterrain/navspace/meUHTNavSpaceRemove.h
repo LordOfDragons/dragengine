@@ -37,8 +37,8 @@ class meHeightTerrainNavSpace;
  */
 class meUHTNavSpaceRemove : public igdeUndo{
 private:
-	meHeightTerrainSector *pSector;
-	meHeightTerrainNavSpace *pNavSpace;
+	meHeightTerrainSector::Ref pSector;
+	meHeightTerrainNavSpace::Ref pNavSpace;
 	
 	
 	

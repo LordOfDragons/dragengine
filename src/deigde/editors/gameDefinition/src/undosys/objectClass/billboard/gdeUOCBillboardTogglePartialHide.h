@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardTogglePartialHide : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	
 	

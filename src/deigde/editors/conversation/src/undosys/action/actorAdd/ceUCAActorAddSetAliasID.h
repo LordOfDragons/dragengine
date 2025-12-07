@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAActorAddSetAliasID : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorAdd *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorAdd::Ref pAction;
 	decString pOldAliasID;
 	decString pNewAliasID;
 	

@@ -52,10 +52,6 @@ pTargetListener(NULL){
 igdeTriggerExpressionComponent::~igdeTriggerExpressionComponent(){
 	if(pTargetListener){
 		pTarget->RemoveListener(pTargetListener);
-		pTargetListener->FreeReference();
-	}
-	if(pTarget){
-		pTarget->FreeReference();
 	}
 }
 
@@ -88,9 +84,6 @@ void igdeTriggerExpressionComponent::SetTarget(igdeTriggerTarget *target){
 		return;
 	}
 	
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 	
 	pTarget = target;
 	
@@ -104,9 +97,6 @@ void igdeTriggerExpressionComponent::SetTargetListener(igdeTriggerListener *list
 		return;
 	}
 	
-	if(pTargetListener){
-		pTargetListener->FreeReference();
-	}
 	
 	pTargetListener = listener;
 	

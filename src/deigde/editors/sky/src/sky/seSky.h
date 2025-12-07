@@ -55,27 +55,27 @@ class deWorld;
  */
 class seSky : public igdeEditableEntity{
 private:
-	deWorld *pEngWorld;
-	deSky *pEngSky;
-	deSkyInstance *pEngSkyInstance;
+	deWorld::Ref pEngWorld;
+	deSky::Ref pEngSky;
+	deSkyInstance::Ref pEngSkyInstance;
 	bool pNeedsRebuildSky;
 	
 	igdeWObject::Ref pEnvObject;
 	igdeCamera *pCamera;
 	
-	deDebugDrawer *pDDHorizon;
+	deDebugDrawer::Ref pDDHorizon;
 	igdeWDebugDrawerShape pDDSHorizon;
 	
 	decColor pBgColor;
 	
 	seControllerList pControllers;
-	seController *pActiveController;
+	seController::Ref pActiveController;
 	
 	seLinkList pLinks;
-	seLink *pActiveLink;
+	seLink::Ref pActiveLink;
 	
 	seLayerList pLayers;
-	seLayer *pActiveLayer;
+	seLayer::Ref pActiveLayer;
 	
 	decObjectSet pListeners;
 	
@@ -98,13 +98,13 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	
 	/** \brief Engine sky. */
-	inline deSky *GetEngineSky() const{ return pEngSky; }
+	inline const deSky::Ref &GetEngineSky() const{ return pEngSky; }
 	
 	/** \brief Engine sky instance. */
-	inline deSkyInstance *GetEngineSkyInstance() const{ return pEngSkyInstance; }
+	inline const deSkyInstance::Ref &GetEngineSkyInstance() const{ return pEngSkyInstance; }
 	
 	/** \brief Camera. */
 	inline igdeCamera *GetCamera() const{ return pCamera; }
@@ -171,7 +171,7 @@ public:
 	void RemoveAllControllers();
 	
 	/** \brief Active controller or \em NULL. */
-	inline seController *GetActiveController() const{ return pActiveController; }
+	inline const seController::Ref &GetActiveController() const{ return pActiveController; }
 	
 	/** \brief Set active controller or \em NULL. */
 	void SetActiveController(seController *controller);
@@ -197,7 +197,7 @@ public:
 	void RemoveAllLinks();
 	
 	/** \brief Active link or \em NULL. */
-	inline seLink *GetActiveLink() const{ return pActiveLink; }
+	inline const seLink::Ref &GetActiveLink() const{ return pActiveLink; }
 	
 	/** \brief Set active link or \em NULL. */
 	void SetActiveLink(seLink *link);
@@ -229,7 +229,7 @@ public:
 	void RemoveAllLayers();
 	
 	/** \brief Active layer or \em NULL. */
-	inline seLayer *GetActiveLayer() const{ return pActiveLayer; }
+	inline const seLayer::Ref &GetActiveLayer() const{ return pActiveLayer; }
 	
 	/** \brief Set active layer or \em NULL. */
 	void SetActiveLayer(seLayer *layer);

@@ -37,7 +37,7 @@ class gdeGameDefinition;
  */
 class gdeUGDSetScriptModule : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decString pOldValue;
 	decString pNewValue;

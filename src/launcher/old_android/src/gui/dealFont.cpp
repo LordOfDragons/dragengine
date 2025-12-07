@@ -97,9 +97,6 @@ const dealFont::sGlyph &dealFont::GetGlyphFor(int code) const{
 //////////////////////
 
 void dealFont::pCleanUp(){
-	if(pImage){
-		pImage->FreeReference();
-	}
 	
 	if(pGlyphs){
 		delete [] pGlyphs;

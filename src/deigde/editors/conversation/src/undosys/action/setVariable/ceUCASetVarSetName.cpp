@@ -59,12 +59,6 @@ ceUCASetVarSetName::ceUCASetVarSetName(ceConversationTopic *topic, ceCASetVariab
 }
 
 ceUCASetVarSetName::~ceUCASetVarSetName(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

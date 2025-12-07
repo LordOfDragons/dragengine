@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewFrequency = newFrequency;
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceWaveSetMaxFrequency::~seUSourceWaveSetMaxFrequency(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

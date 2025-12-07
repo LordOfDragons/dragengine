@@ -58,9 +58,6 @@ pNewValues(newValues)
 }
 
 meUDecalSetProperties::~meUDecalSetProperties(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

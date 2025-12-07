@@ -51,9 +51,6 @@ pScaling(1.0f){
 }
 
 dealWidgetImage::~dealWidgetImage(){
-	if(pImage){
-		pImage->FreeReference();
-	}
 }
 
 
@@ -66,9 +63,6 @@ void dealWidgetImage::SetImage(dealImage *image){
 		return;
 	}
 	
-	if(pImage){
-		pImage->FreeReference();
-	}
 	
 	pImage = image;
 	

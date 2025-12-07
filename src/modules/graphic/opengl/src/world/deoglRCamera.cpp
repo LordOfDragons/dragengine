@@ -121,9 +121,6 @@ void deoglRCamera::SetParentWorld(deoglRWorld *parentWorld){
 	
 	pPlan->SetWorld(NULL); // has to come first since SetWorld accesses previous world
 	
-	if(pParentWorld){
-		pParentWorld->FreeReference();
-	}
 	
 	pParentWorld = parentWorld;
 	

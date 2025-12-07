@@ -371,9 +371,6 @@ pActivePanel(NULL)
 seWPSource::~seWPSource(){
 	SetSynthesizer(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -393,7 +390,6 @@ void seWPSource::SetSynthesizer(seSynthesizer *synthesizer){
 	pPanelWave->SetSynthesizer(NULL);
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;

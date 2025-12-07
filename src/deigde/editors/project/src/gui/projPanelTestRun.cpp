@@ -347,9 +347,6 @@ pMaxLines(500)
 projPanelTestRun::~projPanelTestRun(){
 	SetProject(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -369,7 +366,6 @@ void projPanelTestRun::SetProject(projProject *project){
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
-		pProject->FreeReference();
 	}
 	
 	pEditLogs->ClearText();

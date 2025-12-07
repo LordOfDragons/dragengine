@@ -58,9 +58,6 @@ pNewCurve(newCurve)
 }
 
 peeUParameterSetCurve::~peeUParameterSetCurve(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

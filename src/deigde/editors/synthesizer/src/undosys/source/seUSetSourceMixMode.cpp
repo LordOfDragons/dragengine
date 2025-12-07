@@ -51,7 +51,6 @@ pSource(NULL)
 	
 	try{
 		pSource = source;
-		pSource->AddReference();
 		
 		SetShortInfo("Source set blend mode");
 		
@@ -84,7 +83,4 @@ void seUSetSourceMixMode::Redo(){
 //////////////////////
 
 void seUSetSourceMixMode::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

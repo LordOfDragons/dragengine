@@ -43,9 +43,9 @@ class meHTVegetationLayer;
  */
 class meUHTVLayerAdd : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
-	meHTVegetationLayer *pVLayer;
+	meHTVegetationLayer::Ref pVLayer;
 	
 public:
 	/** \brief Type holding strong reference. */

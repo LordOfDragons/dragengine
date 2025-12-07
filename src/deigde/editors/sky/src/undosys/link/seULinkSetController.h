@@ -36,10 +36,10 @@ class seController;
  */
 class seULinkSetController : public igdeUndo{
 private:
-	seLink *pLink;
+	seLink::Ref pLink;
 	
-	seController *pOldController;
-	seController *pNewController;
+	seController::Ref pOldController;
+	seController::Ref pNewController;
 	
 	
 	

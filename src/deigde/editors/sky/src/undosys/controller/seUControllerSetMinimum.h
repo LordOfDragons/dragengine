@@ -35,7 +35,7 @@ class seController;
  */
 class seUControllerSetMinimum : public igdeUndo{
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	float pOldMinimum;
 	float pOldMaximum;

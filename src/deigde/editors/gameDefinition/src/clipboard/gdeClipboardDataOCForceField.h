@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCForceField *pForceField;
+	gdeOCForceField::Ref pForceField;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief ForceField. */
-	gdeOCForceField *GetForceField() const{ return pForceField; }
+	const gdeOCForceField::Ref &GetForceField() const{ return pForceField; }
 	/*@}*/
 };
 

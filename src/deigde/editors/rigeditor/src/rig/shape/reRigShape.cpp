@@ -230,15 +230,9 @@ void reRigShape::pRSCleanUp(){
 	pRigBone = nullptr;
 	pSetRig(nullptr, false);
 	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
 	
 	if(pDDSShape){
 		delete pDDSShape;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

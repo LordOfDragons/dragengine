@@ -508,9 +508,6 @@ void reRigConstraint::SetConstraintBone(reRigBone *bone){
 		return;
 	}
 	
-	if(pConstraintBone){
-		pConstraintBone->FreeReference();
-	}
 	
 	pConstraintBone = bone;
 	
@@ -701,13 +698,7 @@ void reRigConstraint::pCleanUp(){
 	SetRigBone(NULL);
 	SetRig(NULL);
 	
-	if(pConstraintBone){
-		pConstraintBone->FreeReference();
-	}
 	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
 	
 	if(pDof[deColliderConstraint::edofLinearX]){
 		delete pDof[deColliderConstraint::edofLinearX];
@@ -751,9 +742,6 @@ void reRigConstraint::pCleanUp(){
 	}
 	if(pDDSConstraint){
 		delete pDDSConstraint;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

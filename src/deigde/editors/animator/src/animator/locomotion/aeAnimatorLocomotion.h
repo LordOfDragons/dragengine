@@ -147,7 +147,7 @@ public:
 private:
 	aeAnimator *pAnimator;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape pDDSCollider;
 	igdeWDebugDrawerShape pDDSSensorGround;
 	
@@ -155,17 +155,17 @@ private:
 	aeALTouchSensorListener pTouchSensorListener;
 	aeALGroundChecker pGroundChecker;
 	
-	deColliderVolume *pCollider;
+	deColliderVolume::Ref pCollider;
 	decVector pColliderPosition;
 	float pColliderRadius;
 	
-	deTouchSensor *pTouchSensor;
+	deTouchSensor::Ref pTouchSensor;
 	decVector pTSGroundPosition;
 	decVector pTSGroundExtents;
 	decVector pTSDragonBodyPosition;
 	decVector pTSDragonBodySize;
-	deColliderVolume *pGroundCheckCollider;
-	deColliderVolume *pTGCollider;
+	deColliderVolume::Ref pGroundCheckCollider;
+	deColliderVolume::Ref pTGCollider;
 	
 	float pGroundPlaneFront;
 	float pGroundPlaneBack;
@@ -176,14 +176,14 @@ private:
 	float pGroundPlaneOffsetFR;
 	float pGroundPlaneOffsetBL;
 	float pGroundPlaneOffsetBR;
-	deColliderVolume *pGroundPlaneCollider;
+	deColliderVolume::Ref pGroundPlaneCollider;
 	igdeWDebugDrawerShape pDDSGroundPlane[4];
 	
 	igdeWDebugDrawerShape pDDSDragonColBody;
 	decVector pDragonColBodyPos;
 	decVector pDragonColBodyRot;
 	decVector pDragonColBodySize;
-	deColliderVolume *pDragonColBody;
+	deColliderVolume::Ref pDragonColBody;
 	igdeWDebugDrawerShape pDDSDragonColHead;
 	decVector pDragonColHeadPos;
 	decVector pDragonColHeadRot;
@@ -195,7 +195,7 @@ private:
 	decVector pDragonColFeetPos;
 	float pDragonColFeetRadius;
 	
-	deColliderVolume *pFootCollider;
+	deColliderVolume::Ref pFootCollider;
 	float pDragonFootGround;
 	float pDragonFootFront;
 	float pDragonFootBack;
@@ -280,9 +280,9 @@ public:
 	deLogger *GetLogger() const;
 	
 	/** Retrieves the debug drawer. */
-	inline deDebugDrawer *GetDebugDrawer() const{ return pDebugDrawer; }
+	inline const deDebugDrawer::Ref &GetDebugDrawer() const{ return pDebugDrawer; }
 	/** Retrieves the collider to use for locomotion. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	/** Retrieves the position of the collider relative to the actor. */
 	inline const decVector &GetColliderPosition() const{ return pColliderPosition; }
 	/** Sets the position of the collider relative to the actor. */
@@ -304,9 +304,9 @@ public:
 	void SetShowShapes(bool showShapes);
 	
 	/** Retrieves the touch sensor. */
-	inline deTouchSensor *GetTouchSensor() const{ return pTouchSensor; }
+	inline const deTouchSensor::Ref &GetTouchSensor() const{ return pTouchSensor; }
 	/** Retrieves the collider used for touch ground rules. */
-	inline deColliderVolume *GetTGCollider() const{ return pTGCollider; }
+	inline const deColliderVolume::Ref &GetTGCollider() const{ return pTGCollider; }
 	
 	/** Locomotion type. */
 	inline eLocomotionTypes GetLocomotionType() const{ return pLocomotionType; }

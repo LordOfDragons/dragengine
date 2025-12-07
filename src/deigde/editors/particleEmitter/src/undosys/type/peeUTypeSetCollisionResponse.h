@@ -37,7 +37,7 @@ class peeType;
  */
 class peeUTypeSetCollisionResponse : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	deParticleEmitterType::eCollisionResponses pOldResponse;
 	deParticleEmitterType::eCollisionResponses pNewResponse;

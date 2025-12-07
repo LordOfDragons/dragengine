@@ -67,9 +67,6 @@ pForceField(NULL)
 }
 
 gdeWPSTIMOCForceField::~gdeWPSTIMOCForceField(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
 }
 
 

@@ -52,13 +52,9 @@ aeURuleIKSetReachBone::aeURuleIKSetReachBone(aeRuleInverseKinematic *rule, const
 	pNewValue = newValue;
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleIKSetReachBone::~aeURuleIKSetReachBone(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

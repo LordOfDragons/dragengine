@@ -42,7 +42,7 @@ class aeRule;
  */
 class aeUSetRuleName : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	decString pOldName;
 	decString pNewName;

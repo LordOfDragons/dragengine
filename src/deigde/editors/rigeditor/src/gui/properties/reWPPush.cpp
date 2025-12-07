@@ -226,9 +226,6 @@ pListener(NULL)
 reWPPush::~reWPPush(){
 	SetRig(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -245,7 +242,6 @@ void reWPPush::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -264,9 +260,6 @@ void reWPPush::SetPush(reRigPush *push){
 		return;
 	}
 	
-	if(pPush){
-		pPush->FreeReference();
-	}
 	
 	pPush = push;
 	

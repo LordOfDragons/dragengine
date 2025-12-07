@@ -39,7 +39,7 @@ class aeRuleLimit;
  */
 class aeURuleLimitSetRotMax : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	decVector pOldMax;
 	decVector pNewMax;

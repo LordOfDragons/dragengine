@@ -162,7 +162,6 @@ void meHeightTerrain::SetSectorSize(float size){
 	
 	if(pEngHT){
 		pWorld.GetEngineWorld()->SetHeightTerrain(NULL);
-		pEngHT->FreeReference();
 		pEngHT = NULL;
 	}
 	
@@ -195,7 +194,6 @@ void meHeightTerrain::SetSectorResolution(int dimension){
 	
 	if(pEngHT){
 		pWorld.GetEngineWorld()->SetHeightTerrain(NULL);
-		pEngHT->FreeReference();
 		pEngHT = NULL;
 	}
 	
@@ -655,7 +653,6 @@ void meHeightTerrain::pCleanUp(){
 	
 	if(pEngHT){
 		pWorld.GetEngineWorld()->SetHeightTerrain(NULL);
-		pEngHT->FreeReference();
 	}
 }
 
@@ -675,7 +672,6 @@ void meHeightTerrain::pUpdateHeightTerrain(){
 	// release the height terrain
 	if(pEngHT){
 		pWorld.GetEngineWorld()->SetHeightTerrain(NULL);
-		pEngHT->FreeReference();
 		pEngHT = NULL;
 	}
 	

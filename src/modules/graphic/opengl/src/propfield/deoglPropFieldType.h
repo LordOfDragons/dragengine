@@ -44,7 +44,7 @@ private:
 	deoglPropField &pPropField;
 	const dePropFieldType &pType;
 	
-	deoglRPropFieldType *pRType;
+	deoglRPropFieldType::Ref pRType;
 	
 	bool pDirtyType;
 	bool pDirtyInstances;
@@ -71,7 +71,7 @@ public:
 	inline const dePropFieldType &GetType() const{ return pType; }
 	
 	/** Render prop field type. */
-	inline deoglRPropFieldType *GetRType() const{ return pRType; }
+	inline const deoglRPropFieldType::Ref &GetRType() const{ return pRType; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

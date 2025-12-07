@@ -62,12 +62,6 @@ pBillboard(NULL)
 }
 
 gdeUOCBillboardSetSkinPath::~gdeUOCBillboardSetSkinPath(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -415,9 +415,6 @@ void ceConversation::RemoveAllTargets(){
 
 void ceConversation::SetActiveTarget(ceTarget *target){
 	if(target != pActiveTarget){
-		if(pActiveTarget){
-			pActiveTarget->FreeReference();
-		}
 		
 		pActiveTarget = target;
 		
@@ -520,9 +517,6 @@ void ceConversation::RemoveAllCameraShots(){
 
 void ceConversation::SetActiveCameraShot(ceCameraShot *cameraShot){
 	if(cameraShot != pActiveCameraShot){
-		if(pActiveCameraShot){
-			pActiveCameraShot->FreeReference();
-		}
 		
 		pActiveCameraShot = cameraShot;
 		
@@ -625,9 +619,6 @@ void ceConversation::RemoveAllGestures(){
 
 void ceConversation::SetActiveGesture(ceGesture *gesture){
 	if(gesture != pActiveGesture){
-		if(pActiveGesture){
-			pActiveGesture->FreeReference();
-		}
 		
 		pActiveGesture = gesture;
 		
@@ -730,9 +721,6 @@ void ceConversation::RemoveAllFacePoses(){
 
 void ceConversation::SetActiveFacePose(ceFacePose *facePose){
 	if(facePose != pActiveFacePose){
-		if(pActiveFacePose){
-			pActiveFacePose->FreeReference();
-		}
 		
 		pActiveFacePose = facePose;
 		
@@ -838,9 +826,6 @@ void ceConversation::SetActiveFile(ceConversationFile *file){
 		return;
 	}
 	
-	if(pActiveFile){
-		pActiveFile->FreeReference();
-	}
 	
 	pActiveFile = file;
 	
@@ -979,9 +964,6 @@ bool ceConversation::HasActiveActor() const{
 
 void ceConversation::SetActiveActor(ceConversationActor *actor){
 	if(actor != pActiveActor){
-		if(pActiveActor){
-			pActiveActor->FreeReference();
-		}
 		
 		pActiveActor = actor;
 		
@@ -1051,9 +1033,6 @@ bool ceConversation::HasActiveCoordSystem() const{
 
 void ceConversation::SetActiveCoordSystem(ceCoordSystem *coordSystem){
 	if(coordSystem != pActiveCoordSystem){
-		if(pActiveCoordSystem){
-			pActiveCoordSystem->FreeReference();
-		}
 		
 		pActiveCoordSystem = coordSystem;
 		
@@ -1123,9 +1102,6 @@ bool ceConversation::HasActiveProp() const{
 
 void ceConversation::SetActiveProp(ceProp *prop){
 	if(prop != pActiveProp){
-		if(pActiveProp){
-			pActiveProp->FreeReference();
-		}
 		
 		pActiveProp = prop;
 		

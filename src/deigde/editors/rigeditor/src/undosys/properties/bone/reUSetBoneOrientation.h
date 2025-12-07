@@ -37,7 +37,7 @@ class reRigBone;
  */
 class reUSetBoneOrientation : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;

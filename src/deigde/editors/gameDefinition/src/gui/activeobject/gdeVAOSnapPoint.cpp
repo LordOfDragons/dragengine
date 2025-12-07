@@ -66,7 +66,6 @@ pDDSSnapDistance(NULL)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pOCSnapPoint->AddReference();
 	
 	try{
 		pCreateDebugDrawer();
@@ -121,9 +120,6 @@ void gdeVAOSnapPoint::pCleanUp(){
 		pDebugDrawer = NULL;
 	}
 	
-	if(pOCSnapPoint){
-		pOCSnapPoint->FreeReference();
-	}
 }
 
 

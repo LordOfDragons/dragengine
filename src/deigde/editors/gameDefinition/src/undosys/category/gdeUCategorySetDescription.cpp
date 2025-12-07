@@ -59,9 +59,6 @@ pCategory(NULL)
 }
 
 gdeUCategorySetDescription::~gdeUCategorySetDescription(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
 }
 
 

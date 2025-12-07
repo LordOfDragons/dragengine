@@ -61,12 +61,6 @@ ceUCACommentSetComment::ceUCACommentSetComment(ceConversationTopic *topic, ceCAC
 }
 
 ceUCACommentSetComment::~ceUCACommentSetComment(){
-	if(pComment){
-		pComment->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

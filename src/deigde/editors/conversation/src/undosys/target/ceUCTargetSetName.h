@@ -41,7 +41,7 @@ class ceConversationTopic;
  */
 class ceUCTargetSetName : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decString pOldName;
 	decString pNewName;

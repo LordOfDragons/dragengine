@@ -211,9 +211,6 @@ pPreventUpdate(false)
 meWPSObjectShape::~meWPSObjectShape(){
 	SetWorld(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -228,7 +225,6 @@ void meWPSObjectShape::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

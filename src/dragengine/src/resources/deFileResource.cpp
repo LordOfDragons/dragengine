@@ -55,9 +55,6 @@ pOutdated(false)
 }
 
 deFileResource::~deFileResource(){
-	if(pVirtualFileSystem){
-		pVirtualFileSystem->FreeReference();
-	}
 }
 
 

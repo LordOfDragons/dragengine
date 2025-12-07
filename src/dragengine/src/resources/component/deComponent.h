@@ -116,7 +116,7 @@ private:
 	deDynamicSkin::Ref pDynamicSkin;
 	
 	deDecal *pDecalRoot;
-	deDecal *pDecalTail;
+	deDecal::Ref pDecalTail;
 	int pDecalCount;
 	
 	deParallelTask::Ref pAnimatorTask;

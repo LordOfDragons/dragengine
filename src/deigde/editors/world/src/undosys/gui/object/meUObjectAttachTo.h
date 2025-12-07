@@ -41,14 +41,14 @@ class meObjectList;
 class meUObjectAttachTo : public igdeUndo{
 private:
 	struct sObject{
-		meObject *object;
-		meObject *oldAttachTo;
+		meObject::Ref object;
+		meObject::Ref oldAttachTo;
 	};
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	sObject *pObjects;
 	int pObjectCount;
-	meObject *pAttachTo;
+	meObject::Ref pAttachTo;
 	
 	
 	

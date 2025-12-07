@@ -69,12 +69,6 @@ pIndex(0)
 }
 
 seULayerRemove::~seULayerRemove(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

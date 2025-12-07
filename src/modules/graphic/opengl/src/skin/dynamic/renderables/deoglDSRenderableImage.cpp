@@ -111,7 +111,4 @@ void deoglDSRenderableImage::SyncToRender(){
 //////////////////////
 
 void deoglDSRenderableImage::pCleanUp(){
-	if(pRRenderableImage){
-		pRRenderableImage->FreeReference();
-	}
 }

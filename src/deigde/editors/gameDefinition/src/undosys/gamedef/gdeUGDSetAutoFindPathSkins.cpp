@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 gdeUGDSetAutoFindPathSkins::~gdeUGDSetAutoFindPathSkins(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

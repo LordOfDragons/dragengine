@@ -36,7 +36,7 @@ class seBody;
  */
 class seUBodyMoveDown : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	int pIndex;
 	
 	

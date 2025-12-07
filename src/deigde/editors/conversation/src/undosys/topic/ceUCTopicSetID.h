@@ -40,7 +40,7 @@ class ceConversationActionList;
  */
 class ceUCTopicSetID : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
+	ceConversationTopic::Ref pTopic;
 	
 	decString pOldID;
 	decString pNewID;

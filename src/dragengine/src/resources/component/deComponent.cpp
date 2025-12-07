@@ -713,7 +713,6 @@ void deComponent::RemoveAllDecals(){
 		pDecalTail->SetParentComponent(NULL);
 		pDecalTail->SetLLComponentPrev(NULL);
 		pDecalTail->SetLLComponentNext(NULL);
-		pDecalTail->FreeReference();
 		pDecalTail = next;
 		pDecalCount--;
 	}

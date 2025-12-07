@@ -345,9 +345,6 @@ void deoglBillboard::pCleanUp(){
 	if(pSkinStateController){
 		delete pSkinStateController;
 	}
-	if(pRBillboard){
-		pRBillboard->FreeReference();
-	}
 	if(pDynamicSkin){
 		pDynamicSkin->RemoveListener(this);
 	}

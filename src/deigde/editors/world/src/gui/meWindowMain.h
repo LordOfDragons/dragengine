@@ -64,7 +64,7 @@ class deLogger;
  */
 class meWindowMain : public igdeEditorWindow{
 private:
-	meWindowMainListener *pListener;
+	meWindowMainListener::Ref pListener;
 	bool pActiveModule;
 	
 	igdeIcon::Ref pIconEditObject;
@@ -189,18 +189,18 @@ private:
 	meLoadSaveSystem *pLoadSaveSystem;
 	meSaveSupport *pSaveSupport;
 	
-	meWindowProperties *pWindowProperties;
+	meWindowProperties::Ref pWindowProperties;
 	igdeTabBook::Ref pTabContent;
-	meView3D *pView3D;
-	meWindowVegetation *pViewVegetation;
-	meWindowChangelog *pViewChangelog;
+	meView3D::Ref pView3D;
+	meWindowVegetation::Ref pViewVegetation;
+	meWindowChangelog::Ref pViewChangelog;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	bool pUse3DCursor;
 	decVector p3DCursor;
 	
 	decString pLoadFilename;
-	meWorld *pLoadWorld;
+	meWorld::Ref pLoadWorld;
 	igdeStepableTask *pLoadTask;
 	
 	
@@ -243,15 +243,15 @@ public:
 	
 	
 	/** Properties window. */
-	inline meWindowProperties *GetWindowProperties() const{ return pWindowProperties; }
+	inline const meWindowProperties::Ref &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** View 3D. */
-	inline meView3D *GetView3D() const{ return pView3D; }
+	inline const meView3D::Ref &GetView3D() const{ return pView3D; }
 	
 	
 	
 	/** World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
 	void SetWorld(meWorld *world);

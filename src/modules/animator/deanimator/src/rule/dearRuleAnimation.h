@@ -40,7 +40,7 @@ class deAnimatorRuleAnimation;
 class dearRuleAnimation : public dearRule{
 private:
 	const deAnimatorRuleAnimation &pAnimation;
-	dearAnimationMove *pMove;
+	dearAnimationMove::Ref pMove;
 	dearMapAnimationBones pMapAnimationBones;
 	dearMapAnimationVPS pMapAnimationVPS;
 	

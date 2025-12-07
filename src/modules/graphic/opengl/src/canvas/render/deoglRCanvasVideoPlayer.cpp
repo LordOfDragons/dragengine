@@ -66,9 +66,6 @@ void deoglRCanvasVideoPlayer::SetVideoPlayer(deoglRVideoPlayer *videoPlayer){
 		return;
 	}
 	
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
-	}
 	pVideoPlayer = videoPlayer;
 	if(videoPlayer){
 		videoPlayer->AddReference();

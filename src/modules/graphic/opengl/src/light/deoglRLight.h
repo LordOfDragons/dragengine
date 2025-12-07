@@ -102,9 +102,9 @@ private:
 	decLayerMask pLayerMaskShadow;
 	decObjectSet pShadowIgnoreComponents;
 	
-	deoglRSkin *pLightSkin;
-	deoglRCanvasView *pLightCanvas;
-	deoglRDynamicSkin *pDynamicSkin;
+	deoglRSkin::Ref pLightSkin;
+	deoglRCanvasView::Ref pLightCanvas;
+	deoglRDynamicSkin::Ref pDynamicSkin;
 	decTexMatrix2 pTransform;
 	
 	deoglSkinState *pSkinState;
@@ -282,7 +282,7 @@ public:
 	void SetAmbientRatio(float ratio);
 	
 	/** Light canvas or \em NULL if not used. */
-	inline deoglRCanvasView *GetLightCanvas() const{ return pLightCanvas; }
+	inline const deoglRCanvasView::Ref &GetLightCanvas() const{ return pLightCanvas; }
 	
 	/** Set light canvas or \em NULL if not used. */
 	void SetLightCanvas(deoglRCanvasView *canvas);
@@ -324,13 +324,13 @@ public:
 	
 	
 	/** Light skin or \em NULL if not used. */
-	inline deoglRSkin *GetLightSkin() const{ return pLightSkin; }
+	inline const deoglRSkin::Ref &GetLightSkin() const{ return pLightSkin; }
 	
 	/** Set light skin or \em NULL if not used. */
 	void SetLightSkin(deoglRSkin *skin);
 	
 	/** Dynamic skin or \em NULL if not used. */
-	inline deoglRDynamicSkin *GetDynamicSkin() const{ return pDynamicSkin; }
+	inline const deoglRDynamicSkin::Ref &GetDynamicSkin() const{ return pDynamicSkin; }
 	
 	/** Set dynamic skin or \em NULL if not used. */
 	void SetDynamicSkin(deoglRDynamicSkin *dynamicSkin);

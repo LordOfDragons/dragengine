@@ -49,7 +49,7 @@ class deDebugDrawerVolume;
 class meLumimeter : public deObject{
 private:
 	deEngine *pEngine;
-	deLumimeter *pLumimeter;
+	deLumimeter::Ref pLumimeter;
 	deDebugDrawerVolume *pDDVolume;
 	meWorld *pWorld;
 	
@@ -62,7 +62,7 @@ private:
 	
 	bool pTrackCamera;
 	
-	meObject *pHostObject;
+	meObject::Ref pHostObject;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -82,7 +82,7 @@ public:
 	/** Retrieves the game engine. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	/** Retrieves the engine lumimeter. */
-	inline deLumimeter *GetLumimeter() const{ return pLumimeter; }
+	inline const deLumimeter::Ref &GetLumimeter() const{ return pLumimeter; }
 	
 	/** Retrieves the parent world. */
 	inline meWorld *GetWorld() const{ return pWorld; }
@@ -121,7 +121,7 @@ public:
 	void SetTrackCamera(bool trackCamera);
 	
 	/** Retrieves the host object or NULL if not attached to any object. */
-	inline meObject *GetHostObject() const{ return pHostObject; }
+	inline const meObject::Ref &GetHostObject() const{ return pHostObject; }
 	/** Sets the host object or NULL if not attached to any object. */
 	void SetHostObject(meObject *object);
 	/** Determines if this lumimeter has a host object. */

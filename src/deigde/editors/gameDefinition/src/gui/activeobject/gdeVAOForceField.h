@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCForceField *pOCForceField;
+	gdeOCForceField::Ref pOCForceField;
 	
 	deForceField::Ref pForceField;
 	
@@ -78,7 +78,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class particle emitter. */
-	inline gdeOCForceField *GetOCForceField() const{ return pOCForceField; }
+	inline const gdeOCForceField::Ref &GetOCForceField() const{ return pOCForceField; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

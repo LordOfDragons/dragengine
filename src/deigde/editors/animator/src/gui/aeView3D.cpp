@@ -438,7 +438,6 @@ void aeView3D::SetAnimator(aeAnimator *animator){
 			StopWakeboarding();
 		}
 		
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;

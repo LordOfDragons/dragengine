@@ -77,9 +77,6 @@ pInternalTask(NULL)
 }
 
 deRLTaskReadFontInternal::~deRLTaskReadFontInternal(){
-	if(pInternalTask){
-		pInternalTask->FreeReference();
-	}
 }
 
 

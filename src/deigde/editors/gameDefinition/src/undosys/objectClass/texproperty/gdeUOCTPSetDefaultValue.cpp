@@ -62,12 +62,6 @@ pProperty(NULL)
 }
 
 gdeUOCTPSetDefaultValue::~gdeUOCTPSetDefaultValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -59,12 +59,6 @@ ceUCASnippetSetTopic::ceUCASnippetSetTopic(ceConversationTopic *topic, ceCASnipp
 }
 
 ceUCASnippetSetTopic::~ceUCASnippetSetTopic(){
-	if(pSnippet){
-		pSnippet->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

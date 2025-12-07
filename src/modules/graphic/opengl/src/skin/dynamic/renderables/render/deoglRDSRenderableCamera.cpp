@@ -64,9 +64,6 @@ void deoglRDSRenderableCamera::SetCamera(deoglRCamera *camera){
 		return;
 	}
 	
-	if(pCamera){
-		pCamera->FreeReference();
-	}
 	
 	pCamera = camera;
 	

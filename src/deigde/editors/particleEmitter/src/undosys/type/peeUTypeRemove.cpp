@@ -68,12 +68,6 @@ peeUTypeRemove::peeUTypeRemove(peeType *type){
 }
 
 peeUTypeRemove::~peeUTypeRemove(){
-	if(pType){
-		pType->FreeReference();
-	}
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

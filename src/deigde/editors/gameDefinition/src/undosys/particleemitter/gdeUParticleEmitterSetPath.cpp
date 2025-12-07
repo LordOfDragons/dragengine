@@ -57,9 +57,6 @@ pParticleEmitter(NULL)
 }
 
 gdeUParticleEmitterSetPath::~gdeUParticleEmitterSetPath(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
 }
 
 

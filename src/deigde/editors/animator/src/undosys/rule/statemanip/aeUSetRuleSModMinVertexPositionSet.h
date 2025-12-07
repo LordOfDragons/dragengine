@@ -36,7 +36,7 @@ class aeRuleStateManipulator;
  */
 class aeUSetRuleSModMinVertexPositionSet : public igdeUndo{
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 	float pOldMin;
 	float pNewMin;

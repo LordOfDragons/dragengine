@@ -38,7 +38,7 @@ class reRigConstraint;
  */
 class reUConstraintDofSetUpperLimit : public igdeUndo{
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	deColliderConstraint::eDegreesOfFreedom pDof;
 	
 	float pOldValue;

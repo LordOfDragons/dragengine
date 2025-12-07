@@ -36,7 +36,7 @@ class meHeightTerrain;
  */
 class meUHTSetSectorResolution : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
 	
 	int pOldSectorResolution;

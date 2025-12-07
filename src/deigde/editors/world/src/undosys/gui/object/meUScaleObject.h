@@ -38,7 +38,7 @@ class meWorld;
  */
 class meUScaleObject : public meBaseUndoScale{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	
 public:

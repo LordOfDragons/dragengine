@@ -52,13 +52,9 @@ pSource(NULL)
 	SetShortInfo("Set sound source path sound");
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSetSourceSoundPathSound::~seUSetSourceSoundPathSound(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

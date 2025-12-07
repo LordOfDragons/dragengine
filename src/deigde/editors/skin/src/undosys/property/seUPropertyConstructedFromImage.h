@@ -40,10 +40,10 @@ class sePropertyNodeGroup;
  */
 class seUPropertyConstructedFromImage : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
-	sePropertyNodeGroup *pOldContent;
-	sePropertyNodeGroup *pNewContent;
+	sePropertyNodeGroup::Ref pOldContent;
+	sePropertyNodeGroup::Ref pNewContent;
 	int pOldBitCount;
 	int pNewBitCount;
 	

@@ -36,7 +36,7 @@ class saePhoneme;
  */
 class saeUPhonemeSetMoveName : public igdeUndo{
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	decString pOldName;
 	decString pNewName;

@@ -41,7 +41,7 @@ class meHTVVariation;
  */
 class meUHTVVarSetRotPerForce : public igdeUndo{
 private:
-	meHTVVariation *pVariation;
+	meHTVVariation::Ref pVariation;
 	float pOldRotPerForce;
 	float pNewRotPerForce;
 	

@@ -64,12 +64,6 @@ pMask(NULL)
 }
 
 seUPropertyNodeSetMask::~seUPropertyNodeSetMask(){
-	if(pNode){
-		pNode->FreeReference();
-	}
-	if(pMask){
-		pMask->FreeReference();
-	}
 }
 
 

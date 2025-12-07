@@ -88,9 +88,6 @@ pConversation(NULL){
 
 ceUCFilePaste::~ceUCFilePaste(){
 	pFiles.RemoveAll();
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

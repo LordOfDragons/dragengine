@@ -43,7 +43,7 @@ class meObject;
  */
 class meUObjectSetScaling : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decVector pOldScaling;
 	decVector pNewScaling;

@@ -38,7 +38,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetCamOrbitFrom : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decVector pOldRot;
 	decVector pNewRot;

@@ -63,7 +63,7 @@ class igdeEnvironment;
  */
 class reWindowMain : public igdeEditorWindow{
 private:
-	reWindowMainListener *pListener;
+	reWindowMainListener::Ref pListener;
 	
 	igdeIcon::Ref pIconEditBone;
 	igdeIcon::Ref pIconEditShape;
@@ -142,10 +142,10 @@ private:
 	reClipboard *pClipboard;
 	reLoadSaveSystem *pLoadSaveSystem;
 	
-	reView3D *pView3D;
-	reWindowProperties *pWindowProperties;
+	reView3D::Ref pView3D;
+	reWindowProperties::Ref pWindowProperties;
 	
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	
 	
@@ -186,7 +186,7 @@ public:
 	
 	
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);

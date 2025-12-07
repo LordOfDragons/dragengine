@@ -78,9 +78,6 @@ pWorld(NULL)
 meWPSelection::~meWPSelection(){
 	SetWorld(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -100,7 +97,6 @@ void meWPSelection::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

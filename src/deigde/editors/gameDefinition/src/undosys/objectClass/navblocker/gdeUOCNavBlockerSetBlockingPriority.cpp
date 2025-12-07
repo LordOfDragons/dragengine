@@ -62,12 +62,6 @@ pNavBlocker(NULL)
 }
 
 gdeUOCNavBlockerSetBlockingPriority::~gdeUOCNavBlockerSetBlockingPriority(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

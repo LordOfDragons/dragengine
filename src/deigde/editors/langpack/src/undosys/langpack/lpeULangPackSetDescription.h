@@ -38,7 +38,7 @@ class lpeLangPack;
  */
 class lpeULangPackSetDescription : public igdeUndo{
 private:
-	lpeLangPack *pLangPack;
+	lpeLangPack::Ref pLangPack;
 	
 	decUnicodeString pOldDescription;
 	decUnicodeString pNewDescription;

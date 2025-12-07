@@ -89,7 +89,4 @@ void deoglDelayedFileWrite::SaveFile(deVirtualFileSystem &vfs){
 //////////////////////
 
 void deoglDelayedFileWrite::pCleanUp(){
-	if(pMemoryFile){
-		pMemoryFile->FreeReference();
-	}
 }

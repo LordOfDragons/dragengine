@@ -59,12 +59,6 @@ ceUCACShotSetLookAtTarget::ceUCACShotSetLookAtTarget(ceConversationTopic *topic,
 }
 
 ceUCACShotSetLookAtTarget::~ceUCACShotSetLookAtTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

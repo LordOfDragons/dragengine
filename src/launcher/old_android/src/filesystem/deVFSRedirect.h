@@ -42,8 +42,8 @@ class deVirtualFileSystem;
 class deVFSRedirect : public deVFSContainer{
 private:
 	const decPath pRedirectPath;
-	deVFSContainer *pContainer;
-	deVirtualFileSystem *pVFS;
+	deVFSContainer::Ref pContainer;
+	deVirtualFileSystem::Ref pVFS;
 	bool pHoldVFSReference;
 	
 	

@@ -233,21 +233,6 @@ void deoglGIBVHLocal::RemoveBlockUsage(){
 void deoglGIBVHLocal::pCleanUp(){
 	DropBlocks();
 	
-	if(pTBONodeBox){
-		pTBONodeBox->FreeReference();
-	}
-	if(pTBOIndex){
-		pTBOIndex->FreeReference();
-	}
-	if(pTBOFace){
-		pTBOFace->FreeReference();
-	}
-	if(pTBOVertex){
-		pTBOVertex->FreeReference();
-	}
-	if(pTBOTexCoord){
-		pTBOTexCoord->FreeReference();
-	}
 }
 
 void deoglGIBVHLocal::pUpdateBVHExtends(deoglBVHNode &node){

@@ -658,9 +658,6 @@ pGameDefinition(NULL)
 gdeWPSOCLight::~gdeWPSOCLight(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -675,7 +672,6 @@ void gdeWPSOCLight::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

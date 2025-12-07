@@ -57,8 +57,8 @@ class igdeTreeItem;
 class aeWPRule : public igdeContainerScroll{
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPRuleListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPRuleListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
 	igdeTreeList::Ref pTreeRule;
 	
@@ -100,7 +100,7 @@ public:
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

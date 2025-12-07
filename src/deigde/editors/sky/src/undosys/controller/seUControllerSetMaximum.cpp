@@ -57,9 +57,6 @@ pNewMaximum(newMaximum)
 }
 
 seUControllerSetMaximum::~seUControllerSetMaximum(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 seUPropertySetConstructedColor::~seUPropertySetConstructedColor(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

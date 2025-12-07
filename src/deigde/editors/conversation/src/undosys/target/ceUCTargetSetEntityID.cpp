@@ -54,9 +54,6 @@ ceUCTargetSetEntityID::ceUCTargetSetEntityID(ceTarget *target, const char *newID
 }
 
 ceUCTargetSetEntityID::~ceUCTargetSetEntityID(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

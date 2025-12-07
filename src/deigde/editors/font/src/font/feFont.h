@@ -82,9 +82,9 @@ public:
 	
 	
 private:
-	deFont *pEngFont;
+	deFont::Ref pEngFont;
 	
-	feFontImage *pFontImage;
+	feFontImage::Ref pFontImage;
 	int pLineHeight, pBaseLine;
 	bool pColorFont;
 	feFontGlyphList pGlyphs;
@@ -119,7 +119,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Engine font. */
-	inline deFont *GetEngineFont() const{ return pEngFont; }
+	inline const deFont::Ref &GetEngineFont() const{ return pEngFont; }
 	
 	/** \brief Height of a line of text. */
 	inline int GetLineHeight() const{ return pLineHeight; }
@@ -140,7 +140,7 @@ public:
 	void SetBaseLine(int baseLine);
 	
 	/** \brief Font image. */
-	inline feFontImage *GetFontImage() const{ return pFontImage; }
+	inline const feFontImage::Ref &GetFontImage() const{ return pFontImage; }
 	
 	
 	

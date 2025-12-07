@@ -38,7 +38,7 @@ class deoglRVideoPlayer;
  */
 class deoglRDSRenderableVideoFrame : public deoglRDSRenderable{
 private:
-	deoglRVideoPlayer *pVideoPlayer;
+	deoglRVideoPlayer::Ref pVideoPlayer;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -55,7 +55,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Video player. */
-	inline deoglRVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deoglRVideoPlayer::Ref &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Set video player. */
 	void SetVideoPlayer(deoglRVideoPlayer *videoPlayer);

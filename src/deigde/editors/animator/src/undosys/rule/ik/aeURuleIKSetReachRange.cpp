@@ -52,13 +52,9 @@ aeURuleIKSetReachRange::aeURuleIKSetReachRange(aeRuleInverseKinematic *rule, flo
 	pNewValue = newValue;
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleIKSetReachRange::~aeURuleIKSetReachRange(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

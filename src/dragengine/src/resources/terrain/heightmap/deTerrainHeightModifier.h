@@ -43,7 +43,7 @@ class deImage;
  */
 class DE_DLL_EXPORT deTerrainHeightModifier{
 private:
-	deImage *pHeightImage;
+	deImage::Ref pHeightImage;
 	decPoint pPosition;
 	float pScaling;
 	
@@ -76,7 +76,7 @@ public:
 	void SetScaling(float scaling);
 	
 	/** \brief Height image. */
-	inline deImage *GetHeightImage() const{ return pHeightImage; }
+	inline const deImage::Ref &GetHeightImage() const{ return pHeightImage; }
 	/*@}*/
 };
 

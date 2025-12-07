@@ -200,8 +200,6 @@ void gdeGameDefinition::SetBasePath(const char *path){
 	
 	if(!pIsProjectGameDef){
 		pPreviewVFS = NULL;
-		if(pVFS){
-			pVFS->FreeReference();
 			pVFS = NULL;
 		}
 	}
@@ -218,8 +216,6 @@ void gdeGameDefinition::SetVFSPath(const char *path){
 	
 	if(!pIsProjectGameDef){
 		pPreviewVFS = NULL;
-		if(pVFS){
-			pVFS->FreeReference();
 			pVFS = NULL;
 		}
 	}
@@ -393,9 +389,6 @@ void gdeGameDefinition::SetActiveCategory(gdeCategory *category){
 		return;
 	}
 	
-	if(pActiveCategory){
-		pActiveCategory->FreeReference();
-	}
 	
 	pActiveCategory = category;
 	
@@ -598,8 +591,6 @@ deVirtualFileSystem *gdeGameDefinition::GetPreviewVFS(){
 	if(pIsProjectGameDef){ // pBasePath == GetEnvironment()->GetGameProject()->GetPathProject()){
 		pPreviewVFS = GetEngine()->GetVirtualFileSystem();
 		
-		if(pVFS){
-			pVFS->FreeReference();
 			pVFS = NULL;
 		}
 		
@@ -620,8 +611,6 @@ deVirtualFileSystem *gdeGameDefinition::GetPreviewVFS(){
 				if(container){
 					container->FreeReference();
 				}
-				if(pVFS){
-					pVFS->FreeReference();
 					pVFS = NULL;
 				}
 				
@@ -769,9 +758,6 @@ void gdeGameDefinition::SetActiveObjectClass(gdeObjectClass *objectClass){
 		return;
 	}
 	
-	if(pActiveObjectClass){
-		pActiveObjectClass->FreeReference();
-	}
 	
 	pActiveObjectClass = objectClass;
 	
@@ -793,9 +779,6 @@ void gdeGameDefinition::SetActiveOCBillboard(gdeOCBillboard *billboard){
 		return;
 	}
 	
-	if(pActiveOCBillboard){
-		pActiveOCBillboard->FreeReference();
-	}
 	
 	pActiveOCBillboard = billboard;
 	
@@ -817,9 +800,6 @@ void gdeGameDefinition::SetActiveOCCamera(gdeOCCamera *camera){
 		return;
 	}
 	
-	if(pActiveOCCamera){
-		pActiveOCCamera->FreeReference();
-	}
 	
 	pActiveOCCamera = camera;
 	
@@ -841,9 +821,6 @@ void gdeGameDefinition::SetActiveOCComponent(gdeOCComponent *component){
 		return;
 	}
 	
-	if(pActiveOCComponent){
-		pActiveOCComponent->FreeReference();
-	}
 	
 	pActiveOCComponent = component;
 	
@@ -865,9 +842,6 @@ void gdeGameDefinition::SetActiveOCEnvMapProbe(gdeOCEnvMapProbe *envMapProbe){
 		return;
 	}
 	
-	if(pActiveOCEnvMapProbe){
-		pActiveOCEnvMapProbe->FreeReference();
-	}
 	
 	pActiveOCEnvMapProbe = envMapProbe;
 	
@@ -889,9 +863,6 @@ void gdeGameDefinition::SetActiveOCLight(gdeOCLight *light){
 		return;
 	}
 	
-	if(pActiveOCLight){
-		pActiveOCLight->FreeReference();
-	}
 	
 	pActiveOCLight = light;
 	
@@ -913,9 +884,6 @@ void gdeGameDefinition::SetActiveOCNavigationBlocker(gdeOCNavigationBlocker *nav
 		return;
 	}
 	
-	if(pActiveOCNavigationBlocker){
-		pActiveOCNavigationBlocker->FreeReference();
-	}
 	
 	pActiveOCNavigationBlocker = navblocker;
 	
@@ -937,9 +905,6 @@ void gdeGameDefinition::SetActiveOCNavigationSpace(gdeOCNavigationSpace *navSpac
 		return;
 	}
 	
-	if(pActiveOCNavigationSpace){
-		pActiveOCNavigationSpace->FreeReference();
-	}
 	
 	pActiveOCNavigationSpace = navSpace;
 	
@@ -961,9 +926,6 @@ void gdeGameDefinition::SetActiveOCParticleEmitter(gdeOCParticleEmitter *emitter
 		return;
 	}
 	
-	if(pActiveOCParticleEmitter){
-		pActiveOCParticleEmitter->FreeReference();
-	}
 	
 	pActiveOCParticleEmitter = emitter;
 	
@@ -985,9 +947,6 @@ void gdeGameDefinition::SetActiveOCForceField(gdeOCForceField *field){
 		return;
 	}
 	
-	if(pActiveOCForceField){
-		pActiveOCForceField->FreeReference();
-	}
 	
 	pActiveOCForceField = field;
 	
@@ -1009,9 +968,6 @@ void gdeGameDefinition::SetActiveOCSnapPoint(gdeOCSnapPoint *snappoint){
 		return;
 	}
 	
-	if(pActiveOCSnapPoint){
-		pActiveOCSnapPoint->FreeReference();
-	}
 	
 	pActiveOCSnapPoint = snappoint;
 	
@@ -1033,9 +989,6 @@ void gdeGameDefinition::SetActiveOCSpeaker(gdeOCSpeaker *speaker){
 		return;
 	}
 	
-	if(pActiveOCSpeaker){
-		pActiveOCSpeaker->FreeReference();
-	}
 	
 	pActiveOCSpeaker = speaker;
 	
@@ -1122,9 +1075,6 @@ void gdeGameDefinition::SetActiveParticleEmitter(gdeParticleEmitter *particleEmi
 		return;
 	}
 	
-	if(pActiveParticleEmitter){
-		pActiveParticleEmitter->FreeReference();
-	}
 	
 	pActiveParticleEmitter = particleEmitter;
 	
@@ -1196,9 +1146,6 @@ void gdeGameDefinition::SetActiveSkin(gdeSkin *skin){
 		return;
 	}
 	
-	if(pActiveSkin){
-		pActiveSkin->FreeReference();
-	}
 	
 	pActiveSkin = skin;
 	
@@ -1270,9 +1217,6 @@ void gdeGameDefinition::SetActiveSky(gdeSky *sky){
 		return;
 	}
 	
-	if(pActiveSky){
-		pActiveSky->FreeReference();
-	}
 	
 	pActiveSky = sky;
 	
@@ -2281,11 +2225,5 @@ void gdeGameDefinition::pCleanUp(){
 		delete pCamera;
 	}
 	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 	
-	if(pVFS){
-		pVFS->FreeReference();
-	}
 }

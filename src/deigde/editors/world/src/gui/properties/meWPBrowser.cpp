@@ -679,9 +679,6 @@ pViewMode(evmPreview)
 meWPBrowser::~meWPBrowser(){
 	SetWorld(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -696,7 +693,6 @@ void meWPBrowser::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

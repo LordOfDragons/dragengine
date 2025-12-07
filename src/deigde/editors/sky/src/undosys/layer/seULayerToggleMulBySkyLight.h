@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerToggleMulBySkyLight : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	
 	

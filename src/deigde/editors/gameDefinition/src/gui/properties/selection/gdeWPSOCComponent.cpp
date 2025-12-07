@@ -1086,9 +1086,6 @@ pDirtyEngModelTexNames(true)
 gdeWPSOCComponent::~gdeWPSOCComponent(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1103,7 +1100,6 @@ void gdeWPSOCComponent::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

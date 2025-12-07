@@ -241,7 +241,6 @@ void dedaiNavigator::UpdateDDSPath(){
 			pDDSPathFacesOpen = NULL;
 			pDDSPathFacesClosed = NULL;
 			
-			pDebugDrawer->FreeReference();
 			pDebugDrawer = NULL;
 		}
 	}
@@ -625,9 +624,6 @@ void dedaiNavigator::pCleanUp(){
 	
 	if(pTypeMappings){
 		delete [] pTypeMappings;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

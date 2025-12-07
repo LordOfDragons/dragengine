@@ -42,7 +42,7 @@ class meDecal;
 class meULowerDecalBottom : public igdeUndo{
 private:
 	meWorld *pWorld;
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	int pOldIndex;
 	

@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCParticleEmitterSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	decVector pOldValue;
 	decVector pNewValue;

@@ -94,12 +94,6 @@ pDirtyModel(true)
 deoglRPropFieldType::~deoglRPropFieldType(){
 	LEAK_CHECK_FREE(pPropField.GetRenderThread(), PropFieldType);
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pModel){
-		pModel->FreeReference();
-	}
 	
 	RemoveAllClusters();
 }
@@ -114,9 +108,6 @@ void deoglRPropFieldType::SetModel(deoglRModel *model){
 		return;
 	}
 	
-	if(pModel){
-		pModel->FreeReference();
-	}
 	
 	pModel = model;
 	
@@ -139,9 +130,6 @@ void deoglRPropFieldType::SetSkin(deoglRSkin *skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	pSkin = skin;
 	

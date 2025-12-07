@@ -1600,9 +1600,6 @@ pPreventUpdate(false)
 
 meWPSObject::~meWPSObject(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1630,7 +1627,6 @@ void meWPSObject::SetWorld(meWorld *world){
 		editTextureProperties.SetIdentifiers(decStringSet());
 		
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

@@ -38,8 +38,8 @@ class seSynthesizer;
  */
 class seUMoveControllerUp : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
-	seController *pController;
+	seSynthesizer::Ref pSynthesizer;
+	seController::Ref pController;
 	int pIndex;
 	
 	

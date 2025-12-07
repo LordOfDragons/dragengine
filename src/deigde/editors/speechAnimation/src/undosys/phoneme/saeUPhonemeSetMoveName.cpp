@@ -54,9 +54,6 @@ saeUPhonemeSetMoveName::saeUPhonemeSetMoveName(saePhoneme *phoneme, const char *
 }
 
 saeUPhonemeSetMoveName::~saeUPhonemeSetMoveName(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

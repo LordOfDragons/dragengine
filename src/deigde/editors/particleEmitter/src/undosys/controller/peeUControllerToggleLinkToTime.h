@@ -36,7 +36,7 @@ class peeController;
  */
 class peeUControllerToggleLinkToTime : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	
 	

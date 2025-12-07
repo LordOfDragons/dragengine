@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentToggleRenderEnvMap : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	
 	

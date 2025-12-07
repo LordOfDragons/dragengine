@@ -62,12 +62,6 @@ pParticleEmitter(NULL)
 }
 
 gdeUOCParticleEmitterSetRotation::~gdeUOCParticleEmitterSetRotation(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

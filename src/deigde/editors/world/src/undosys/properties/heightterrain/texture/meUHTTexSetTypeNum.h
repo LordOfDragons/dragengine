@@ -43,7 +43,7 @@ class meHeightTerrainTexture;
  */
 class meUHTTexSetTypeNum : public igdeUndo{
 private:
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	int pOldTypeNumber;
 	int pNewTypeNumber;

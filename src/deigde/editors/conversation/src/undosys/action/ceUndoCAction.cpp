@@ -54,10 +54,4 @@ ceUndoCAction::ceUndoCAction(ceConversationAction *action, ceConversationTopic *
 }
 
 ceUndoCAction::~ceUndoCAction(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
 }

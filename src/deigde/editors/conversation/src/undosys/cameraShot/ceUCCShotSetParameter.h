@@ -38,7 +38,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetParameter : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	int pParameter;
 	
 	decCurveBezier pOldCurve;

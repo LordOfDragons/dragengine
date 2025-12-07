@@ -502,18 +502,6 @@ void deoglRenderDebug::EndRenderRectangle(){
 //////////////////////
 
 void deoglRenderDebug::pCleanUp(){
-	if(pTBORenderRectangle2){
-		pTBORenderRectangle2->FreeReference();
-	}
-	if(pTBORenderRectangle1){
-		pTBORenderRectangle1->FreeReference();
-	}
-	if(pTBORenderText2){
-		pTBORenderText2->FreeReference();
-	}
-	if(pTBORenderText1){
-		pTBORenderText1->FreeReference();
-	}
 	if(pDebugFont){
 		delete pDebugFont;
 	}

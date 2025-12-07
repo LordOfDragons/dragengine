@@ -66,15 +66,6 @@ ceUCAPChoiceOptionRemove::ceUCAPChoiceOptionRemove(ceConversationTopic *topic, c
 }
 
 ceUCAPChoiceOptionRemove::~ceUCAPChoiceOptionRemove(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -37,7 +37,7 @@ class reRigShapeSphere;
  */
 class reUSetShapeSphereRadius : public igdeUndo{
 private:
-	reRigShapeSphere *pShape;
+	reRigShapeSphere::Ref pShape;
 	
 	float pOldRadius;
 	float pNewRadius;

@@ -48,7 +48,6 @@ aeURuleLimitSetPosMax::aeURuleLimitSetPosMax(aeRuleLimit *rule, const decVector 
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldMax = rule->GetMaximumPosition();
 		pNewMax = newMax;
@@ -84,7 +83,4 @@ void aeURuleLimitSetPosMax::Redo(){
 //////////////////////
 
 void aeURuleLimitSetPosMax::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

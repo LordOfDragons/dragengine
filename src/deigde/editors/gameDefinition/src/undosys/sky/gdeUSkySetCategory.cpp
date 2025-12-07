@@ -57,9 +57,6 @@ pSky(NULL)
 }
 
 gdeUSkySetCategory::~gdeUSkySetCategory(){
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

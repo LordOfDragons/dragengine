@@ -210,9 +210,6 @@ pListener(NULL)
 peeWPView::~peeWPView(){
 	SetEmitter(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -231,7 +228,6 @@ void peeWPView::SetEmitter(peeEmitter *emitter){
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 		pEmitter = NULL;
 	}
 	

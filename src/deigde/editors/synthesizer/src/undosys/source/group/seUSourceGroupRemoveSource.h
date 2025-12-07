@@ -38,8 +38,8 @@ class seSourceGroup;
  */
 class seUSourceGroupRemoveSource : public igdeUndo{
 private:
-	seSourceGroup *pGroup;
-	seSource *pSource;
+	seSourceGroup::Ref pGroup;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	

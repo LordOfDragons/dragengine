@@ -62,12 +62,6 @@ pProperty(property)
 }
 
 gdeUOCForceFieldSetPropertyName::~gdeUOCForceFieldSetPropertyName(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

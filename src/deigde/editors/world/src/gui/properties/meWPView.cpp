@@ -651,9 +651,6 @@ pPreventUpdateCamera(false)
 
 meWPView::~meWPView(){
 	SetWorld(nullptr);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -676,7 +673,6 @@ void meWPView::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

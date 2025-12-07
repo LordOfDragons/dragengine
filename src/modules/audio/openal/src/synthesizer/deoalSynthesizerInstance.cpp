@@ -57,7 +57,6 @@ pDirtyParameters(false)
 deoalSynthesizerInstance::~deoalSynthesizerInstance(){
 	if(pAInstance){
 		pAInstance->DropInstance();
-		pAInstance->FreeReference();
 	}
 }
 

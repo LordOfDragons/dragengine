@@ -62,12 +62,6 @@ pLight(NULL)
 }
 
 gdeUOCLightSetSpotSmoothness::~gdeUOCLightSetSpotSmoothness(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

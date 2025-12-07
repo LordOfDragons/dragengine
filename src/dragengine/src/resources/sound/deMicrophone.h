@@ -78,7 +78,7 @@ private:
 	bool pEnableAuralization;
 	
 	deSpeaker *pSpeakerRoot;
-	deSpeaker *pSpeakerTail;
+	deSpeaker::Ref pSpeakerTail;
 	int pSpeakerCount;
 	
 	deBaseAudioMicrophone *pPeerAudio;

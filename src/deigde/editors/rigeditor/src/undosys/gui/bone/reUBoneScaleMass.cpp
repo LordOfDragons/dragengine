@@ -153,7 +153,4 @@ void reUBoneScaleMass::pCleanUp(){
 		delete [] pBones;
 	}
 	
-	if(pRig){
-		pRig->FreeReference();
-	}
 }

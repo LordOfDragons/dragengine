@@ -216,9 +216,6 @@ void dealGame::SetCanRun(bool canRun){
 
 void dealGame::SetGlobalProfile(dealGameProfile *profile){
 	if(profile != pGlobalProfile){
-		if(pGlobalProfile){
-			pGlobalProfile->FreeReference();
-		}
 		
 		pGlobalProfile = profile;
 		
@@ -230,9 +227,6 @@ void dealGame::SetGlobalProfile(dealGameProfile *profile){
 
 void dealGame::SetGameProfile(dealGameProfile *profile){
 	if(profile != pGameProfile){
-		if(pGameProfile){
-			pGameProfile->FreeReference();
-		}
 		
 		pGameProfile = profile;
 		

@@ -414,19 +414,7 @@ void deoglGIBVH::DebugPrint(const decDVector &position){
 //////////////////////
 
 void deoglGIBVH::pCleanUp(){
-	if(pBVHTBONodeBox){
-		pBVHTBONodeBox->FreeReference();
-	}
-	if(pBVHTBOIndex){
-		pBVHTBOIndex->FreeReference();
-	}
 	
-	if(pTBOInstance){
-		pTBOInstance->FreeReference();
-	}
-	if(pTBOMatrix){
-		pTBOMatrix->FreeReference();
-	}
 	
 	if(pRecalcNodes){
 		delete [] pRecalcNodes;

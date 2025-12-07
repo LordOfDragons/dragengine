@@ -87,36 +87,6 @@ pDIWorldCheckDynamicCollisions(NULL)
 }
 
 debpDebug::~debpDebug(){
-	if(pDIWorldCheckDynamicCollisions){
-		pDIWorldCheckDynamicCollisions->FreeReference();
-	}
-	if(pDIWorldUpdateOctrees){
-		pDIWorldUpdateOctrees->FreeReference();
-	}
-	if(pDIWorldStepSimulation){
-		pDIWorldStepSimulation->FreeReference();
-	}
-	if(pDITouchSensorApplyChanges){
-		pDITouchSensorApplyChanges->FreeReference();
-	}
-	if(pDIColliderPrepareDetection){
-		pDIColliderPrepareDetection->FreeReference();
-	}
-	if(pDIColliderDetectCustomCollision){
-		pDIColliderDetectCustomCollision->FreeReference();
-	}
-	if(pDIColliderUpdateOctree){
-		pDIColliderUpdateOctree->FreeReference();
-	}
-	if(pDIColliderUpdateFromBody){
-		pDIColliderUpdateFromBody->FreeReference();
-	}
-	if(pDIColliderFinishDetection){
-		pDIColliderFinishDetection->FreeReference();
-	}
-	if(pDIColliderCollisionTests){
-		pDIColliderCollisionTests->FreeReference();
-	}
 }
 
 

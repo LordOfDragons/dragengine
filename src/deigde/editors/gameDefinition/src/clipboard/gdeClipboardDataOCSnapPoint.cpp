@@ -51,7 +51,4 @@ pSnapPoint(NULL)
 }
 
 gdeClipboardDataOCSnapPoint::~gdeClipboardDataOCSnapPoint(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
 }

@@ -42,7 +42,7 @@ class aeRuleForeignState;
  */
 class aeUSetRuleFStaEnablePos : public igdeUndo{
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

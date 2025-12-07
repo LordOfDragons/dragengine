@@ -39,7 +39,7 @@ class seProperty;
  */
 class seUPropertySetMappedComponent : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	int pIndex;
 	const seMapped::Ref pOldValue;

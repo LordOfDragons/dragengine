@@ -190,9 +190,6 @@ pRule(NULL)
 }
 
 meWVNode::~meWVNode(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

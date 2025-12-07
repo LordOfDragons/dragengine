@@ -63,9 +63,6 @@ meUNavSpaceSetPath::meUNavSpaceSetPath(meNavigationSpace *navspace, const char *
 }
 
 meUNavSpaceSetPath::~meUNavSpaceSetPath(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

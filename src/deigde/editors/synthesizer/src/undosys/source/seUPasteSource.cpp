@@ -147,7 +147,4 @@ void seUPasteSource::Redo(){
 //////////////////////
 
 void seUPasteSource::pCleanUp(){
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

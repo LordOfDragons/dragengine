@@ -50,7 +50,7 @@ public:
 	
 	
 private:
-	gdeOCLight *pOCLight;
+	gdeOCLight::Ref pOCLight;
 	
 	deLight::Ref pLight;
 	
@@ -83,7 +83,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class light. */
-	inline gdeOCLight *GetOCLight() const{ return pOCLight; }
+	inline const gdeOCLight::Ref &GetOCLight() const{ return pOCLight; }
 	
 	/** \brief Update. */
 	void Update(float elapsed);

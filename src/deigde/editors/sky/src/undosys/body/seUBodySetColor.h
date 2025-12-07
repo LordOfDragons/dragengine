@@ -38,7 +38,7 @@ class seBody;
  */
 class seUBodySetColor : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decColor pOldColor;
 	decColor pNewColor;

@@ -51,7 +51,7 @@ class meLoadXMLWorldTask : public igdeStepableTask, igdeBaseXML{
 private:
 	meLoadSaveSystem *pLSSys;
 	meWorld *pWorld;
-	decBaseFileReader *pReader;
+	decBaseFileReader::Ref pReader;
 	decXmlDocument::Ref pXMLDocument;
 	decXmlElementTag *pXMLRoot;
 	int pNextTag;

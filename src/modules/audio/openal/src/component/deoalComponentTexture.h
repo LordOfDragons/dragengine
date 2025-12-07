@@ -40,7 +40,7 @@ class deoalComponentTexture{
 private:
 	deoalComponent &pComponent;
 	const int pIndex;
-	deoalAComponentTexture *pATexture;
+	deoalAComponentTexture::Ref pATexture;
 	
 	deoalSkin *pSkin;
 	
@@ -69,7 +69,7 @@ public:
 	inline int GetIndex() const{ return pIndex; }
 	
 	/** \brief Audio component texture. */
-	inline deoalAComponentTexture *GetATexture() const{ return pATexture; }
+	inline const deoalAComponentTexture::Ref &GetATexture() const{ return pATexture; }
 	
 	/** \brief Synchronize. */
 	void Synchronize();

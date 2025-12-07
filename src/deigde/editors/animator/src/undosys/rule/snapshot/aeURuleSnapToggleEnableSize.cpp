@@ -48,7 +48,6 @@ aeURuleSnapToggleEnableSize::aeURuleSnapToggleEnableSize(aeRuleStateSnapshot *ru
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Rule state snapshot toggle enable size");
 		
@@ -81,7 +80,4 @@ void aeURuleSnapToggleEnableSize::Redo(){
 //////////////////////
 
 void aeURuleSnapToggleEnableSize::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

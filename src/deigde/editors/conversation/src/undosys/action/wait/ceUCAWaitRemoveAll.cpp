@@ -61,12 +61,6 @@ ceUCAWaitRemoveAll::ceUCAWaitRemoveAll(ceConversationTopic *topic, ceCAWait *wai
 }
 
 ceUCAWaitRemoveAll::~ceUCAWaitRemoveAll(){
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

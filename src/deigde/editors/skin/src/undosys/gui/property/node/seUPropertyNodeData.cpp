@@ -57,9 +57,6 @@ pNode(NULL)
 }
 
 seUPropertyNodeData::~seUPropertyNodeData(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

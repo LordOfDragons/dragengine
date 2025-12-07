@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	decVector pOldValue;
 	decVector pNewValue;

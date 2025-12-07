@@ -39,7 +39,7 @@ class peeParameter;
  */
 class peeUParameterSetCurve : public igdeUndo{
 protected:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
 	decCurveBezier pOldCurve;

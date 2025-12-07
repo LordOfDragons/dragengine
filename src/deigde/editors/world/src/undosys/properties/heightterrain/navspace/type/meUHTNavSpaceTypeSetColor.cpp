@@ -56,9 +56,6 @@ pNewColor(newColor)
 }
 
 meUHTNavSpaceTypeSetColor::~meUHTNavSpaceTypeSetColor(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

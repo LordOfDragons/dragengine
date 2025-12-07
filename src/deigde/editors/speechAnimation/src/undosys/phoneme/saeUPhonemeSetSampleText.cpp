@@ -54,9 +54,6 @@ saeUPhonemeSetSampleText::saeUPhonemeSetSampleText(saePhoneme *phoneme, const ch
 }
 
 saeUPhonemeSetSampleText::~saeUPhonemeSetSampleText(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
 }
 
 

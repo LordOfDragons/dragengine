@@ -350,7 +350,6 @@ void deoglRenderPlanSkyLight::WaitFinishedGIUpdateRT(){
 	
 // 	const float timePrepare = pTaskGIUpdateRT->GetElapsedTime();
 	
-	pTaskGIUpdateRT->FreeReference();
 	pTaskGIUpdateRT = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
@@ -377,7 +376,6 @@ void deoglRenderPlanSkyLight::WaitFinishedBuildRT1(){
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareSkyLightBuildRT(pPlan, pTaskBuildRT1->GetElapsedTime());
 	
-	pTaskBuildRT1->FreeReference();
 	pTaskBuildRT1 = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
@@ -396,7 +394,6 @@ void deoglRenderPlanSkyLight::WaitFinishedBuildRT2(){
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareSkyLightBuildRT(pPlan, pTaskBuildRT2->GetElapsedTime());
 	
-	pTaskBuildRT2->FreeReference();
 	pTaskBuildRT2 = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
@@ -1151,7 +1148,6 @@ void deoglRenderPlanSkyLight::pWaitFinishedFindContent(){
 	pPlan.GetRenderThread().GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareSkyLightFindContent(
 		pPlan, pTaskFindContent->GetElapsedTime());
 	
-	pTaskFindContent->FreeReference();
 	pTaskFindContent = NULL;
 }
 
@@ -1165,7 +1161,6 @@ void deoglRenderPlanSkyLight::pWaitFinishedGIFindContent(){
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareSkyLightGIFindContent(pPlan, pTaskGIFindContent->GetElapsedTime());
 	
-	pTaskGIFindContent->FreeReference();
 	pTaskGIFindContent = NULL;
 }
 

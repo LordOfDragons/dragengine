@@ -51,7 +51,6 @@ value(entry.value),
 next(nullptr)
 {
 	if(value){
-		value->AddReference();
 	}
 }
 
@@ -62,7 +61,6 @@ value(nvalue),
 next(nullptr)
 {
 	if(value){
-		value->AddReference();
 	}
 }
 
@@ -73,9 +71,6 @@ decObjectDictionaryExt::sDictEntry::~sDictEntry(){
 
 void decObjectDictionaryExt::sDictEntry::SetValue(deObject *nvalue){
 	if(nvalue != value){
-		if(value){
-			value->FreeReference();
-		}
 		
 		value = nvalue;
 		

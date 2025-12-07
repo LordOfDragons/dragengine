@@ -47,8 +47,8 @@ public:
 	};
 	
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	ceStripList pStrips;
 	sStrip *pOldStates;
 	float pScaling;

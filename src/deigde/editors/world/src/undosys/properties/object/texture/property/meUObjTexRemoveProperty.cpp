@@ -88,7 +88,4 @@ void meUObjTexRemoveProperty::Redo(){
 //////////////////////
 
 void meUObjTexRemoveProperty::pCleanUp(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }

@@ -55,9 +55,6 @@ pCacheFrames(false)
 }
 
 deoglVideo::~deoglVideo(){
-	if(pRVideo){
-		pRVideo->FreeReference();
-	}
 }
 
 

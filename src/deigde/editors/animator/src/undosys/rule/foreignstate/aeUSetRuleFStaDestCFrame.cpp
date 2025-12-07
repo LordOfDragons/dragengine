@@ -48,7 +48,6 @@ aeUSetRuleFStaDestCFrame::aeUSetRuleFStaDestCFrame(aeRuleForeignState *rule, deA
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldCFrame = rule->GetDestCoordinateFrame();
 		pNewCFrame = newCFrame;
@@ -84,7 +83,4 @@ void aeUSetRuleFStaDestCFrame::Redo(){
 //////////////////////
 
 void aeUSetRuleFStaDestCFrame::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

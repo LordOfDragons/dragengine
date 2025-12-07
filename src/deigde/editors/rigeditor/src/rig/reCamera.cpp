@@ -160,8 +160,6 @@ void reCamera::Reset(){
 	igdeCamera::Reset();
 	
 	pFreeDistance = 5.0f;
-	if(pBone){
-		pBone->FreeReference();
 		pBone = NULL;
 	}
 	pFreePosition.Set(0.0, 1.0, 0.0);

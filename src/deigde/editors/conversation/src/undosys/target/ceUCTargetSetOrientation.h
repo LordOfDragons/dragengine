@@ -38,7 +38,7 @@ class ceTarget;
  */
 class ceUCTargetSetOrientation : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decVector pOldOrientation;
 	decVector pNewOrientation;

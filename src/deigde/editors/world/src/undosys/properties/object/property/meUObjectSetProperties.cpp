@@ -56,9 +56,6 @@ pNewValues(newValues)
 }
 
 meUObjectSetProperties::~meUObjectSetProperties(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

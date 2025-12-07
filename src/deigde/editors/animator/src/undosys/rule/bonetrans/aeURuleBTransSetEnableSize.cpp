@@ -49,13 +49,9 @@ aeURuleBTransSetEnableSize::aeURuleBTransSetEnableSize(aeRuleBoneTransformator *
 	SetShortInfo("Bone transformator toggle enable size");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleBTransSetEnableSize::~aeURuleBTransSetEnableSize(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

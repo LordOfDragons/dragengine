@@ -36,7 +36,7 @@ class aeRuleLimit;
  */
 class aeURuleLimitSetEnablePosYMax : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

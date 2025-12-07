@@ -141,9 +141,6 @@ void deoalAComponent::SetModel(deoalAModel *model, const decStringList *textureN
 	pDropWeightMatrices();
 	pDropFaces();
 	
-	if(pModel){
-		pModel->FreeReference();
-	}
 	
 	pModel = model;
 	pTextureNames = textureNames;
@@ -171,9 +168,6 @@ void deoalAComponent::SetSkin(deoalASkin *skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
 	if(skin){
 		skin->AddReference();
@@ -439,12 +433,6 @@ void deoalAComponent::pCleanUp(){
 	
 	pTextures.RemoveAll();
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pModel){
-		pModel->FreeReference();
-	}
 }
 
 

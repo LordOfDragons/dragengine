@@ -44,7 +44,7 @@ private:
 	bool pAlreadyLoaded;
 	
 	deRLTaskReadFont *pParentTask;
-	deRLTaskReadFontInternal2 *pInternalTask;
+	deRLTaskReadFontInternal2::Ref pInternalTask;
 	
 	
 	
@@ -76,7 +76,7 @@ public:
 	inline bool GetAlreadyLoaded() const{ return pAlreadyLoaded; }
 	
 	/** \brief Second task or NULL. */
-	inline deRLTaskReadFontInternal2 *GetInternalTask() const{ return pInternalTask; }
+	inline const deRLTaskReadFontInternal2::Ref &GetInternalTask() const{ return pInternalTask; }
 	/*@}*/
 	
 	

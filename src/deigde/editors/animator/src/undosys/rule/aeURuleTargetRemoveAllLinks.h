@@ -38,7 +38,7 @@ class aeControllerTarget;
  */
 class aeURuleTargetRemoveAllLinks : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	aeControllerTarget *pTarget;
 	
 	aeLinkList pLinks;

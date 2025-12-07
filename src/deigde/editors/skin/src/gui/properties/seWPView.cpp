@@ -325,9 +325,6 @@ pSkin(NULL)
 seWPView::~seWPView(){
 	SetSkin(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -346,7 +343,6 @@ void seWPView::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 		pSkin = NULL;
 	}
 	

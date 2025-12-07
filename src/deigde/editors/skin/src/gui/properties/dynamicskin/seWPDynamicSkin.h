@@ -48,9 +48,9 @@ class seWPDynamicSkinListener;
 class seWPDynamicSkin : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seWPDynamicSkinListener *pListener;
+	seWPDynamicSkinListener::Ref pListener;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	bool pRequiresUpdate;
 	
 	igdeListBox::Ref pListRenderable;
@@ -95,7 +95,7 @@ public:
 	inline seWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(seSkin *skin);

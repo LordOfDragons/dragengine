@@ -60,12 +60,6 @@ pActions(NULL)
 		AddChild(pActions);
 		
 	}catch(const deException &){
-		if(pActions){
-			pActions->FreeReference();
-		}
-		if(pCondition){
-			pCondition->FreeReference();
-		}
 		throw;
 	}
 	

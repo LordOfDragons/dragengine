@@ -59,14 +59,10 @@ pRepeat(node.pRepeat)
 {
 	pImage = node.pImage;
 	if(pImage){
-		pImage->AddReference();
 	}
 }
 
 sePropertyNodeImage::~sePropertyNodeImage(){
-	if(pImage){
-		pImage->FreeReference();
-	}
 }
 
 
@@ -105,9 +101,6 @@ void sePropertyNodeImage::UpdateImage(){
 		return;
 	}
 	
-	if(pImage){
-		pImage->FreeReference();
-	}
 	pImage = image;
 }
 

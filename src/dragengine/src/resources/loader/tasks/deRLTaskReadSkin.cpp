@@ -176,7 +176,4 @@ decString deRLTaskReadSkin::GetDebugName() const{
 //////////////////////
 
 void deRLTaskReadSkin::pCleanUp(){
-	if(pInternalTask){
-		pInternalTask->FreeReference();
-	}
 }

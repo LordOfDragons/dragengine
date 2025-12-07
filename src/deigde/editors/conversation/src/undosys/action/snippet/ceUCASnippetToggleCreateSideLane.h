@@ -36,8 +36,8 @@ class ceConversationTopic;
  */
 class ceUCASnippetToggleCreateSideLane : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASnippet *pSnippet;
+	ceConversationTopic::Ref pTopic;
+	ceCASnippet::Ref pSnippet;
 	
 public:
 	/** \brief Type holding strong reference. */

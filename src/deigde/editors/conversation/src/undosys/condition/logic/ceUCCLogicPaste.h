@@ -40,9 +40,9 @@ class ceConversationTopic;
  */
 class ceUCCLogicPaste : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionLogic *pLogic;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionLogic::Ref pLogic;
 	ceConversationConditionList pConditions;
 	
 public:

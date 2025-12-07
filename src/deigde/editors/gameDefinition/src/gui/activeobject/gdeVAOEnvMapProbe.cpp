@@ -70,7 +70,6 @@ pDDSMask(NULL)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pOCEnvMapProbe->AddReference();
 	
 	try{
 		pCreateDebugDrawer();
@@ -141,9 +140,6 @@ void gdeVAOEnvMapProbe::pCleanUp(){
 		pDebugDrawer = NULL;
 	}
 	
-	if(pOCEnvMapProbe){
-		pOCEnvMapProbe->FreeReference();
-	}
 }
 
 

@@ -58,12 +58,6 @@ pLink(NULL)
 }
 
 seULinkAdd::~seULinkAdd(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

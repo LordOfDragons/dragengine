@@ -55,7 +55,7 @@ private:
 	igdeMouseKeyListener::Ref pKeyHandling;
 	igdeMouseDragListener::Ref pDragNode;
 	
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	
 	igdeAction::Ref pActionConstructedFromImage;
 	igdeAction::Ref pActionAddShape;
@@ -134,7 +134,7 @@ public:
 	inline seWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Skin or \em NULL. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin or \em NULL. */
 	void SetSkin(seSkin *skin);

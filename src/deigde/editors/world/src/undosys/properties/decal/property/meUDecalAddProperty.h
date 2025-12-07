@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalAddProperty : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decString pKey;
 	decString pValue;

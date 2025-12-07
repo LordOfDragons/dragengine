@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightToggleActivated : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	
 	

@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCSpeaker *pOCSpeaker;
+	gdeOCSpeaker::Ref pOCSpeaker;
 	
 	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSCenter;
@@ -76,7 +76,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class speaker. */
-	inline gdeOCSpeaker *GetOCSpeaker() const{ return pOCSpeaker; }
+	inline const gdeOCSpeaker::Ref &GetOCSpeaker() const{ return pOCSpeaker; }
 	
 	/** \brief Rebuild resources. */
 	void RebuildResources() override;

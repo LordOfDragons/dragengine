@@ -62,12 +62,6 @@ pProperty(NULL)
 }
 
 gdeUGDWPSetIdentifierGroup::~gdeUGDWPSetIdentifierGroup(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

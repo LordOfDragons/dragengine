@@ -38,8 +38,8 @@ class aeRuleGroup;
  */
 class aeURuleGroupAddRule : public igdeUndo{
 private:
-	aeRuleGroup *pGroup;
-	aeRule *pRule;
+	aeRuleGroup::Ref pGroup;
+	aeRule::Ref pRule;
 	int pIndex;
 	
 public:

@@ -260,7 +260,4 @@ void deoglREnvMapProbe::SetWorldMarkedRemove(bool marked){
 void deoglREnvMapProbe::pCleanUp(){
 	SetParentWorld(NULL);
 	
-	if(pEnvMap){
-		pEnvMap->FreeReference();
-	}
 }

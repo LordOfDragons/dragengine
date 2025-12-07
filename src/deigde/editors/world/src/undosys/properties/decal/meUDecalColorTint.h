@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalColorTint : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decColor pOldColor;
 	decColor pNewColor;
 	

@@ -42,7 +42,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	deCaptureCanvas &pCaptureCanvas;
 	
-	deoglRCaptureCanvas *pRCaptureCanvas;
+	deoglRCaptureCanvas::Ref pRCaptureCanvas;
 	
 	bool pDirtyCanvasView;
 	bool pCapturePending;
@@ -70,7 +70,7 @@ public:
 	inline const deCaptureCanvas &GetCaptureCanvas() const{ return pCaptureCanvas; }
 	
 	/** Render capture canvas or \em NULL if not set. */
-	inline deoglRCaptureCanvas *GetRCaptureCanvas() const{ return pRCaptureCanvas; }
+	inline const deoglRCaptureCanvas::Ref &GetRCaptureCanvas() const{ return pRCaptureCanvas; }
 	
 	
 	

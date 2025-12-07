@@ -55,9 +55,6 @@ pFile(NULL)
 		pFile->SetID(newID);
 		
 	}catch(const deException &){
-		if(pFile){
-			pFile->FreeReference();
-		}
 		throw;
 	}
 	
@@ -66,12 +63,6 @@ pFile(NULL)
 }
 
 ceUCFileDuplicate::~ceUCFileDuplicate(){
-	if(pFile){
-		pFile->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

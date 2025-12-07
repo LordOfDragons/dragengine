@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 projUProfileSetScriptDirectory::~projUProfileSetScriptDirectory(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

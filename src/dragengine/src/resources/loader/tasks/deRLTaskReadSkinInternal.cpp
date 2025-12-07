@@ -101,9 +101,6 @@ pTask(task)
 }
 
 deRLTaskReadSkinInternal::cInternalTask::~cInternalTask(){
-	if(pTask){
-		pTask->FreeReference();
-	}
 }
 
 

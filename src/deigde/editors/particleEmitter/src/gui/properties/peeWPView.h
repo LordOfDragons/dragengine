@@ -45,8 +45,8 @@ class peeWPViewListener;
 class peeWPView : public igdeContainerScroll{
 private:
 	peeWindowProperties &pWindowProperties;
-	peeEmitter *pEmitter;
-	peeWPViewListener *pListener;
+	peeEmitter::Ref pEmitter;
+	peeWPViewListener::Ref pListener;
 	
 	igdeWPSky::Ref pWPSky;
 	igdeWPWObject::Ref pWPEnvObject;
@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set emitter. */
 	void SetEmitter(peeEmitter *emitter);

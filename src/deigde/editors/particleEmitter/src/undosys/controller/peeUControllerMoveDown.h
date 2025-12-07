@@ -36,7 +36,7 @@ class peeController;
  */
 class peeUControllerMoveDown : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	int pIndex;
 	
 	

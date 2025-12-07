@@ -42,7 +42,7 @@ class aeRuleAnimation;
  */
 class aeUSetRuleAnimMoveName : public igdeUndo{
 private:
-	aeRuleAnimation *pRule;
+	aeRuleAnimation::Ref pRule;
 	
 	decString pOldName;
 	decString pNewName;

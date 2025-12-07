@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardToggleDoNotScale : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	
 	

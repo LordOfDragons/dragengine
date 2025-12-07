@@ -48,7 +48,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deBillboard &pBillboard;
 	
-	deoglRBillboard *pRBillboard;
+	deoglRBillboard::Ref pRBillboard;
 	
 	deoglWorld *pParentWorld;
 	deoglSkinStateController *pSkinStateController;
@@ -100,7 +100,7 @@ public:
 	
 	
 	/** Render billboard. */
-	inline deoglRBillboard *GetRBillboard() const{ return pRBillboard; }
+	inline const deoglRBillboard::Ref &GetRBillboard() const{ return pRBillboard; }
 	
 	
 	

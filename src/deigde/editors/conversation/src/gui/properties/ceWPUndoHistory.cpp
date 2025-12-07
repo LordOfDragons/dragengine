@@ -52,9 +52,6 @@ pConversation(NULL)
 ceWPUndoHistory::~ceWPUndoHistory(){
 	SetConversation(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -71,7 +68,6 @@ void ceWPUndoHistory::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;

@@ -58,9 +58,6 @@ pTransmissionHigh(1.0f){
 }
 
 deoalAComponentTexture::~deoalAComponentTexture(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 }
 
 
@@ -73,9 +70,6 @@ void deoalAComponentTexture::SetSkin(deoalASkin *skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	pSkin = skin;
 	

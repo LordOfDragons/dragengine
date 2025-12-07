@@ -54,9 +54,9 @@ public:
 
 private:
 	struct sBone{
-		reRigBone *boneSource;
+		reRigBone::Ref boneSource;
 		
-		reRigBone *boneTarget;
+		reRigBone::Ref boneTarget;
 		decVector oldCMP;
 		float oldMass;
 		bool oldDynamic;
@@ -71,7 +71,7 @@ private:
 	
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	sBone *pBones;
 	int pBoneCount;

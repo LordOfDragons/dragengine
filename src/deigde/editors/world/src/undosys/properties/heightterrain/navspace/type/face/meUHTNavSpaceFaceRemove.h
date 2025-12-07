@@ -40,8 +40,8 @@ class decObjectOrderedSet;
 class meUHTNavSpaceFaceRemove : public igdeUndo{
 private:
 	struct sFace{
-		meHeightTerrainNavSpaceType *type;
-		meHeightTerrainNavSpaceFace *face;
+		meHeightTerrainNavSpaceType::Ref type;
+		meHeightTerrainNavSpaceFace::Ref face;
 	};
 	
 	sFace *pFaces;

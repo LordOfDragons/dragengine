@@ -38,8 +38,8 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetMask : public igdeUndo{
 private:
-	sePropertyNode *pNode;
-	sePropertyNode *pMask;
+	sePropertyNode::Ref pNode;
+	sePropertyNode::Ref pMask;
 	
 	decPoint3 pOldPosition;
 	decPoint3 pOldSize;

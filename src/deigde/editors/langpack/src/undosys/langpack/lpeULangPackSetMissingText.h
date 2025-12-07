@@ -38,7 +38,7 @@ class lpeLangPack;
  */
 class lpeULangPackSetMissingText : public igdeUndo{
 private:
-	lpeLangPack *pLangPack;
+	lpeLangPack::Ref pLangPack;
 	
 	decUnicodeString pOldMissingText;
 	decUnicodeString pNewMissingText;

@@ -37,7 +37,7 @@ class seLayer;
  */
 class seULayerSetOffset : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	decVector pOldOffset;
 	decVector pNewOffset;

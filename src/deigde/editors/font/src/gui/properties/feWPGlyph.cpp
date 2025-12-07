@@ -287,9 +287,6 @@ feWPGlyph::~feWPGlyph(){
 	SetGlyph(NULL);
 	SetFont(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -306,7 +303,6 @@ void feWPGlyph::SetFont(feFont *font){
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
 		pFont = NULL;
 	}
 	
@@ -329,8 +325,6 @@ void feWPGlyph::SetGlyph(feFontGlyph *glyph){
 		return;
 	}
 	
-	if(pGlyph){
-		pGlyph->FreeReference();
 		pGlyph = NULL;
 	}
 	

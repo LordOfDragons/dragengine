@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAASpeakSetMinSpeechTime : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
 	float pOldTime;
 	float pNewTime;
 	

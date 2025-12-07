@@ -58,12 +58,6 @@ pFace(NULL)
 }
 
 meUHTNavSpaceFaceAdd::~meUHTNavSpaceFaceAdd(){
-	if(pFace){
-		pFace->FreeReference();
-	}
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

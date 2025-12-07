@@ -62,12 +62,6 @@ pProperty(property)
 }
 
 gdeUOCParticleEmitterSetPropertyName::~gdeUOCParticleEmitterSetPropertyName(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

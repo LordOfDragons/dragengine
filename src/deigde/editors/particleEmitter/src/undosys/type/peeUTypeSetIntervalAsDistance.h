@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetIntervalAsDistance : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	
 	

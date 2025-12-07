@@ -62,7 +62,6 @@ deArchiveContainer::~deArchiveContainer(){
 		if(pArchive->GetResourceManager()){
 			((deArchiveManager*)pArchive->GetResourceManager())->RemoveContainer(this);
 		}
-		pArchive->FreeReference();
 	}
 }
 

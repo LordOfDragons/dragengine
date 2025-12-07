@@ -67,15 +67,6 @@ ceStrip *word, float newPause){
 }
 
 ceUCAASpeakStripSetPause::~ceUCAASpeakStripSetPause(){
-	if(pStrip){
-		pStrip->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

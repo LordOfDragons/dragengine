@@ -86,9 +86,6 @@ decXmlParser::~decXmlParser(){
 	if(pCleanString) delete [] pCleanString;
 	if(pToken) delete [] pToken;
 	
-	if(pFile){
-		pFile->FreeReference();
-	}
 	if(pLogger) pLogger->FreeReference();
 }
 

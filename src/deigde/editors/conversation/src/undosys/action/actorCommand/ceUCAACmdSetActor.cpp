@@ -59,12 +59,6 @@ ceUCAACmdSetActor::ceUCAACmdSetActor(ceConversationTopic *topic, ceCAActorComman
 }
 
 ceUCAACmdSetActor::~ceUCAACmdSetActor(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

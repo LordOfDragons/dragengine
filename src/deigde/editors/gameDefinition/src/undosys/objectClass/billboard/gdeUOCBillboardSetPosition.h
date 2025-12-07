@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCBillboardSetPosition : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCBillboard *pBillboard;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCBillboard::Ref pBillboard;
 	
 	decVector pOldValue;
 	decVector pNewValue;

@@ -35,7 +35,7 @@ class gdeParticleEmitter;
  */
 class gdeWPSTIMParticleEmitter : public gdeWPSTreeItemModel{
 private:
-	gdeParticleEmitter *pParticleEmitter;
+	gdeParticleEmitter::Ref pParticleEmitter;
 	
 	
 public:
@@ -55,7 +55,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Particle emitter. */
-	inline gdeParticleEmitter *GetParticleEmitter() const{ return pParticleEmitter; }
+	inline const gdeParticleEmitter::Ref &GetParticleEmitter() const{ return pParticleEmitter; }
 	
 	
 	

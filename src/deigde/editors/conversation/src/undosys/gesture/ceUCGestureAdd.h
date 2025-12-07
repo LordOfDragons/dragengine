@@ -37,8 +37,8 @@ class ceGesture;
  */
 class ceUCGestureAdd : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceGesture *pGesture;
+	ceConversation::Ref pConversation;
+	ceGesture::Ref pGesture;
 	
 public:
 	/** \brief Type holding strong reference. */

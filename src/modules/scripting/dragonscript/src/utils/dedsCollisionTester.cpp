@@ -122,9 +122,6 @@ void dedsCollisionTester::SetWorld(deWorld *world){
 		return;
 	}
 	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 	pWorld = world;
 	if(world){
 		world->AddReference();
@@ -136,9 +133,6 @@ void dedsCollisionTester::SetTouchSensor(deTouchSensor *touchSensor){
 		return;
 	}
 	
-	if(pTouchSensor){
-		pTouchSensor->FreeReference();
-	}
 	pTouchSensor = touchSensor;
 	if(touchSensor){
 		touchSensor->AddReference();
@@ -148,15 +142,11 @@ void dedsCollisionTester::SetTouchSensor(deTouchSensor *touchSensor){
 
 
 void dedsCollisionTester::SetCollisionRay(){
-	if(pCollider){
-		pCollider->FreeReference();
 		pCollider = NULL;
 	}
 }
 
 void dedsCollisionTester::SetCollisionShape(const decShapeList &shapeList){
-	if(pCollider){
-		pCollider->FreeReference();
 		pCollider = NULL;
 	}
 	
@@ -324,12 +314,8 @@ void dedsCollisionTester::CollisionResponse(deCollider *owner, deCollisionInfo *
 		return;
 	}
 	
-	if(pHitCollider){
-		pHitCollider->FreeReference();
-	}
 	pHitCollider = info->GetCollider();
 	if(pHitCollider){
-		pHitCollider->AddReference();
 	}
 	
 	pHitBone = info->GetBone();
@@ -382,15 +368,11 @@ bool dedsCollisionTester::CanHitCollider(deCollider *owner, deCollider *collider
 //////////////////////
 
 void dedsCollisionTester::pCleanUp(){
-	if(pHitCollider){
-		pHitCollider->FreeReference();
 		pHitCollider = NULL;
 	}
 	
 	SetWorld(NULL);
 	SetTouchSensor(NULL);
-	if(pCollider){
-		pCollider->FreeReference();
 		pCollider = NULL;
 	}
 	

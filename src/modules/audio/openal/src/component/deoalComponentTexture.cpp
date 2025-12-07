@@ -140,7 +140,4 @@ void deoalComponentTexture::MarkDirty(){
 //////////////////////
 
 void deoalComponentTexture::pCleanUp(){
-	if(pATexture){
-		pATexture->FreeReference();
-	}
 }

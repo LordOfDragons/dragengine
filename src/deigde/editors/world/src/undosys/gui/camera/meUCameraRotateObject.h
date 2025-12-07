@@ -38,7 +38,7 @@ class meObject;
  */
 class meUCameraRotateObject : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decVector pOldRotation, pNewRotation;
 	
 public:

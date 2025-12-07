@@ -37,7 +37,7 @@ class saeSAnimation;
  */
 class saeUSAnimSetNeutralVertexPositionSets : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	decStringSet pOldSets;
 	decStringSet pNewSets;

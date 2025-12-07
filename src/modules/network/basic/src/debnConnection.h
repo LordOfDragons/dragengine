@@ -67,7 +67,7 @@ private:
 	deNetworkBasic *pNetBasic;
 	deConnection *pConnection;
 	
-	debnSocket *pSocket;
+	debnSocket::Ref pSocket;
 	debnAddress pRemoteAddress;
 	int pConnectionState;
 	int pIdentifier;
@@ -114,7 +114,7 @@ public:
 	inline deConnection *GetConnection() const{ return pConnection; }
 	
 	/** \brief Socket. */
-	inline debnSocket *GetSocket() const{ return pSocket; }
+	inline const debnSocket::Ref &GetSocket() const{ return pSocket; }
 	
 	/** \brief Remote address. */
 	inline const debnAddress &GetRemoteAddress() const{ return pRemoteAddress; }

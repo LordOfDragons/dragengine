@@ -36,7 +36,7 @@ class seController;
  */
 class seUControllerMoveUp : public igdeUndo{
 private:
-	seController *pController;
+	seController::Ref pController;
 	int pIndex;
 	
 	

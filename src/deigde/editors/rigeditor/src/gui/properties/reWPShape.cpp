@@ -103,9 +103,6 @@ pActivePanel(NULL)
 reWPShape::~reWPShape(){
 	SetRig(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -122,7 +119,6 @@ void reWPShape::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -146,9 +142,6 @@ void reWPShape::SetShape(reRigShape *shape){
 		pActivePanel = NULL;
 	}
 	
-	if(pShape){
-		pShape->FreeReference();
-	}
 	
 	pShape = shape;
 	

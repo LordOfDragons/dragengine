@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetEmitMinImpulse : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	float pOldImpulse;
 	float pNewImpulse;

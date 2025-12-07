@@ -55,9 +55,6 @@ pCanvasView(NULL){
 }
 
 cePCBOption::~cePCBOption(){
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 	SetActionOption(NULL, NULL);
 }
 
@@ -72,9 +69,6 @@ void cePCBOption::SetText(const decUnicodeString &text){
 
 void cePCBOption::SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOption *option){
 	if(action != pAction){
-		if(pAction){
-			pAction->FreeReference();
-		}
 		
 		pAction = action;
 		
@@ -84,9 +78,6 @@ void cePCBOption::SetActionOption(ceCAPlayerChoice *action, ceCAPlayerChoiceOpti
 	}
 	
 	if(option != pActionOption){
-		if(pActionOption){
-			pActionOption->FreeReference();
-		}
 		
 		pActionOption = option;
 		

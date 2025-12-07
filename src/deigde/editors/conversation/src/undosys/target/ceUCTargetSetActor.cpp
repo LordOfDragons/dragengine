@@ -54,9 +54,6 @@ ceUCTargetSetActor::ceUCTargetSetActor(ceTarget *target, const char *newID){
 }
 
 ceUCTargetSetActor::~ceUCTargetSetActor(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

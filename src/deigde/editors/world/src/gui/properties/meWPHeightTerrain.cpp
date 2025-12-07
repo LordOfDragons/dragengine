@@ -1554,9 +1554,6 @@ pVVariation(NULL)
 
 meWPHeightTerrain::~meWPHeightTerrain(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1574,7 +1571,6 @@ void meWPHeightTerrain::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
@@ -1646,9 +1642,6 @@ void meWPHeightTerrain::SetTexture(meHeightTerrainTexture *texture){
 		return;
 	}
 	
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 	
 	pTexture = texture;
 	
@@ -1681,9 +1674,6 @@ void meWPHeightTerrain::SetVLayer(meHTVegetationLayer *vlayer){
 	
 	SetVVariation(NULL);
 	
-	if(pVLayer){
-		pVLayer->FreeReference();
-	}
 	
 	pVLayer = vlayer;
 	
@@ -1706,9 +1696,6 @@ void meWPHeightTerrain::SetVVariation(meHTVVariation *variation){
 		return;
 	}
 	
-	if(pVVariation){
-		pVVariation->FreeReference();
-	}
 	
 	pVVariation = variation;
 	

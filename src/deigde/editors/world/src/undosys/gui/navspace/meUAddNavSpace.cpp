@@ -98,10 +98,4 @@ void meUAddNavSpace::Redo(){
 //////////////////////
 
 void meUAddNavSpace::pCleanUp(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

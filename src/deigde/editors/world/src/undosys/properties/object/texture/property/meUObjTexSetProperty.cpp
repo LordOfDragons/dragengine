@@ -100,7 +100,4 @@ void meUObjTexSetProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUObjTexSetProperty::pCleanUp(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }

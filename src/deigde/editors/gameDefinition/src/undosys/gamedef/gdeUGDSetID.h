@@ -38,7 +38,7 @@ class gdeGameDefinition;
  */
 class gdeUGDSetID : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
 	decString pOldValue;
 	decString pNewValue;

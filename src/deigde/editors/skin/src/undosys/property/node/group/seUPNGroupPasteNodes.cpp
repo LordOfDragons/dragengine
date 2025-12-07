@@ -85,9 +85,6 @@ pLayer(layer)
 }
 
 seUPNGroupPasteNodes::~seUPNGroupPasteNodes(){
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

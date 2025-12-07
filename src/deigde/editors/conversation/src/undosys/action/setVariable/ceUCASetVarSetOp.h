@@ -38,8 +38,8 @@ class ceConversationTopic;
  */
 class ceUCASetVarSetOp : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASetVariable *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCASetVariable::Ref pAction;
 	ceCASetVariable::eOperators pOldOperator;
 	ceCASetVariable::eOperators pNewOperator;
 	

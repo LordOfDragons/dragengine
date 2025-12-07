@@ -37,7 +37,7 @@ class reRigShape;
  */
 class reUSetShapePosition : public igdeUndo{
 private:
-	reRigShape *pShape;
+	reRigShape::Ref pShape;
 	
 	decVector pOldPosition;
 	decVector pNewPosition;

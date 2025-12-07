@@ -37,7 +37,7 @@ class reRig;
  */
 class reURigSetCentralMassPoint : public igdeUndo{
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	decVector pOldCMP;
 	decVector pNewCmp;

@@ -125,10 +125,4 @@ void meUAddObject::Redo(){
 //////////////////////
 
 void meUAddObject::pCleanUp(){
-	if(pObject){
-		pObject->FreeReference();
-	}
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

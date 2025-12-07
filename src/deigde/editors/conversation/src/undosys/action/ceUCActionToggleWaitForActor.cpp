@@ -59,12 +59,6 @@ ceConversationTopic *topic, ceConversationAction *action)
 }
 
 ceUCActionToggleWaitForActor::~ceUCActionToggleWaitForActor(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

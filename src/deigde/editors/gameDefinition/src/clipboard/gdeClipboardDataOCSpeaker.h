@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCSpeaker *pSpeaker;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Speaker. */
-	gdeOCSpeaker *GetSpeaker() const{ return pSpeaker; }
+	const gdeOCSpeaker::Ref &GetSpeaker() const{ return pSpeaker; }
 	/*@}*/
 };
 

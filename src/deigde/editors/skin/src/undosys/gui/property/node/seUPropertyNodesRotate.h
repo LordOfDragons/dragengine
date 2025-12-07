@@ -40,7 +40,7 @@ class sePropertyNodeList;
 class seUPropertyNodesRotate : public igdeUndo{
 private:
 	struct sNode{
-		sePropertyNode *node;
+		sePropertyNode::Ref node;
 		decPoint3 position;
 		float rotation;
 	};

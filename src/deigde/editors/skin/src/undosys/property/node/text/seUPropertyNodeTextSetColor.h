@@ -38,7 +38,7 @@ class sePropertyNodeText;
  */
 class seUPropertyNodeTextSetColor : public igdeUndo{
 private:
-	sePropertyNodeText *pNode;
+	sePropertyNodeText::Ref pNode;
 	
 	decColor pOldValue;
 	decColor pNewValue;

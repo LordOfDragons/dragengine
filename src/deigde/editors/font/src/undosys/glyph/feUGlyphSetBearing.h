@@ -36,7 +36,7 @@ class feFontGlyph;
  */
 class feUGlyphSetBearing : public igdeUndo{
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	
 	int pOldBearing;
 	int pNewBearing;

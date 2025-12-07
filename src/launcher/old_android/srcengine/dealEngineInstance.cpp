@@ -525,9 +525,6 @@ bool dealEngineInstance::OpenDelga(int fileDescriptor, long fileOffset, long fil
 		fileReader = NULL;
 		
 	}catch(const deException &e){
-		if(pDelga){
-			pDelga->FreeReference();
-		}
 		if(fileReader){
 			fileReader->FreeReference();
 		}
@@ -932,13 +929,7 @@ bool dealEngineInstance::TerminateAppWindow(){
 void dealEngineInstance::pCleanUp(){
 	Stop();
 	
-	if(pDelga){
-		pDelga->FreeReference();
-	}
 	
-	if(pLogger){
-		pLogger->FreeReference();
-	}
 }
 
 
@@ -1074,8 +1065,6 @@ void dealEngineInstance::pCreateOSFileSystem(){
 }
 
 void dealEngineInstance::pCloseOSFileSystem(){
-	if(pOSFileSystem){
-		pOSFileSystem->FreeReference();
 		pOSFileSystem = NULL;
 	}
 	

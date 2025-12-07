@@ -68,13 +68,13 @@ private:
 	};
 	
 	struct sFacePose{
-		ceFacePose *facePose;
+		ceFacePose::Ref facePose;
 		float pause;
 		float length;
 	};
 	
 	struct sLookAt{
-		ceTarget *lookAt;
+		ceTarget::Ref lookAt;
 		float pause;
 		float duration;
 	};
@@ -85,14 +85,14 @@ private:
 	ceConversation *pConversation;
 	
 	igdeEnvironment &pEnvironment;
-	deComponent *pEngComponent;
-	deAnimatorInstance *pEngAnimatorInstance;
-	deAnimatorInstance *pEngGestureAnimatorInstance;
-	deAnimator *pEngFacePoseAnimator;
-	deAnimatorInstance *pEngFacePoseAnimatorInstance;
-	deAnimator *pEngEyesAnimator;
-	deAnimatorInstance *pEngEyesAnimatorInstance;
-	deSpeaker *pEngSpeaker;
+	deComponent::Ref pEngComponent;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
+	deAnimatorInstance::Ref pEngGestureAnimatorInstance;
+	deAnimator::Ref pEngFacePoseAnimator;
+	deAnimatorInstance::Ref pEngFacePoseAnimatorInstance;
+	deAnimator::Ref pEngEyesAnimator;
+	deAnimatorInstance::Ref pEngEyesAnimatorInstance;
+	deSpeaker::Ref pEngSpeaker;
 	
 	decString pNameGestureProgress;
 	decString pNameGesturePlayback;
@@ -119,7 +119,7 @@ private:
 	ceSpeechAnimation *pSpeechAnimation;
 	
 	ceActorPoseList pPoses;
-	ceActorPose *pActivePose;
+	ceActorPose::Ref pActivePose;
 	
 	float pHeadLeftRight;
 	float pHeadUpDown;
@@ -139,8 +139,8 @@ private:
 	int pPlayFacePosePos;
 	float pPlayFacePoseElapsed;
 	bool pPlayFacePoseRunning;
-	ceFacePose *pPlayLastFacePose;
-	ceFacePose *pPlayCurFacePose;
+	ceFacePose::Ref pPlayLastFacePose;
+	ceFacePose::Ref pPlayCurFacePose;
 	
 	sLookAt *pPlayHeadLAs;
 	int pPlayHeadLACount;
@@ -148,8 +148,8 @@ private:
 	int pPlayHeadLAPos;
 	float pPlayHeadLAElapsed;
 	bool pPlayHeadLARunning;
-	ceTarget *pPlayLastHeadLA;
-	ceTarget *pPlayCurHeadLA;
+	ceTarget::Ref pPlayLastHeadLA;
+	ceTarget::Ref pPlayCurHeadLA;
 	
 	sLookAt *pPlayEyesLAs;
 	int pPlayEyesLACount;
@@ -157,8 +157,8 @@ private:
 	int pPlayEyesLAPos;
 	float pPlayEyesLAElapsed;
 	bool pPlayEyesLARunning;
-	ceTarget *pPlayLastEyesLA;
-	ceTarget *pPlayCurEyesLA;
+	ceTarget::Ref pPlayLastEyesLA;
+	ceTarget::Ref pPlayCurEyesLA;
 	int pPlayEyesBoneDisable;
 	
 	float pBlinkFreqMin;
@@ -188,9 +188,9 @@ public:
 	inline igdeEnvironment &GetEnvironment() const{ return pEnvironment; }
 	
 	/** Retrieves the gesture animator instance. */
-	inline deAnimatorInstance *GetEngineGestureAnimatorInstance() const{ return pEngGestureAnimatorInstance; }
+	inline const deAnimatorInstance::Ref &GetEngineGestureAnimatorInstance() const{ return pEngGestureAnimatorInstance; }
 	/** Retrieves the engine speaker. */
-	inline deSpeaker *GetEngineSpeaker() const{ return pEngSpeaker; }
+	inline const deSpeaker::Ref &GetEngineSpeaker() const{ return pEngSpeaker; }
 	
 	/** Retrieves the parent conversation or NULL if not set. */
 	inline ceConversation *GetConversation() const{ return pConversation; }
@@ -268,7 +268,7 @@ public:
 	inline const ceActorPoseList &GetPoses() const{ return pPoses; }
 	
 	/** \brief Active pose or \em NULL. */
-	inline ceActorPose *GetActivePose() const{ return pActivePose; }
+	inline const ceActorPose::Ref &GetActivePose() const{ return pActivePose; }
 	
 	/** \brief Set active pose or \em NULL. */
 	void SetActivePose(ceActorPose *pose);

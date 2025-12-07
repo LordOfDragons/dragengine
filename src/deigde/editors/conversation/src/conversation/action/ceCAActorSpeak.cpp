@@ -88,15 +88,11 @@ ceCAActorSpeak::ceCAActorSpeak(const ceCAActorSpeak &action) : ceConversationAct
 	
 	pEngSound = action.pEngSound;
 	if(pEngSound){
-		pEngSound->AddReference();
 	}
 	pLoaded = action.pLoaded;
 }
 
 ceCAActorSpeak::~ceCAActorSpeak(){
-	if(pEngSound){
-		pEngSound->FreeReference();
-	}
 }
 
 
@@ -147,8 +143,6 @@ void ceCAActorSpeak::SetPathSound(const char *path){
 	if(!pPathSound.Equals(path)){
 		pPathSound = path;
 		
-		if(pEngSound){
-			pEngSound->FreeReference();
 			pEngSound = NULL;
 		}
 		pLoaded = false;
@@ -210,9 +204,6 @@ void ceCAActorSpeak::pLoadSound(){
 		pEngine->GetLogger()->LogException(LOGSOURCE, e);
 	}
 	
-	if(pEngSound){
-		pEngSound->FreeReference();
-	}
 	pEngSound = sound;
 	
 	pLoaded = true;

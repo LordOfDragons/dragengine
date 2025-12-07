@@ -43,7 +43,7 @@ class seProperty;
  */
 class seUPropertySetCurve : public igdeUndo{
 private:
-	seSkyLayer *pLayer;
+	seSkyLayer::Ref pLayer;
 	seProperty *pProperty;
 	
 	decCurveBezier pOldCurve;

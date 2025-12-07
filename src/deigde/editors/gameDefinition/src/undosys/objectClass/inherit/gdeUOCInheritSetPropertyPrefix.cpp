@@ -62,12 +62,6 @@ pInherit(NULL)
 }
 
 gdeUOCInheritSetPropertyPrefix::~gdeUOCInheritSetPropertyPrefix(){
-	if(pInherit){
-		pInherit->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

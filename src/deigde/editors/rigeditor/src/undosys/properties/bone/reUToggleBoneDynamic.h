@@ -36,7 +36,7 @@ class reRigBone;
  */
 class reUToggleBoneDynamic : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	
 	

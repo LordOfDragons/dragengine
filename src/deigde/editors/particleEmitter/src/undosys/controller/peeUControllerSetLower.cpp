@@ -57,9 +57,6 @@ pNewLower(newValue)
 }
 
 peeUControllerSetLower::~peeUControllerSetLower(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

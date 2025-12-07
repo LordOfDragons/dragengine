@@ -365,9 +365,6 @@ void deoalComponent::pCleanUp(){
 	
 	pDropTextures();
 	
-	if(pAComponent){
-		pAComponent->FreeReference();
-	}
 }
 
 

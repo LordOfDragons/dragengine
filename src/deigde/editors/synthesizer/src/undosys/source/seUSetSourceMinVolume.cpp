@@ -51,7 +51,6 @@ pSource(NULL)
 	
 	try{
 		pSource = source;
-		pSource->AddReference();
 		
 		SetShortInfo("Source set minimum volume");
 		
@@ -84,7 +83,4 @@ void seUSetSourceMinVolume::Redo(){
 //////////////////////
 
 void seUSetSourceMinVolume::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

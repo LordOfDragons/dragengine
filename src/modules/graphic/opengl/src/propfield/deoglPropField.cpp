@@ -311,8 +311,6 @@ void deoglPropField::BendStatesChanged(int index, dePropFieldType *type){
 //////////////////////
 
 void deoglPropField::pCleanUp(){
-	if(pRPropField){
-		pRPropField->FreeReference();
 		pRPropField = NULL;
 	}
 	

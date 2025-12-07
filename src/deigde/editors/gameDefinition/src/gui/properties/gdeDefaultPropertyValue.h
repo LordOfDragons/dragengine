@@ -41,7 +41,7 @@ class gdeProperty;
  */
 class gdeDefaultPropertyValue : public igdeEditPropertyValue{
 private:
-	igdeGDProperty *pGDProperty;
+	igdeGDProperty::Ref pGDProperty;
 	
 	
 public:

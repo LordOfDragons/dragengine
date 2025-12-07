@@ -36,7 +36,7 @@ class seProperty;
  */
 class seUPropertySetVideoPath : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decString pOldPath;
 	decString pNewPath;

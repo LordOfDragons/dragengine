@@ -360,7 +360,6 @@ void seLayer::SetActiveBody(seBody *body){
 	
 	if(pActiveBody){
 		pActiveBody->SetActive(false);
-		pActiveBody->FreeReference();
 	}
 	
 	pActiveBody = body;

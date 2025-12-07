@@ -259,9 +259,6 @@ void igdeGDClass::SetPreviewImage(deImage *image){
 		return;
 	}
 	
-	if(pPreviewImage){
-		pPreviewImage->FreeReference();
-	}
 	
 	pPreviewImage = image;
 	
@@ -1061,9 +1058,6 @@ const decIntList igdeGDClass::GetEnvMapProbesIndicesWithLinkedProperty(const cha
 //////////////////////
 
 void igdeGDClass::pCleanUp(){
-	if(pPreviewImage){
-		pPreviewImage->FreeReference();
-	}
 	
 	RemoveAllSpeakers();
 	RemoveAllNavigationBlockers();

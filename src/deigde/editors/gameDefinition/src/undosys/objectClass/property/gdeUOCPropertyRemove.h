@@ -40,9 +40,9 @@ class gdeProperty;
  */
 class gdeUOCPropertyRemove : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
-	gdeProperty *pProperty;
+	gdeProperty::Ref pProperty;
 	
 	
 	

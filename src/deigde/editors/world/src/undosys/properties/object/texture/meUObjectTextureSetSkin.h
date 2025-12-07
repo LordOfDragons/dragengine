@@ -41,7 +41,7 @@ class meObjectTextureList;
 class meUObjectTextureSetSkin : public igdeUndo{
 private:
 	struct sTexture{
-		meObjectTexture *texture;
+		meObjectTexture::Ref texture;
 		decString oldskin;
 		decString newskin;
 	};

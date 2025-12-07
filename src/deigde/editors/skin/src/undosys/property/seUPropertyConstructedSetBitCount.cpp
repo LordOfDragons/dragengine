@@ -55,9 +55,6 @@ pNewValue(newValue)
 }
 
 seUPropertyConstructedSetBitCount::~seUPropertyConstructedSetBitCount(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

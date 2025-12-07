@@ -51,7 +51,6 @@ pMask(NULL)
 	SetShortInfo("Node remove mask");
 	
 	pMask = node->GetMask();
-	pMask->AddReference();
 	
 	pOldPosition = pMask->GetPosition();
 	pOldSize = pMask->GetSize();
@@ -63,12 +62,6 @@ pMask(NULL)
 }
 
 seUPropertyNodeRemoveMask::~seUPropertyNodeRemoveMask(){
-	if(pNode){
-		pNode->FreeReference();
-	}
-	if(pMask){
-		pMask->FreeReference();
-	}
 }
 
 

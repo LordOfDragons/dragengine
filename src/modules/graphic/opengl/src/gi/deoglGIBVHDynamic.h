@@ -45,8 +45,8 @@ class deoglGIBVHDynamic{
 protected:
 	deoglGIBVHLocal &pGIBVHLocal;
 	
-	deoglDynamicTBOFloat32 *pTBONodeBox;
-	deoglDynamicTBOFloat32 *pTBOVertex;
+	deoglDynamicTBOFloat32::Ref pTBONodeBox;
+	deoglDynamicTBOFloat32::Ref pTBOVertex;
 	
 	deoglDynamicTBOBlock::Ref pBlockNode;
 	deoglDynamicTBOBlock::Ref pBlockVertex;
@@ -73,10 +73,10 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** TBO for BVH node boundaries. */
-	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** TBO for mesh vertices. */
-	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBOVertex() const{ return pTBOVertex; }
 	
 	/** Local BVH. */
 	inline deoglGIBVHLocal &GetGIBVHLocal(){ return pGIBVHLocal; }

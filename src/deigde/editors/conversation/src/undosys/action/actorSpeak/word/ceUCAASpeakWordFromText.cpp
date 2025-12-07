@@ -61,12 +61,6 @@ ceUCAASpeakWordFromText::ceUCAASpeakWordFromText(ceConversationTopic *topic, ceC
 }
 
 ceUCAASpeakWordFromText::~ceUCAASpeakWordFromText(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

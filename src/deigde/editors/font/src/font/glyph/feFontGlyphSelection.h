@@ -44,7 +44,7 @@ private:
 	feFont *pParentFont;
 	
 	feFontGlyphList pSelected;
-	feFontGlyph *pActive;
+	feFontGlyph::Ref pActive;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -76,7 +76,7 @@ public:
 	void GetSelectedList(feFontGlyphList &list) const;
 	
 	/** Retrieves the active glyph or NULL if none is active. */
-	inline feFontGlyph *GetActiveGlyph() const{ return pActive; }
+	inline const feFontGlyph::Ref &GetActiveGlyph() const{ return pActive; }
 	/** Determines if there is an active glyph or not. */
 	bool HasActiveGlyph() const;
 	/** Sets the active glyph or NULL if none is active. */

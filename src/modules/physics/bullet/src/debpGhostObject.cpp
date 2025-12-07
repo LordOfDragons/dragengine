@@ -88,9 +88,6 @@ void debpGhostObject::SetShape(debpBulletShape *shape){
 		pFreeGhostObject();
 	}
 	
-	if(pShape){
-		pShape->FreeReference();
-	}
 	
 	pShape = shape;
 	
@@ -160,9 +157,6 @@ void debpGhostObject::UpdateAABB(){
 void debpGhostObject::pCleanUp(){
 	pFreeGhostObject();
 	
-	if(pShape){
-		pShape->FreeReference();
-	}
 }
 
 void debpGhostObject::pCreateGhostObject(){

@@ -51,13 +51,9 @@ pSource(NULL)
 	pNewType = newType;
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceWaveSetType::~seUSourceWaveSetType(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

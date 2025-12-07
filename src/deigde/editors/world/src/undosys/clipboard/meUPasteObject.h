@@ -45,7 +45,7 @@ class meWorld;
  */
 class meUPasteObject : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meObjectList pObjects;
 	decIntList pAttachedToIndexList;
 	

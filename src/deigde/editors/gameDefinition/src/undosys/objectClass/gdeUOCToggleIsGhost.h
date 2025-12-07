@@ -39,7 +39,7 @@ class gdeObjectClass;
  */
 class gdeUOCToggleIsGhost : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	

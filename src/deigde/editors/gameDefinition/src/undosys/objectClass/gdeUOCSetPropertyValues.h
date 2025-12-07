@@ -39,7 +39,7 @@ class gdeObjectClass;
  */
 class gdeUOCSetPropertyValues : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;

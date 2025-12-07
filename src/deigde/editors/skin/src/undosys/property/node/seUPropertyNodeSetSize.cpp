@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeSetSize::~seUPropertyNodeSetSize(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

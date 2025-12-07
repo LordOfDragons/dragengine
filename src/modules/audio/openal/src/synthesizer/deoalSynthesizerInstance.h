@@ -42,7 +42,7 @@ class deoalSynthesizerInstance : public deBaseAudioSynthesizerInstance{
 private:
 	deAudioOpenAL &pOal;
 	deSynthesizerInstance &pInstance;
-	deoalASynthesizerInstance *pAInstance;
+	deoalASynthesizerInstance::Ref pAInstance;
 	unsigned int pUpdateTracker;
 	bool pDirtyParameters;
 	
@@ -69,7 +69,7 @@ public:
 	inline deSynthesizerInstance &GetInstance() const{ return pInstance; }
 	
 	/** \brief Audio peer. */
-	inline deoalASynthesizerInstance *GetAInstance() const{ return pAInstance; }
+	inline const deoalASynthesizerInstance::Ref &GetAInstance() const{ return pAInstance; }
 	
 	/** \brief Update tracker. */
 	inline unsigned int GetUpdateTracker() const{ return pUpdateTracker; }

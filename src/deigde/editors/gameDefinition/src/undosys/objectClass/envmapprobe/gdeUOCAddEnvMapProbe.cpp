@@ -59,12 +59,6 @@ pEnvMapProbe(NULL)
 }
 
 gdeUOCAddEnvMapProbe::~gdeUOCAddEnvMapProbe(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

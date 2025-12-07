@@ -860,9 +860,6 @@ pPanelCTrigger(NULL)
 ceWPTopic::~ceWPTopic(){
 	SetConversation(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -883,7 +880,6 @@ void ceWPTopic::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;

@@ -35,7 +35,7 @@ class seController;
  */
 class seUControllerSetName : public igdeUndo{
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	decString pOldName;
 	decString pNewName;

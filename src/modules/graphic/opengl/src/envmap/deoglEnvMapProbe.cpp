@@ -163,7 +163,4 @@ void deoglEnvMapProbe::LayerMaskChanged(){
 //////////////////////
 
 void deoglEnvMapProbe::pCleanUp(){
-	if(pREnvMapProbe){
-		pREnvMapProbe->FreeReference();
-	}
 }

@@ -51,7 +51,4 @@ pCamera(NULL)
 }
 
 gdeClipboardDataOCCamera::~gdeClipboardDataOCCamera(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
 }

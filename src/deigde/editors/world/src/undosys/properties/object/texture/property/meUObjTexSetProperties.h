@@ -38,7 +38,7 @@ class meObjectTexture;
  */
 class meUObjTexSetProperties : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;
 	

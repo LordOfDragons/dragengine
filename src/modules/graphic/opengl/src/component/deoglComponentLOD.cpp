@@ -70,7 +70,4 @@ deoglComponentLOD::~deoglComponentLOD(){
 //////////////////////
 
 void deoglComponentLOD::pCleanUp(){
-	if(pRLOD){
-		pRLOD->FreeReference();
-	}
 }

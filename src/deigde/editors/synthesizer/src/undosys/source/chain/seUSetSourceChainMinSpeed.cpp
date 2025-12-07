@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewSpeed = newSpeed;
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSetSourceChainMinSpeed::~seUSetSourceChainMinSpeed(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

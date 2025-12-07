@@ -36,7 +36,7 @@ class sePropertyNodeImage;
  */
 class seUPropertyNodeImageSetPath : public igdeUndo{
 private:
-	sePropertyNodeImage *pNode;
+	sePropertyNodeImage::Ref pNode;
 	
 	decString pOldValue;
 	decString pNewValue;

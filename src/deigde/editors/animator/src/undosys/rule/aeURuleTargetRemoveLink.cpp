@@ -51,12 +51,10 @@ aeURuleTargetRemoveLink::aeURuleTargetRemoveLink(aeRule *rule, aeControllerTarge
 	SetShortInfo("Rule Target Remove Link");
 	
 	pRule = rule;
-	pRule->AddReference();
 	
 	pTarget = target;
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 aeURuleTargetRemoveLink::~aeURuleTargetRemoveLink(){

@@ -37,7 +37,7 @@ class reRigShapeCylinder;
  */
 class reUSetShapeCylinderHalfHeight : public igdeUndo{
 private:
-	reRigShapeCylinder *pShape;
+	reRigShapeCylinder::Ref pShape;
 	
 	float pOldHalfHeight;
 	float pNewHalfHeight;

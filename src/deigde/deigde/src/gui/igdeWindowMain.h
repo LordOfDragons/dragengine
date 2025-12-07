@@ -93,8 +93,8 @@ private:
 	deVirtualFileSystem::Ref pVFS;
 	igdeTemplateList *pTemplates;
 	igdeGameDefinitionList *pSharedGameDefinitions;
-	igdeGameDefinition *pIGDEGameDefinition;
-	igdeGameProject *pGameProject;
+	igdeGameDefinition::Ref pIGDEGameDefinition;
+	igdeGameProject::Ref pGameProject;
 	igdeGuiTheme::Ref pDefaultGuiTheme;
 	decObjectDictionary pGuiThemes;
 	igdeSharedFontList *pSharedFontList;
@@ -225,7 +225,7 @@ public:
 	inline igdeGameDefinitionList &GetSharedGameDefinitions() const{ return *pSharedGameDefinitions; }
 	
 	/** Retrieves the igde game definition. */
-	inline igdeGameDefinition *GetIGDEGameDefinition() const{ return pIGDEGameDefinition; }
+	inline const igdeGameDefinition::Ref &GetIGDEGameDefinition() const{ return pIGDEGameDefinition; }
 	
 	/** Logger window or NULL if not visible. */
 	inline igdeWindowLogger *GetWindowLogger() const{ return pWindowLogger; }
@@ -265,7 +265,7 @@ public:
 	bool ProcessCommandLine(const decUnicodeStringList &arguments);
 	
 	/** Retrieves the active game project. */
-	inline igdeGameProject *GetGameProject() const{ return pGameProject; }
+	inline const igdeGameProject::Ref &GetGameProject() const{ return pGameProject; }
 	/** Sets the active game project. */
 	void SetGameProject(igdeGameProject *project);
 	/**

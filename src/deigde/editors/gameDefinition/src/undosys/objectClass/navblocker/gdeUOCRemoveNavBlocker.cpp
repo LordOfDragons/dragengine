@@ -63,12 +63,6 @@ pNavBlocker(NULL)
 }
 
 gdeUOCRemoveNavBlocker::~gdeUOCRemoveNavBlocker(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

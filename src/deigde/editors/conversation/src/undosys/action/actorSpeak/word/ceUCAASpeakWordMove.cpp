@@ -71,15 +71,6 @@ ceStrip *word, int newIndex){
 }
 
 ceUCAASpeakWordMove::~ceUCAASpeakWordMove(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

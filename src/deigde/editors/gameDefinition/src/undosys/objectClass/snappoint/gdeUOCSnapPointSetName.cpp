@@ -62,12 +62,6 @@ pSnapPoint(NULL)
 }
 
 gdeUOCSnapPointSetName::~gdeUOCSnapPointSetName(){
-	if(pSnapPoint){
-		pSnapPoint->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

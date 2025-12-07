@@ -250,9 +250,6 @@ void ceConversationInfoBox::UpdateCanvas(){
 //////////////////////
 
 void ceConversationInfoBox::pCleanUp(){
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 }
 
 

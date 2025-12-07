@@ -67,15 +67,6 @@ ceCConditionActorCommand *condition, const char *newActor){
 }
 
 ceUCCACommandSetActor::~ceUCCACommandSetActor(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

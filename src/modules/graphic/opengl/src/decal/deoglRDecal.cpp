@@ -205,22 +205,12 @@ deoglRDecal::~deoglRDecal(){
 	NotifyDecalDestroyed();
 	pListeners.RemoveAll();
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	if(pRTSInstance){
 		pRTSInstance->ReturnToPool();
-	}
-	if(pSharedSPBElement){
-		pSharedSPBElement->FreeReference();
 	}
 	
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 	if(pTUCGeometry){
 		pTUCGeometry->RemoveUsage();
@@ -316,9 +306,6 @@ void deoglRDecal::SetSkin(deoglRSkin *skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	pSkin = skin;
 	
@@ -344,9 +331,6 @@ void deoglRDecal::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 		return;
 	}
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	
 	pDynamicSkin = dynamicSkin;
 	
@@ -917,7 +901,6 @@ void deoglRDecal::pPrepareVBO(){
 	
 	if(pVBOBlock){
 		pVBOBlock->GetVBO()->RemoveBlock(pVBOBlock);
-		pVBOBlock->FreeReference();
 		pVBOBlock = NULL;
 	}
 	

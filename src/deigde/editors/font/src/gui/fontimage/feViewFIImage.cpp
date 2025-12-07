@@ -62,9 +62,6 @@ pZoom(100){
 }
 
 feViewFIImage::~feViewFIImage(){
-	if(pFont){
-		pFont->FreeReference();
-	}
 }
 
 
@@ -78,9 +75,6 @@ void feViewFIImage::SetFont(feFont *font){
 		return;
 	}
 	
-	if(pFont){
-		pFont->FreeReference();
-	}
 	
 	pFont = font;
 	

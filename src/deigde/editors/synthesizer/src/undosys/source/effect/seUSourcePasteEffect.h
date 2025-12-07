@@ -41,7 +41,7 @@ class seSource;
  */
 class seUSourcePasteEffect : public igdeUndo{
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	seEffectList pEffectList;
 	seLinkList pRemoveLinkList;
 	seControllerList pRemoveControllerList;

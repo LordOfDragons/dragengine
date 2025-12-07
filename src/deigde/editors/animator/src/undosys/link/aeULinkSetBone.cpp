@@ -50,16 +50,12 @@ aeULinkSetBone::aeULinkSetBone(aeLink *link, const char *newBone){
 	SetShortInfo("Link set bone");
 	
 	pLink = link;
-	pLink->AddReference();
 	
 	pOldValue = link->GetBone();
 	pNewValue = newBone;
 }
 
 aeULinkSetBone::~aeULinkSetBone(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

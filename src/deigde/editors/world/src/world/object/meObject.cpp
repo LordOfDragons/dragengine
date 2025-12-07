@@ -717,7 +717,6 @@ void meObject::SetAttachedTo(meObject *object){
 		}
 		
 		pAttachedTo->GetAttachedObjectsList().Remove(this);
-		pAttachedTo->FreeReference();
 	}
 	
 	meObject * const oldObject = pAttachedTo;
@@ -1906,12 +1905,6 @@ void meObject::pCleanUp(){
 		delete [] pTextures;
 	}
 	
-	if(pColDetCollider){
-		pColDetCollider->FreeReference();
-	}
-	if(pEngComponentBroken){
-		pEngComponentBroken->FreeReference();
-	}
 	pWObject = nullptr;
 	
 	if(pCamera){
@@ -1932,9 +1925,6 @@ void meObject::pCleanUp(){
 	}
 	if(pDDSObject){
 		delete pDDSObject;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -2317,7 +2307,6 @@ void meObject::pUpdateBrokenComponent(){
 		if(pWorld){
 			pWorld->GetEngineWorld()->RemoveComponent(pEngComponentBroken);
 		}
-		pEngComponentBroken->FreeReference();
 		pEngComponentBroken = nullptr;
 	}
 }

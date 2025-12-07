@@ -143,7 +143,4 @@ void meUDeleteNavSpace::pCleanUp(){
 		delete [] pNavSpaces;
 	}
 	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

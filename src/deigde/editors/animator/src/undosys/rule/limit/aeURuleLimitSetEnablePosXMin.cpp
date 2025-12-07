@@ -49,13 +49,9 @@ aeURuleLimitSetEnablePosXMin::aeURuleLimitSetEnablePosXMin(aeRuleLimit *rule){
 	SetShortInfo("Limit toggle enable minimum y position");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleLimitSetEnablePosXMin::~aeURuleLimitSetEnablePosXMin(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -42,8 +42,8 @@ public:
 	
 	
 private:
-	seSynthesizer *pSynthesizer;
-	seLink *pLink;
+	seSynthesizer::Ref pSynthesizer;
+	seLink::Ref pLink;
 	
 	
 	

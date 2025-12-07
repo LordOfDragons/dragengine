@@ -37,8 +37,8 @@ class sePropertyNodeGroup;
  */
 class seUPNGroupAddNode : public igdeUndo{
 private:
-	sePropertyNodeGroup *pNode;
-	sePropertyNode *pChild;
+	sePropertyNodeGroup::Ref pNode;
+	sePropertyNode::Ref pChild;
 	
 	
 	

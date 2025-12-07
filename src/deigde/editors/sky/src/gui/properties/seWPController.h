@@ -45,9 +45,9 @@ class seWPControllerListener;
 class seWPController : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seWPControllerListener *pListener;
+	seWPControllerListener::Ref pListener;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	igdeAction::Ref pActionControllerAdd;
 	igdeAction::Ref pActionControllerRemove;
@@ -82,7 +82,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);

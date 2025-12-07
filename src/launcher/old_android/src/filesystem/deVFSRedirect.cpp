@@ -74,10 +74,6 @@ pHoldVFSReference(false)
 
 deVFSRedirect::~deVFSRedirect(){
 	if(pVFS && pHoldVFSReference){
-		pVFS->FreeReference();
-	}
-	if(pContainer){
-		pContainer->FreeReference();
 	}
 }
 

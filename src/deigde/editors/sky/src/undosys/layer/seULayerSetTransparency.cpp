@@ -56,9 +56,6 @@ pNewTransparency(newTransparency)
 }
 
 seULayerSetTransparency::~seULayerSetTransparency(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

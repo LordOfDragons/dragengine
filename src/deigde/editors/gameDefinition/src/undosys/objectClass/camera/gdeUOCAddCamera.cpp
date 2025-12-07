@@ -59,12 +59,6 @@ pCamera(NULL)
 }
 
 gdeUOCAddCamera::~gdeUOCAddCamera(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -83,10 +83,4 @@ void seUMoveSourceUp::Redo(){
 //////////////////////
 
 void seUMoveSourceUp::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

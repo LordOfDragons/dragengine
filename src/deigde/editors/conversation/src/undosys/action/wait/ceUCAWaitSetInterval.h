@@ -37,8 +37,8 @@ class ceCAWait;
  */
 class ceUCAWaitSetInterval : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
 	float pOldInterval;
 	float pNewInterval;
 	

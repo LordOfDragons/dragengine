@@ -114,9 +114,6 @@ void feFontImage::SetSize(int width, int height){
 	try{
 		engImage = pEngine->GetImageManager()->CreateImage(pWidth, pHeight, 1, 4, 8);
 		
-		if(pEngImage){
-			pEngImage->FreeReference();
-		}
 		
 		pEngImage = engImage;
 		engImage->RetainImageData();
@@ -155,8 +152,6 @@ void feFontImage::SetSaved(bool saved){
 }
 
 void feFontImage::LoadImage(){
-	if(pEngImage){
-		pEngImage->FreeReference();
 		pEngImage = NULL;
 	}
 	
@@ -210,7 +205,4 @@ void feFontImage::NotifyImageChanged(){
 //////////////////////
 
 void feFontImage::pCleanUp(){
-	if(pEngImage){
-		pEngImage->FreeReference();
-	}
 }

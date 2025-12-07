@@ -44,8 +44,8 @@ private:
 	dearMapAnimationBones pMapAnimationBones;
 	dearMapAnimationVPS pMapAnimationVPS;
 	
-	dearAnimationMove *pMove1;
-	dearAnimationMove *pMove2;
+	dearAnimationMove::Ref pMove1;
+	dearAnimationMove::Ref pMove2;
 	
 	dearControllerTarget pTargetLeadingMoveTime;
 	dearControllerTarget pTargetReferenceMoveTime;

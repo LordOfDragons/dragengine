@@ -36,7 +36,7 @@ class peeEmitter;
  */
 class peeUEmitterSetBurstLifetime : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	float pOldLifetime;
 	float pNewLifetime;

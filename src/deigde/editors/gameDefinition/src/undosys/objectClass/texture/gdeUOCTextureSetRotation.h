@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCTextureSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponentTexture *pTexture;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponentTexture::Ref pTexture;
 	
 	float pOldValue;
 	float pNewValue;

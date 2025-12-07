@@ -539,7 +539,4 @@ void ceWPTTreeModel::pCleanUp(){
 		delete pListener;
 	}
 	
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }

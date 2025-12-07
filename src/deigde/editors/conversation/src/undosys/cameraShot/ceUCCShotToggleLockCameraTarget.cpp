@@ -53,9 +53,6 @@ ceUCCShotToggleLockCameraTarget::ceUCCShotToggleLockCameraTarget(ceCameraShot *c
 }
 
 ceUCCShotToggleLockCameraTarget::~ceUCCShotToggleLockCameraTarget(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

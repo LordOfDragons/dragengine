@@ -637,7 +637,6 @@ void reRig::Rebuild(){
 		
 		pEngAnimator->SetRig(NULL);
 		
-		pEngRig->FreeReference();
 		pEngRig = NULL;
 		
 	// if the rig does not exist we have to init the pose matrices from the
@@ -1141,9 +1140,6 @@ void reRig::SetAllBonesVisited(bool visited){
 
 void reRig::SetRootBone(reRigBone *rootBone){
 	if(rootBone != pRootBone){
-		if(pRootBone){
-			pRootBone->FreeReference();
-		}
 		
 		pRootBone = rootBone;
 		
@@ -1903,9 +1899,6 @@ void reRig::pCleanUp(){
 		delete pSelectionBones;
 	}
 	
-	if(pRootBone){
-		pRootBone->FreeReference();
-	}
 	
 	RemoveAllNotifiers();
 	if(pNotifiers){
@@ -1942,32 +1935,19 @@ void reRig::pCleanUp(){
 	
 	if(pEngSimCollider){
 		pEngSimCollider->SetComponent(NULL);
-		pEngSimCollider->FreeReference();
 	}
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetComponent(NULL);
 		pEngAnimatorInstance->SetAnimator(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	if(pEngAnimator){
 		pEngAnimator->SetRig(NULL);
-		pEngAnimator->FreeReference();
 	}
 	if(pEngComponent){
 		pEngComponent->SetRig(NULL);
-		pEngComponent->FreeReference();
-	}
-	if(pEngRig){
-		pEngRig->FreeReference();
 	}
 	
-	if(pEngLight){
-		pEngLight->FreeReference();
-	}
 	
-	if(pEngWorld){
-		pEngWorld->FreeReference();
-	}
 }
 
 
@@ -2035,7 +2015,6 @@ void reRig::pUpdateComponent(){
 		}else if(pEngComponent){
 			pEngSimCollider->SetComponent(NULL);
 			pEngWorld->RemoveComponent(pEngComponent);
-			pEngComponent->FreeReference();
 			pEngComponent = NULL;
 		}
 		

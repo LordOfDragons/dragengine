@@ -51,9 +51,6 @@ pNewSets(sets)
 }
 
 saeUSAnimSetNeutralVertexPositionSets::~saeUSAnimSetNeutralVertexPositionSets(){
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACameraShotSetName : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCACameraShot *pCameraShot;
+	ceConversationTopic::Ref pTopic;
+	ceCACameraShot::Ref pCameraShot;
 	decString pOldName;
 	decString pNewName;
 	

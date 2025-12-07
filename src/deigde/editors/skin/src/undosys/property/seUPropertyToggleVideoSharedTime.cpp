@@ -52,9 +52,6 @@ seUPropertyToggleVideoSharedTime::seUPropertyToggleVideoSharedTime(seProperty *p
 }
 
 seUPropertyToggleVideoSharedTime::~seUPropertyToggleVideoSharedTime(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

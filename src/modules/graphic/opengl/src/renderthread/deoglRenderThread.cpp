@@ -250,9 +250,6 @@ void deoglRenderThread::SetCanvasInputOverlay(deoglRCanvasView *canvas){
 		return;
 	}
 	
-	if(pCanvasInputOverlay){
-		pCanvasInputOverlay->FreeReference();
-	}
 	
 	pCanvasInputOverlay = canvas;
 	
@@ -266,9 +263,6 @@ void deoglRenderThread::SetCanvasDebugOverlay(deoglRCanvasView *canvas){
 		return;
 	}
 	
-	if(pCanvasDebugOverlay){
-		pCanvasDebugOverlay->FreeReference();
-	}
 	
 	pCanvasDebugOverlay = canvas;
 	
@@ -282,9 +276,6 @@ void deoglRenderThread::SetCanvasOverlay(deoglRCanvasView *canvas){
 		return;
 	}
 	
-	if(pCanvasOverlay){
-		pCanvasOverlay->FreeReference();
-	}
 	
 	pCanvasOverlay = canvas;
 	
@@ -2492,16 +2483,10 @@ void deoglRenderThread::pCleanUpThread(){
 		#endif
 		
 		// remove canvas if present
-		if(pCanvasOverlay){
-			pCanvasOverlay->FreeReference();
 			pCanvasOverlay = nullptr;
 		}
-		if(pCanvasDebugOverlay){
-			pCanvasDebugOverlay->FreeReference();
 			pCanvasDebugOverlay = nullptr;
 		}
-		if(pCanvasInputOverlay){
-			pCanvasInputOverlay->FreeReference();
 			pCanvasInputOverlay = nullptr;
 		}
 		#ifdef TIME_CLEANUP

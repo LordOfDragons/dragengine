@@ -49,9 +49,6 @@ pListener(new feWPUndoHistoryListener(*this)){
 feWPUndoHistory::~feWPUndoHistory(){
 	SetFont(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -68,7 +65,6 @@ void feWPUndoHistory::SetFont(feFont *font){
 	
 	if(pFont){
 		pFont->RemoveNotifier(pListener);
-		pFont->FreeReference();
 	}
 	
 	pFont = font;

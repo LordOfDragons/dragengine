@@ -39,7 +39,7 @@ class projProfile;
  */
 class projUProfileSetExcludePatterns : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;

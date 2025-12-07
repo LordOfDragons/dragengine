@@ -55,9 +55,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeSetGamma::~seUPropertyNodeSetGamma(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

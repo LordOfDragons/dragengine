@@ -81,9 +81,6 @@ meUObjectShapesDelete::meUObjectShapesDelete(meObject *object, const char *prope
 }
 
 meUObjectShapesDelete::~meUObjectShapesDelete(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

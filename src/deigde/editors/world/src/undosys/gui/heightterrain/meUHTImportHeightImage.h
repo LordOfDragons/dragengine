@@ -51,7 +51,7 @@ public:
 	
 	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
 	
 	float *pOldHeights;

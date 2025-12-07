@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetType : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	deLight::eLightTypes pOldValue;
 	deLight::eLightTypes pNewValue;

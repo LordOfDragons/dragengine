@@ -232,9 +232,6 @@ void deoglComponentTexture::pCleanUp(){
 		delete pSkinStateController;
 	}
 	
-	if(pRTexture){
-		pRTexture->FreeReference();
-	}
 	
 	if(pDynamicSkin){
 		pDynamicSkin->RemoveListener(this);

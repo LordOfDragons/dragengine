@@ -56,9 +56,6 @@ ceUCTargetSetBone::ceUCTargetSetBone(ceTarget *target, const char *newBone){
 }
 
 ceUCTargetSetBone::~ceUCTargetSetBone(){
-	if(pTarget){
-		pTarget->FreeReference();
-	}
 }
 
 

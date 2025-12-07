@@ -56,9 +56,6 @@ peeUTypeSetModelSkinPath::peeUTypeSetModelSkinPath(peeType *type, const char *ne
 }
 
 peeUTypeSetModelSkinPath::~peeUTypeSetModelSkinPath(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

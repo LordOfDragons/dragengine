@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalTCOffset : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decVector2 pOldOffset;
 	decVector2 pNewOffset;
 	

@@ -59,12 +59,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentToggleRenderEnvMap::~gdeUOCComponentToggleRenderEnvMap(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

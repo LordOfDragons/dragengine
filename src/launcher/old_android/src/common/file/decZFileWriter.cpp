@@ -94,7 +94,6 @@ pBufferOutSize(0)
 	pZStream = zstream;
 	
 	pWriter = writer;
-	pWriter->AddReference();
 }
 
 decZFileWriter::~decZFileWriter(){
@@ -104,9 +103,6 @@ decZFileWriter::~decZFileWriter(){
 		delete (z_stream*)pZStream;
 	}
 	
-	if(pWriter){
-		pWriter->FreeReference();
-	}
 	if(pBufferOut){
 		delete [] (Bytef*)pBufferOut;
 	}

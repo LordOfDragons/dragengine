@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Object class. */
-	gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
+	const gdeObjectClass::Ref &GetObjectClass() const{ return pObjectClass; }
 	/*@}*/
 };
 

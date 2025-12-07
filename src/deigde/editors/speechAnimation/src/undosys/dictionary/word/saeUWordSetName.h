@@ -36,7 +36,7 @@ class saeWord;
  */
 class saeUWordSetName : public igdeUndo{
 private:
-	saeWord *pWord;
+	saeWord::Ref pWord;
 	
 	decString pOldName;
 	decString pNewName;

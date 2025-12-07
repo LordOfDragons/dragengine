@@ -56,9 +56,6 @@ pNewOrientation(newOrientation)
 }
 
 seUBodySetOrientation::~seUBodySetOrientation(){
-	if(pBody){
-		pBody->FreeReference();
-	}
 }
 
 

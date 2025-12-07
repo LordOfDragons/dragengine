@@ -35,7 +35,7 @@ class gdeOCForceField;
  */
 class gdeWPSTIMOCForceField : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCForceField *pForceField;
+	gdeOCForceField::Ref pForceField;
 	
 	
 public:
@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Particle emitter. */
-	inline gdeOCForceField *GetOCForceField() const{ return pForceField; }
+	inline const gdeOCForceField::Ref &GetOCForceField() const{ return pForceField; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

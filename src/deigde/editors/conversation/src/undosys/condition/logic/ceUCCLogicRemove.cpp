@@ -72,18 +72,6 @@ ceCConditionLogic *logic, ceConversationCondition *condition){
 }
 
 ceUCCLogicRemove::~ceUCCLogicRemove(){
-	if(pCondition){
-		pCondition->FreeReference();
-	}
-	if(pLogic){
-		pLogic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -846,9 +846,6 @@ pListener(NULL)
 projPanelProfiles::~projPanelProfiles(){
 	SetProject(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -867,7 +864,6 @@ void projPanelProfiles::SetProject(projProject *project){
 	
 	if(pProject){
 		pProject->RemoveListener(pListener);
-		pProject->FreeReference();
 	}
 	
 	pProject = project;

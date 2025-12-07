@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetPhysicsSize : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	float pOldSize;
 	float pNewSize;

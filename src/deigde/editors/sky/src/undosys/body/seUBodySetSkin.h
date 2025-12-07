@@ -35,7 +35,7 @@ class seBody;
  */
 class seUBodySetSkin : public igdeUndo{
 private:
-	seBody *pBody;
+	seBody::Ref pBody;
 	
 	decString pOldSkin;
 	decString pNewSkin;

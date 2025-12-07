@@ -129,12 +129,8 @@ saeWindowMain::~saeWindowMain(){
 	
 	SetSAnimation(NULL);
 	
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
 		pWindowProperties = NULL;
 	}
-	if(pViewSAnimation){
-		pViewSAnimation->FreeReference();
 		pViewSAnimation = NULL;
 	}
 	
@@ -143,9 +139,6 @@ saeWindowMain::~saeWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -177,7 +170,6 @@ void saeWindowMain::SetSAnimation(saeSAnimation *sanimation){
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
 		pSAnimation->Dispose();
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;

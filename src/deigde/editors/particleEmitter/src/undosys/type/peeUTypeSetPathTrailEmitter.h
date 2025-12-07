@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetPathTrailEmitter : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	decString pOldPath;
 	decString pNewPath;

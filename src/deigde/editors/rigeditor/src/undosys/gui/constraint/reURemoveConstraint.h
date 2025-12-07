@@ -40,12 +40,12 @@ class reRigConstraintList;
 class reURemoveConstraint : public igdeUndo{
 private:
 	struct sEntry{
-		reRigConstraint *constraint;
-		reRigBone *bone;
+		reRigConstraint::Ref constraint;
+		reRigBone::Ref bone;
 	};
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	sEntry *pEntries;
 	int pEntryCount;

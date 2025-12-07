@@ -42,7 +42,7 @@ class meHeightTerrain;
  */
 class meUHTSetHeightScaling : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrain *pHeightTerrain;
 	
 	float pOldHeightScaling;

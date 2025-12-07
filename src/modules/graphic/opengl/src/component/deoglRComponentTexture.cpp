@@ -117,18 +117,9 @@ pDirtyTUCsEnvMapUse(true)
 
 deoglRComponentTexture::~deoglRComponentTexture(){
 	LEAK_CHECK_FREE(pComponent.GetRenderThread(), ComponentTexture);
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	pSharedSPBRTIGroup.RemoveAll();
 	pSharedSPBRTIGroupShadow.RemoveAll();
-	if(pSharedSPBElement){
-		pSharedSPBElement->FreeReference();
-	}
 	
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
@@ -189,9 +180,6 @@ void deoglRComponentTexture::SetSkin(deoglRSkin *skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
 	if(skin){
 		skin->AddReference();
@@ -209,9 +197,6 @@ void deoglRComponentTexture::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 		return;
 	}
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	pDynamicSkin = dynamicSkin;
 	if(dynamicSkin){
 		dynamicSkin->AddReference();
@@ -382,8 +367,6 @@ decTexMatrix2 deoglRComponentTexture::CalcTexCoordMatrix() const{
 void deoglRComponentTexture::PrepareParamBlocks(){
 	if(!pValidParamBlocks){
 		// shared spb
-		if(pSharedSPBElement){
-			pSharedSPBElement->FreeReference();
 			pSharedSPBElement = NULL;
 		}
 		

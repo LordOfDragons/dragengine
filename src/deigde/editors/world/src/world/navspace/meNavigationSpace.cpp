@@ -527,25 +527,12 @@ void meNavigationSpace::pCleanUp(){
 	
 	pObjectPlaceholder = nullptr;
 	
-	if(pEngNavSpace){
-		pEngNavSpace->FreeReference();
-	}
 	if(pEngCollider){
 		pEnvironment->SetColliderUserPointer(pEngCollider, NULL);
-		pEngCollider->FreeReference();
-	}
-	if(pEngColComponent){
-		pEngColComponent->FreeReference();
-	}
-	if(pEngRig){
-		pEngRig->FreeReference();
 	}
 	
 	if(pDDSNavSpace){
 		delete pDDSNavSpace;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -553,8 +540,6 @@ void meNavigationSpace::pCleanUp(){
 
 void meNavigationSpace::pUpdateShapes(){
 	pEngCollider->SetComponent(NULL);
-	if(pEngColComponent){
-		pEngColComponent->FreeReference();
 		pEngColComponent = NULL;
 	}
 	

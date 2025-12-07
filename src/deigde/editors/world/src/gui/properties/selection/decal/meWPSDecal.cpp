@@ -533,9 +533,6 @@ pWorld(NULL)
 
 meWPSDecal::~meWPSDecal(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -557,7 +554,6 @@ void meWPSDecal::SetWorld(meWorld *world){
 		editProperties.SetIdentifiers(decStringSet());
 		
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

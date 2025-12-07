@@ -42,7 +42,7 @@ private:
 	deEngine *pEngine;
 	
 	decString pPathSound;
-	deSound *pSound;
+	deSound::Ref pSound;
 	
 	float pMinSpeed;
 	float pMaxSpeed;
@@ -80,7 +80,7 @@ public:
 	void UpdateSound();
 	
 	/** \brief Sound or \em null if silent. */
-	inline deSound *GetSound() const{ return pSound; }
+	inline const deSound::Ref &GetSound() const{ return pSound; }
 	
 	
 	

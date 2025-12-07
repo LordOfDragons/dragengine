@@ -69,15 +69,6 @@ ceUCAASpeakEyesLARemove::ceUCAASpeakEyesLARemove(ceConversationTopic *topic, ceC
 }
 
 ceUCAASpeakEyesLARemove::~ceUCAASpeakEyesLARemove(){
-	if(pEyesLA){
-		pEyesLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

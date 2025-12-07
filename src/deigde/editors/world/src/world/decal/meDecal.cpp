@@ -176,7 +176,6 @@ pColliderOwner(this)
 	try{
 		pEngSkin = decal.pEngSkin;
 		if(pEngSkin){
-			pEngSkin->AddReference();
 		}
 		// pUpdateSkin(); // not needed as there are no decals yet
 		
@@ -441,8 +440,6 @@ void meDecal::UpdateDynamicSkin(){
 		}
 		
 	}else{
-		if(pDynamicSkin){
-			pDynamicSkin->FreeReference();
 			pDynamicSkin = NULL;
 		}
 	}
@@ -695,23 +692,13 @@ void meDecal::pCleanUp(){
 	
 	if(pCollider){
 		pEnvironment->SetColliderUserPointer(pCollider, NULL);
-		pCollider->FreeReference();
 	}
 	
 	DetachDecals();
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 	
 	if(pDDSDecal){
 		delete pDDSDecal;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 
@@ -930,8 +917,6 @@ void meDecal::pLoadSkin(){
 		}
 	}
 	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
 		pEngSkin = NULL;
 	}
 	

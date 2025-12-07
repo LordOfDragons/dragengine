@@ -62,12 +62,6 @@ ceUCActionMove::ceUCActionMove(ceConversationTopic *topic, ceConversationAction 
 }
 
 ceUCActionMove::~ceUCActionMove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

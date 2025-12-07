@@ -38,9 +38,9 @@ class ceStrip;
  */
 class ceUCAASpeakStripSetDuration : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pStrip;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pStrip;
 	float pOldDuration;
 	float pNewDuration;
 	

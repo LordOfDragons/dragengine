@@ -62,12 +62,6 @@ ceUCFPControllerRemove::ceUCFPControllerRemove(ceFacePose *facePose, ceControlle
 }
 
 ceUCFPControllerRemove::~ceUCFPControllerRemove(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
 }
 
 

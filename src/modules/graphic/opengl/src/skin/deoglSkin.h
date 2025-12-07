@@ -41,7 +41,7 @@ private:
 	deGraphicOpenGl &pOgl;
 	const deSkin &pSkin;
 	
-	deoglRSkin *pRSkin;
+	deoglRSkin::Ref pRSkin;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -66,7 +66,7 @@ public:
 	
 	
 	/** Render skin. */
-	inline deoglRSkin *GetRSkin() const{ return pRSkin; }
+	inline const deoglRSkin::Ref &GetRSkin() const{ return pRSkin; }
 
 
 	/** Recreate deoglRSkin. */

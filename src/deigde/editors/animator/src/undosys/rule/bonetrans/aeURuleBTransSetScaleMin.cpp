@@ -48,7 +48,6 @@ aeURuleBTransSetScaleMin::aeURuleBTransSetScaleMin(aeRuleBoneTransformator *rule
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldMin = rule->GetMinimumScaling();
 		pNewMin = newMin;
@@ -84,7 +83,4 @@ void aeURuleBTransSetScaleMin::Redo(){
 //////////////////////
 
 void aeURuleBTransSetScaleMin::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

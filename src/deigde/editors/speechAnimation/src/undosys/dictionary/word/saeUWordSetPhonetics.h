@@ -38,7 +38,7 @@ class saeWord;
  */
 class saeUWordSetPhonetics : public igdeUndo{
 private:
-	saeWord *pWord;
+	saeWord::Ref pWord;
 	
 	decUnicodeString pOldPhonetics;
 	decUnicodeString pNewPhonetics;

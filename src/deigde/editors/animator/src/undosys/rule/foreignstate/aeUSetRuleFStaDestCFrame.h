@@ -38,7 +38,7 @@ class aeRuleForeignState;
  */
 class aeUSetRuleFStaDestCFrame : public igdeUndo{
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 	deAnimatorRuleForeignState::eCoordinateFrames pOldCFrame;
 	deAnimatorRuleForeignState::eCoordinateFrames pNewCFrame;

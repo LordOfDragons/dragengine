@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCAMusicSetName : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAMusic *pMusic;
+	ceConversationTopic::Ref pTopic;
+	ceCAMusic::Ref pMusic;
 	decString pOldName;
 	decString pNewName;
 	

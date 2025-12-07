@@ -54,9 +54,6 @@ pNewValue(newValue)
 }
 
 seUPropertySetMappedComponent::~seUPropertySetMappedComponent(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

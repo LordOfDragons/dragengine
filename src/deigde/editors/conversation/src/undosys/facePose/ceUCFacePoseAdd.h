@@ -37,8 +37,8 @@ class ceFacePose;
  */
 class ceUCFacePoseAdd : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceFacePose *pFacePose;
+	ceConversation::Ref pConversation;
+	ceFacePose::Ref pFacePose;
 	
 public:
 	/** \brief Type holding strong reference. */

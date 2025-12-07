@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetTriggerName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	gdeOCLight::eTriggers pTrigger;
 	decString pOldValue;

@@ -52,9 +52,6 @@ seUPropertySetValueType::seUPropertySetValueType(seProperty *property, sePropert
 }
 
 seUPropertySetValueType::~seUPropertySetValueType(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

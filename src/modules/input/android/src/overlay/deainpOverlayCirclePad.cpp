@@ -469,7 +469,4 @@ void deainpOverlayCirclePad::OnRelease(){
 //////////////////////
 
 void deainpOverlayCirclePad::pCleanUp(){
-	if(pCImage){
-		pCImage->FreeReference();
-	}
 }

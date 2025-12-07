@@ -37,7 +37,7 @@ class reRigShapeCapsule;
  */
 class reUSetShapeCapsuleBottomRadius : public igdeUndo{
 private:
-	reRigShapeCapsule *pShape;
+	reRigShapeCapsule::Ref pShape;
 	
 	float pOldBottomRadius;
 	float pNewBottomRadius;

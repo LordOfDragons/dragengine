@@ -42,7 +42,7 @@ private:
 	
 	deainpOverlayList pOverlays;
 	
-	deCanvasView *pCanvas;
+	deCanvasView::Ref pCanvas;
 	bool pInHorizontalMode;
 	
 public:
@@ -64,7 +64,7 @@ public:
 	const deainpOverlayList &GetOverlayList() const{ return pOverlays; }
 	
 	/** \brief Overlays canvas. */
-	inline deCanvasView *GetCanvas() const{ return pCanvas; }
+	inline const deCanvasView::Ref &GetCanvas() const{ return pCanvas; }
 	
 	/** \brief Update canvas content. */
 	void UpdateContent();

@@ -37,8 +37,8 @@ class peeEmitter;
  */
 class peeUTypeAdd : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
-	peeType *pType;
+	peeEmitter::Ref pEmitter;
+	peeType::Ref pType;
 	
 	
 	

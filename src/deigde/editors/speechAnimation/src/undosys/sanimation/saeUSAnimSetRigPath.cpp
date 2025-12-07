@@ -54,9 +54,6 @@ saeUSAnimSetRigPath::saeUSAnimSetRigPath(saeSAnimation *sanimation, const char *
 }
 
 saeUSAnimSetRigPath::~saeUSAnimSetRigPath(){
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

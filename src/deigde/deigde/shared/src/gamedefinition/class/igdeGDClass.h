@@ -131,7 +131,7 @@ private:
 	decString pPathEClass;
 	igdeGDCCTextureList pComponentTextures;
 	
-	deImage *pPreviewImage;
+	deImage::Ref pPreviewImage;
 	
 	
 	
@@ -244,7 +244,7 @@ public:
 	void Check();
 	
 	/** \brief Preview image or NULL if not created yet. */
-	inline deImage *GetPreviewImage() const{ return pPreviewImage; }
+	inline const deImage::Ref &GetPreviewImage() const{ return pPreviewImage; }
 	
 	/** \brief Set preview image or NULL if not created yet. */
 	void SetPreviewImage(deImage *image);

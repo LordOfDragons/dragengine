@@ -56,9 +56,6 @@ pNewColor(newColor)
 }
 
 seUSkySetBgColor::~seUSkySetBgColor(){
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

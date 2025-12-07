@@ -39,7 +39,7 @@ class gdeObjectClass;
  */
 class gdeUOCToggleCanInstantiate : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	

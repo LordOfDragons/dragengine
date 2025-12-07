@@ -97,7 +97,6 @@ pNodes(NULL)
 			pNodes[pNodeCount].position = node->GetPosition();
 			pNodes[pNodeCount].index = parentGroup->IndexOfNode(node);
 			pNodes[pNodeCount].node = node;
-			node->AddReference();
 		}
 		
 		for(i=1; i<pNodeCount; i++){
@@ -177,12 +176,6 @@ void seUPNGroupNodes::Redo(){
 //////////////////////
 
 void seUPNGroupNodes::pCleanUp(){
-	if(pNodeGroup){
-		pNodeGroup->FreeReference();
-	}
-	if(pParentGroup){
-		pParentGroup->FreeReference();
-	}
 	if(pNodes){
 		int i;
 		for(i=0; i<pNodeCount; i++){

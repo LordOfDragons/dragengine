@@ -443,9 +443,6 @@ void deoglRComponent::SetSkin(deoglRSkin *skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
 	if(skin){
 		skin->AddReference();
@@ -477,9 +474,6 @@ void deoglRComponent::SetDynamicSkin(deoglComponent &component, deoglRDynamicSki
 		return;
 	}
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	
 	pDynamicSkin = dynamicSkin;
 	
@@ -520,12 +514,7 @@ void deoglRComponent::SetOcclusionMesh(deoglROcclusionMesh *occlusionMesh){
 	}
 	pOccMeshSharedSPBDoubleSided = nullptr;
 	pOccMeshSharedSPBSingleSided = nullptr;
-	if(pOccMeshSharedSPBElement){
-		pOccMeshSharedSPBElement->FreeReference();
 		pOccMeshSharedSPBElement = NULL;
-	}
-	if(pOcclusionMesh){
-		pOcclusionMesh->FreeReference();
 	}
 	
 	pOcclusionMesh = occlusionMesh;
@@ -1112,7 +1101,6 @@ void deoglRComponent::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	
 	if(pRenderEnvMap){
 		pRenderEnvMap->GetComponentList().RemoveIfExisting(this);
-		pRenderEnvMap->FreeReference();
 	}
 	
 	pRenderEnvMap = envmap;
@@ -1138,7 +1126,6 @@ void deoglRComponent::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
 	
 	if(pRenderEnvMapFade){
 		pRenderEnvMapFade->GetComponentList().RemoveIfExisting(this);
-		pRenderEnvMapFade->FreeReference();
 	}
 	
 	pRenderEnvMapFade = envmap;
@@ -1788,29 +1775,9 @@ void deoglRComponent::pCleanUp(){
 		delete [] pBoneMatrices;
 	}
 	
-	if(pOccMeshSharedSPBElement){
-		pOccMeshSharedSPBElement->FreeReference();
 			// has to be done before pOcclusionMesh mesh is released
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pOcclusionMesh){
-		pOcclusionMesh->FreeReference();
-	}
-	if(pEnvMap){
-		pEnvMap->FreeReference();
-	}
-	if(pRenderEnvMap){
-		pRenderEnvMap->FreeReference();
-	}
-	if(pRenderEnvMapFade){
-		pRenderEnvMapFade->FreeReference();
-	}
 	
 	if(pSkinState){
 		delete pSkinState;
@@ -1973,9 +1940,6 @@ void deoglRComponent::pCheckRenderModifier(deoglRCamera *rcamera){
 	skin = ((deoglSkin*)finalSkin->GetPeerGraphic())->GetRSkin();
 	
 	if(pSkin != skin){
-		if(pSkin){
-			pSkin->FreeReference();
-		}
 		pSkin = skin;
 		if(skin){
 			skin->AddReference();
@@ -2268,8 +2232,6 @@ void deoglRComponent::pPrepareTextureTUCs(){
 void deoglRComponent::pPrepareParamBlocks(){
 	if(!pValidOccMeshSharedSPBElement){
 		// shared spb
-		if(pOccMeshSharedSPBElement){
-			pOccMeshSharedSPBElement->FreeReference();
 			pOccMeshSharedSPBElement = NULL;
 		}
 		

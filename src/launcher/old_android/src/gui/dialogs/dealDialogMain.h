@@ -39,7 +39,7 @@ class dealWidgetButton;
 class dealDialogMain : public dealDialog{
 private:
 	dealWidgetTaskStatus *pTaskCheckEngine;
-	dealWidgetButton *pButtonRun;
+	dealWidgetButton::Ref pButtonRun;
 	
 	
 	

@@ -37,7 +37,7 @@ class seSynthesizer;
  */
 class seUSynthesizerSetChannelCount : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	
 	int pOldChannelCount;
 	int pNewChannelCount;

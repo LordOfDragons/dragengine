@@ -37,7 +37,7 @@ class seTexture;
  */
 class seUTextureImport : public igdeUndo{
 private:
-	seTexture *pTexture;
+	seTexture::Ref pTexture;
 	
 	sePropertyList pOldProperties;
 	sePropertyList pNewProperties;

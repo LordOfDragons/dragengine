@@ -61,12 +61,6 @@ pProperty(NULL)
 }
 
 gdeUOCTPSetMinValue::~gdeUOCTPSetMinValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

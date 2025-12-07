@@ -82,7 +82,7 @@ private:
 	
 	deoglRenderThread &pRenderThread;
 	
-	deoglRParticleEmitter *pEmitter;
+	deoglRParticleEmitter::Ref pEmitter;
 	
 	deoglRWorld *pParentWorld;
 	deoglWorldOctree *pOctreeNode;
@@ -111,7 +111,7 @@ private:
 	decDVector pMinExtend;
 	decDVector pMaxExtend;
 	
-	deoglEnvironmentMap *pRenderEnvMap;
+	deoglEnvironmentMap::Ref pRenderEnvMap;
 	bool pDirtyRenderEnvMap;
 	
 	GLuint pVBOShared;
@@ -145,7 +145,7 @@ public:
 	
 	
 	/** Emitter or \em NULL if not set. */
-	inline deoglRParticleEmitter *GetEmitter() const{ return pEmitter; }
+	inline const deoglRParticleEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** Set emitter or \em NULL if not set. */
 	void SetEmitter(deoglRParticleEmitter *emitter);
@@ -219,7 +219,7 @@ public:
 	
 	
 	/** Render environment map or \em NULL if not used. */
-	inline deoglEnvironmentMap *GetRenderEnvMap() const{ return pRenderEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetRenderEnvMap() const{ return pRenderEnvMap; }
 	
 	/** Set render environment map or \em NULL if not assigned yet. */
 	void SetRenderEnvMap(deoglEnvironmentMap *envmap);

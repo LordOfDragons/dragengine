@@ -52,8 +52,8 @@ class deoglRPropFieldType : public deObject{
 private:
 	deoglRPropField &pPropField;
 	
-	deoglRModel *pModel;
-	deoglRSkin *pSkin;
+	deoglRModel::Ref pModel;
+	deoglRSkin::Ref pSkin;
 	
 	deoglSkinTexture *pUseSkinTexture;
 	
@@ -97,7 +97,7 @@ public:
 	
 	
 	/** Model or NULL if not set. */
-	inline deoglRModel *GetModel() const{ return pModel; }
+	inline const deoglRModel::Ref &GetModel() const{ return pModel; }
 	
 	/**
 	 * Set model or NULL if not set.
@@ -106,7 +106,7 @@ public:
 	void SetModel(deoglRModel *model);
 	
 	/** Skin or NULL if not set. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/**
 	 * Set skin or NULL if not set.

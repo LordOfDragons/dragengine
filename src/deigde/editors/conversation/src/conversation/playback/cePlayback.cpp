@@ -87,22 +87,10 @@ pLastPlayedActionTopic(NULL)
 }
 
 cePlayback::~cePlayback(){
-	if(pLastPlayedAction){
-		pLastPlayedAction->FreeReference();
-	}
-	if(pLastPlayedActionTopic){
-		pLastPlayedActionTopic->FreeReference();
-	}
 	if(pActors){
 		delete [] pActors;
 	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 	ClearTextBoxText();
-	if(pTextBoxText){
-		pTextBoxText->FreeReference();
-	}
 	if(pCamera){
 		delete pCamera;
 	}
@@ -115,9 +103,6 @@ cePlayback::~cePlayback(){
 
 void cePlayback::SetTopic(ceConversationTopic *topic){
 	if(topic != pTopic){
-		if(pTopic){
-			pTopic->FreeReference();
-		}
 		
 		pTopic = topic;
 		
@@ -678,9 +663,6 @@ void cePlayback::pProcessActions(float elapsed){
 
 void cePlayback::SetLastPlayedAction(ceConversationTopic *topic, ceConversationAction *action){
 	if(topic != pLastPlayedActionTopic){
-		if(pLastPlayedActionTopic){
-			pLastPlayedActionTopic->FreeReference();
-		}
 		
 		pLastPlayedActionTopic = topic;
 		
@@ -690,9 +672,6 @@ void cePlayback::SetLastPlayedAction(ceConversationTopic *topic, ceConversationA
 	}
 	
 	if(action != pLastPlayedAction){
-		if(pLastPlayedAction){
-			pLastPlayedAction->FreeReference();
-		}
 		
 		pLastPlayedAction = action;
 		

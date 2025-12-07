@@ -104,9 +104,6 @@ void peeViewEmitter::SetEmitter(peeEmitter *emitter){
 	pCameraInteraction->SetCamera(NULL);
 	SetRenderWorld(NULL);
 	
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 	
 	pEmitter = emitter;
 	

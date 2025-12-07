@@ -46,7 +46,6 @@ aeUSetRuleFStaRotation::aeUSetRuleFStaRotation(aeRuleForeignState *rule, float n
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldScale = rule->GetScaleOrientation();
 		pNewScale = newScale;

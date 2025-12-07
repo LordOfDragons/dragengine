@@ -78,17 +78,17 @@ public:
 private:
 	peeLoadSaveSystem &pLoadSaveSystem;
 	
-	deWorld *pEngWorld;
+	deWorld::Ref pEngWorld;
 	
-	deDebugDrawer *pDDEmitter;
+	deDebugDrawer::Ref pDDEmitter;
 	
 	igdeWSky *pSky;
 	igdeWObject::Ref pEnvObject;
 	
 	igdeWCoordSysArrows pDDSEmitter;
 	
-	deParticleEmitter *pEngEmitter;
-	deParticleEmitterInstance *pEngEmitterInstance;
+	deParticleEmitter::Ref pEngEmitter;
+	deParticleEmitterInstance::Ref pEngEmitterInstance;
 	
 	decVector pPosition;
 	decVector pOrientation;
@@ -104,10 +104,10 @@ private:
 	igdeCamera *pCamera;
 	
 	peeControllerList pControllerList;
-	peeController *pActiveController;
+	peeController::Ref pActiveController;
 	
 	peeTypeList pTypeList;
-	peeType *pActiveType;
+	peeType::Ref pActiveType;
 	
 	decObjectSet pListeners;
 	
@@ -126,7 +126,7 @@ public:
 	inline peeLoadSaveSystem &GetLoadSaveSystem() const{ return pLoadSaveSystem; }
 	
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the camera. */
 	inline igdeCamera *GetCamera() const{ return pCamera; }
 	
@@ -136,9 +136,9 @@ public:
 	inline const igdeWObject::Ref &GetEnvObject() const{ return pEnvObject; }
 	
 	/** Retrieves the engine emitter. */
-	inline deParticleEmitter *GetEngineEmitter() const{ return pEngEmitter; }
+	inline const deParticleEmitter::Ref &GetEngineEmitter() const{ return pEngEmitter; }
 	/** Retrieves the engine emitter instance. */
-	inline deParticleEmitterInstance *GetEngineEmitterInstance() const{ return pEngEmitterInstance; }
+	inline const deParticleEmitterInstance::Ref &GetEngineEmitterInstance() const{ return pEngEmitterInstance; }
 	
 	/** Retrieves the position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
@@ -199,7 +199,7 @@ public:
 	/** Removes all controllers. */
 	void RemoveAllControllers();
 	/** Retrieves the active texture or NULL if none is active. */
-	inline peeController *GetActiveController() const{ return pActiveController; }
+	inline const peeController::Ref &GetActiveController() const{ return pActiveController; }
 	/** Determines if there is an active controller or not. */
 	bool HasActiveController() const;
 	/** Sets the active controller or NULL if none is active. */
@@ -221,7 +221,7 @@ public:
 	/** Removes all types. */
 	void RemoveAllTypes();
 	/** Retrieves the active type or NULL if none is active. */
-	inline peeType *GetActiveType() const{ return pActiveType; }
+	inline const peeType::Ref &GetActiveType() const{ return pActiveType; }
 	/** Determines if there is an active type or not. */
 	bool HasActiveType() const;
 	/** Sets the active type or NULL if none is active. */

@@ -36,7 +36,7 @@ class sePropertyNodeShape;
  */
 class seUPropertyNodeShapeSetThickness : public igdeUndo{
 private:
-	sePropertyNodeShape *pNode;
+	sePropertyNodeShape::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;

@@ -181,8 +181,6 @@ void seSky::RebuildEngineSky(){
 	// drop old sky
 	pEngSkyInstance->SetSky(NULL);
 	
-	if(pEngSky){
-		pEngSky->FreeReference();
 		pEngSky = NULL;
 	}
 	
@@ -276,8 +274,6 @@ void seSky::RebuildEngineSky(){
 		pEngSky->NotifyParametersChanged();
 		
 	}catch(const deException &){
-		if(pEngSky){
-			pEngSky->FreeReference();
 			pEngSky = NULL;
 		}
 		throw;
@@ -414,7 +410,6 @@ void seSky::SetActiveController(seController *controller){
 	
 	if(pActiveController){
 		pActiveController->SetActive(false);
-		pActiveController->FreeReference();
 	}
 	
 	pActiveController = controller;
@@ -522,7 +517,6 @@ void seSky::SetActiveLink(seLink *link){
 	
 	if(pActiveLink){
 		pActiveLink->SetActive(false);
-		pActiveLink->FreeReference();
 	}
 	
 	pActiveLink = link;
@@ -639,7 +633,6 @@ void seSky::SetActiveLayer(seLayer *layer){
 	
 	if(pActiveLayer){
 		pActiveLayer->SetActive(false);
-		pActiveLayer->FreeReference();
 	}
 	
 	pActiveLayer = layer;
@@ -996,19 +989,13 @@ void seSky::pCleanUp(){
 		
 		if(pDDHorizon){
 			pEngWorld->RemoveDebugDrawer(pDDHorizon);
-			pDDHorizon->FreeReference();
 		}
 		
 		if(pEngSkyInstance){
 			pEngWorld->RemoveSky(pEngSkyInstance);
-			pEngSkyInstance->FreeReference();
 		}
 		
-		if(pEngSky){
-			pEngSky->FreeReference();
-		}
 		
-		pEngWorld->FreeReference();
 	}
 }
 

@@ -37,8 +37,8 @@ class ceCAIfElse;
  */
 class ceUCAIfElsePaste : public ceUCActionPaste{
 private:
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
 	
 public:
 	/** \name Constructors and Destructors */

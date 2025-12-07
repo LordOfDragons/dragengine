@@ -53,9 +53,6 @@ pController(NULL)
 }
 
 seUControllerToggleClamp::~seUControllerToggleClamp(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

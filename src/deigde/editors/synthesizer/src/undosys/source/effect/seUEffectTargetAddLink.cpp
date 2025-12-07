@@ -53,21 +53,13 @@ pLink(NULL)
 	SetShortInfo("Effect target add link");
 	
 	pEffect = effect;
-	pEffect->AddReference();
 	
 	pTarget = target;
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seUEffectTargetAddLink::~seUEffectTargetAddLink(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pEffect){
-		pEffect->FreeReference();
-	}
 }
 
 

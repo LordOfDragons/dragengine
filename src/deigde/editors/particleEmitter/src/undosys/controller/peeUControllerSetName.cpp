@@ -54,9 +54,6 @@ peeUControllerSetName::peeUControllerSetName(peeController *controller, const ch
 }
 
 peeUControllerSetName::~peeUControllerSetName(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

@@ -157,8 +157,6 @@ void igdeGameDefinition::UpdateWithFound(const igdeGameDefinition &gameDefinitio
 ///////////////////
 
 void igdeGameDefinition::SetDefaultModel(deModel *model){
-	if(pDefaultModel){
-		pDefaultModel->FreeReference();
 		pDefaultModel = NULL;
 	}
 	
@@ -170,8 +168,6 @@ void igdeGameDefinition::SetDefaultModel(deModel *model){
 }
 
 void igdeGameDefinition::SetDefaultSkin(deSkin *skin){
-	if(pDefaultSkin){
-		pDefaultSkin->FreeReference();
 		pDefaultSkin = NULL;
 	}
 	
@@ -186,12 +182,8 @@ void igdeGameDefinition::UpdateEngineObjects(){
 	deEngine &engine = *pEnvironment.GetEngineController()->GetEngine();
 	
 	// free old engine objects
-	if(pDefaultModel){
-		pDefaultModel->FreeReference();
 		pDefaultModel = NULL;
 	}
-	if(pDefaultSkin){
-		pDefaultSkin->FreeReference();
 		pDefaultSkin = NULL;
 	}
 	
@@ -306,10 +298,4 @@ void igdeGameDefinition::pCleanUp(){
 	}
 	pParticleEmitterManager.RemoveAllEmitters();
 	
-	if(pDefaultModel){
-		pDefaultModel->FreeReference();
-	}
-	if(pDefaultSkin){
-		pDefaultSkin->FreeReference();
-	}
 }

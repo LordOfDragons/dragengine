@@ -67,9 +67,6 @@ pAction(NULL)
 }
 
 ceWPTTIMAWaitCondition::~ceWPTTIMAWaitCondition(){
-	if(pAction){
-		pAction->FreeReference();
-	}
 }
 
 

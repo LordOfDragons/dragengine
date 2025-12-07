@@ -164,8 +164,6 @@ bool debnServer::ListenOn(const char *address){
 		pNetBasic->RegisterServer(this);
 		
 	}catch(const deException &e){
-		if(pSocket){
-			pSocket->FreeReference();
 			pSocket = nullptr;
 		}
 		pNetBasic->LogException(e);
@@ -188,7 +186,6 @@ void debnServer::StopListening(){
 		pNetBasic->UnregisterServer(this);
 	}
 	
-	pSocket->FreeReference();
 	pSocket = NULL;
 	
 	pListening = false;

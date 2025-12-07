@@ -42,8 +42,8 @@ class meHTVVariation;
  */
 class meUHTVVariationAdd : public igdeUndo{
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVVariation *pVariation;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVVariation::Ref pVariation;
 	
 public:
 	/** \brief Type holding strong reference. */

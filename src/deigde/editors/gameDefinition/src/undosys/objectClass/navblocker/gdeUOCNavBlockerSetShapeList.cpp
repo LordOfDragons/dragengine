@@ -62,12 +62,6 @@ pNavBlocker(NULL)
 }
 
 gdeUOCNavBlockerSetShapeList::~gdeUOCNavBlockerSetShapeList(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

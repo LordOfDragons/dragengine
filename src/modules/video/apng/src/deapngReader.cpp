@@ -266,9 +266,6 @@ void deapngReader::pCleanUp(){
 	if(pReadStruct){
 		png_destroy_read_struct(&pReadStruct, &pInfoStruct, NULL);
 	}
-	if(pReader){
-		pReader->FreeReference();
-	}
 }
 
 void deapngReader::pReadHeader(){

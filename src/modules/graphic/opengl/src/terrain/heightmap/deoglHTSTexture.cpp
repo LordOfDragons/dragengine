@@ -108,9 +108,6 @@ void deoglHTSTexture::SetSkin(deoglRSkin *skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	pSkin = skin;
 	if(skin){
 		skin->AddReference();
@@ -323,9 +320,6 @@ void deoglHTSTexture::PrepareForRender(){
 //////////////////////
 
 void deoglHTSTexture::pCleanUp(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();

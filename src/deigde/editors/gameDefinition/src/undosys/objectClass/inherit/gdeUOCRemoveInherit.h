@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCRemoveInherit : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCInherit *pInherit;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCInherit::Ref pInherit;
 	
 	
 	

@@ -322,9 +322,6 @@ void dedsLocomotion::SetCCTTiltSingle(deColliderCollisionTest *collisionTest){
 		return;
 	}
 	
-	if(pCCTTiltSingle){
-		pCCTTiltSingle->FreeReference();
-	}
 	
 	pCCTTiltSingle = collisionTest;
 	
@@ -338,9 +335,6 @@ void dedsLocomotion::SetCCTTiltFrontLeft(deColliderCollisionTest *collisionTest)
 		return;
 	}
 	
-	if(pCCTTiltFrontLeft){
-		pCCTTiltFrontLeft->FreeReference();
-	}
 	
 	pCCTTiltFrontLeft = collisionTest;
 	
@@ -354,9 +348,6 @@ void dedsLocomotion::SetCCTTiltFrontRight(deColliderCollisionTest *collisionTest
 		return;
 	}
 	
-	if(pCCTTiltFrontRight){
-		pCCTTiltFrontRight->FreeReference();
-	}
 	
 	pCCTTiltFrontRight = collisionTest;
 	
@@ -370,9 +361,6 @@ void dedsLocomotion::SetCCTTiltBackLeft(deColliderCollisionTest *collisionTest){
 		return;
 	}
 	
-	if(pCCTTiltBackLeft){
-		pCCTTiltBackLeft->FreeReference();
-	}
 	
 	pCCTTiltBackLeft = collisionTest;
 	
@@ -386,9 +374,6 @@ void dedsLocomotion::SetCCTTiltBackRight(deColliderCollisionTest *collisionTest)
 		return;
 	}
 	
-	if(pCCTTiltBackRight){
-		pCCTTiltBackRight->FreeReference();
-	}
 	
 	pCCTTiltBackRight = collisionTest;
 	
@@ -532,9 +517,6 @@ void dedsLocomotion::SetAICollider(deCollider *collider){
 		return;
 	}
 	
-	if(pAICollider){
-		pAICollider->FreeReference();
-	}
 	
 	pAICollider = collider;
 	

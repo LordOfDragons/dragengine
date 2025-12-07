@@ -59,7 +59,6 @@ ceUCAWaitSetCondition::ceUCAWaitSetCondition(ceConversationTopic *topic, ceCAWai
 	
 	pOldCondition = wait->GetCondition();
 	if(pOldCondition){
-		pOldCondition->AddReference();
 	}
 	
 	pNewCondition = newCondition;
@@ -69,18 +68,6 @@ ceUCAWaitSetCondition::ceUCAWaitSetCondition(ceConversationTopic *topic, ceCAWai
 }
 
 ceUCAWaitSetCondition::~ceUCAWaitSetCondition(){
-	if(pNewCondition){
-		pNewCondition->FreeReference();
-	}
-	if(pOldCondition){
-		pOldCondition->FreeReference();
-	}
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

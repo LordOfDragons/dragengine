@@ -59,9 +59,6 @@ pDirtyMaskContent(false)
 }
 
 deoglCanvas::~deoglCanvas(){
-	if(pRCanvas){
-		pRCanvas->FreeReference();
-	}
 }
 
 
@@ -70,8 +67,6 @@ deoglCanvas::~deoglCanvas(){
 ///////////////
 
 void deoglCanvas::DropRCanvas(){
-	if(pRCanvas){
-		pRCanvas->FreeReference();
 		pRCanvas = NULL;
 	}
 }

@@ -249,9 +249,6 @@ pGameDefinition(NULL)
 gdeWPSCategory::~gdeWPSCategory(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -270,7 +267,6 @@ void gdeWPSCategory::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

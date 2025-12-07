@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeURemoveObjectClass : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeObjectClass *pObjectClass;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeObjectClass::Ref pObjectClass;
 	
 	
 	

@@ -102,10 +102,8 @@ bool igdeTaskSyncGameDefinition::Step(){
 		igdeGameProject &project = *pWindowMain.GetGameProject();
 		
 		pOldProjectGameDef = project.GetProjectGameDefinition();
-		pOldProjectGameDef->AddReference();
 		
 		pOldGameDef = project.GetGameDefinition();
-		pOldGameDef->AddReference();
 		
 		if(!pReloadXMLElementClasses){
 			pLoadProjectGameDefinition();
@@ -180,12 +178,6 @@ void igdeTaskSyncGameDefinition::pCleanUp(){
 		delete (igdeStepableTask*)pEditorTasks.GetAt(pTaskIndex++);
 	}
 	
-	if(pOldGameDef){
-		pOldGameDef->FreeReference();
-	}
-	if(pOldProjectGameDef){
-		pOldProjectGameDef->FreeReference();
-	}
 }
 
 void igdeTaskSyncGameDefinition::pUpdateProgress(bool force){

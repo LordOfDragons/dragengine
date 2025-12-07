@@ -52,7 +52,7 @@ public:
 	
 private:
 	igdeWindowMain &pWindowMain;
-	igdeGameProject *pNewProject;
+	igdeGameProject::Ref pNewProject;
 	
 	igdeTextField::Ref pEditName;
 	igdeTextArea::Ref pEditDescription;
@@ -95,7 +95,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Created game project or NULL if cancelled. */
-	inline igdeGameProject *GetNewProject() const{ return pNewProject; }
+	inline const igdeGameProject::Ref &GetNewProject() const{ return pNewProject; }
 	
 	void OnProjectDirChanged();
 	void OnProjectGameDefPathChanged();

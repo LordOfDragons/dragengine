@@ -37,7 +37,7 @@ class aeRuleBoneTransformator;
  */
 class aeURuleBTransSetCFrame : public igdeUndo{
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	
 	deAnimatorRuleBoneTransformator::eCoordinateFrames pOldCoordFrame;
 	deAnimatorRuleBoneTransformator::eCoordinateFrames pNewCoordFrame;

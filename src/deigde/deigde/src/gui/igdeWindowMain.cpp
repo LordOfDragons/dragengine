@@ -1643,12 +1643,8 @@ void igdeWindowMain::pCleanUp(){
 		pModuleManager = NULL;
 	}
 	
-	if(pGameProject){
-		pGameProject->FreeReference();
 		pGameProject = NULL;
 	}
-	if(pIGDEGameDefinition){
-		pIGDEGameDefinition->FreeReference();
 		pIGDEGameDefinition = NULL;
 	}
 	if(pSharedGameDefinitions){

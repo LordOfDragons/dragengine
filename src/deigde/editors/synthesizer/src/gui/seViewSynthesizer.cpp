@@ -90,18 +90,6 @@ pWPSynthesizer(NULL)
 seViewSynthesizer::~seViewSynthesizer(){
 	SetSynthesizer(NULL);
 	
-	if(pWPController){
-		pWPController->FreeReference();
-	}
-	if(pWPLink){
-		pWPLink->FreeReference();
-	}
-	if(pWPSource){
-		pWPSource->FreeReference();
-	}
-	if(pWPSynthesizer){
-		pWPSynthesizer->FreeReference();
-	}
 }
 
 
@@ -114,9 +102,6 @@ void seViewSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
 		return;
 	}
 	
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 	
 	pSynthesizer = synthesizer;
 	

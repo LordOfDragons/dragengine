@@ -37,10 +37,10 @@ class reRigBone;
  */
 class reURigSetRootBone : public igdeUndo{
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
-	reRigBone *pOldBone;
-	reRigBone *pNewBone;
+	reRigBone::Ref pOldBone;
+	reRigBone::Ref pNewBone;
 	
 	
 	

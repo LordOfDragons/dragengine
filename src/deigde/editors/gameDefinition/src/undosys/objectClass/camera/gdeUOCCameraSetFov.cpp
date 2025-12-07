@@ -61,12 +61,6 @@ pCamera(NULL)
 }
 
 gdeUOCCameraSetFov::~gdeUOCCameraSetFov(){
-	if(pCamera){
-		pCamera->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

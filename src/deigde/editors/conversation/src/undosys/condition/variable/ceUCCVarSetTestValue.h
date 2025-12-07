@@ -38,9 +38,9 @@ class ceConversationTopic;
  */
 class ceUCCVarSetTestValue : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceConversationAction *pAction;
-	ceCConditionVariable *pCondition;
+	ceConversationTopic::Ref pTopic;
+	ceConversationAction::Ref pAction;
+	ceCConditionVariable::Ref pCondition;
 	int pOldValue;
 	int pNewValue;
 	

@@ -37,8 +37,8 @@ class feWPUndoHistoryListener;
  */
 class feWPUndoHistory : public igdeWPUndoHistory{
 private:
-	feFont *pFont;
-	feWPUndoHistoryListener *pListener;
+	feFont::Ref pFont;
+	feWPUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(feFont *font);

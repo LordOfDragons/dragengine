@@ -37,7 +37,7 @@ class reRigConstraint;
  */
 class reUConstraintSetDampingAngular : public igdeUndo{
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	float pOldDamping;
 	float pNewDamping;

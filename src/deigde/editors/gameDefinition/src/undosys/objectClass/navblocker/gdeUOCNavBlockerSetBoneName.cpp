@@ -62,12 +62,6 @@ pNavBlocker(NULL)
 }
 
 gdeUOCNavBlockerSetBoneName::~gdeUOCNavBlockerSetBoneName(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

@@ -57,9 +57,6 @@ pSky(NULL)
 }
 
 gdeUSkySetPath::~gdeUSkySetPath(){
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

@@ -660,9 +660,6 @@ pSAnimation(nullptr)
 saeWPSAnim::~saeWPSAnim(){
 	SetSAnimation(nullptr);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -677,7 +674,6 @@ void saeWPSAnim::SetSAnimation(saeSAnimation *sanimation){
 	
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;

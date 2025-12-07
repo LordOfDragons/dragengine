@@ -53,9 +53,6 @@ pGesture(NULL)
 }
 
 ceUCGestureToggleHold::~ceUCGestureToggleHold(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
 }
 
 

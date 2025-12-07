@@ -54,9 +54,6 @@ ceUCCShotSetActorCount::ceUCCShotSetActorCount(ceCameraShot *cameraShot, int new
 }
 
 ceUCCShotSetActorCount::~ceUCCShotSetActorCount(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

@@ -36,7 +36,7 @@ class aeRuleLimit;
  */
 class aeURuleLimitSetTargetBone : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	decString pOldBone;
 	decString pNewBone;

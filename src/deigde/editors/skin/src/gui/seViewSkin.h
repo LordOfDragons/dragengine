@@ -41,7 +41,7 @@ class seSkin;
 class seViewSkin : public igdeViewRenderWindow{
 private:
 	seWindowMain &pWindowMain;
-	seSkin *pSkin;
+	seSkin::Ref pSkin;
 	igdeMouseCameraListener::Ref pCameraInteraction;
 	
 	
@@ -66,7 +66,7 @@ public:
 	void ResetView();
 	
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(seSkin *skin);

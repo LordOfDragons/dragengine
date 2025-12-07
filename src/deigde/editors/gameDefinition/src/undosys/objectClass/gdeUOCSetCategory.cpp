@@ -56,9 +56,6 @@ pObjectClass(NULL)
 }
 
 gdeUOCSetCategory::~gdeUOCSetCategory(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

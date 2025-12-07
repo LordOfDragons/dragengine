@@ -46,7 +46,6 @@ aeURuleIKSetGoalPosition::aeURuleIKSetGoalPosition(aeRuleInverseKinematic *rule,
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldPos = rule->GetGoalPosition();
 		pNewPos = newPos;

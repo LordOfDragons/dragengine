@@ -67,15 +67,6 @@ pFilePattern(NULL)
 }
 
 gdeUOCPCFPSetName::~gdeUOCPCFPSetName(){
-	if(pFilePattern){
-		pFilePattern->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

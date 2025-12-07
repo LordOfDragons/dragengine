@@ -958,9 +958,6 @@ void deoglComponent::pCleanUp(){
 	pDropTextures();
 	pDropLODs();
 	
-	if(pRComponent){
-		pRComponent->FreeReference();
-	}
 	
 	if(pDynamicSkin){
 		pDynamicSkin->RemoveListener(this);

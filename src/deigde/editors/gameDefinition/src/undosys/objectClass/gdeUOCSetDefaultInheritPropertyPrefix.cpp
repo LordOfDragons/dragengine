@@ -56,9 +56,6 @@ pObjectClass(NULL)
 }
 
 gdeUOCSetDefaultInheritPropertyPrefix::~gdeUOCSetDefaultInheritPropertyPrefix(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

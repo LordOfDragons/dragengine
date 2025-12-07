@@ -130,13 +130,9 @@ pActive(false)
 }
 
 seProperty::~seProperty(){
-	if(pActiveNodeGroup){
-		pActiveNodeGroup->FreeReference();
-	}
 	pNodeSelection.RemoveAll();
 	if(pNodeGroup){
 		pNodeGroup->SetProperty(NULL);
-		pNodeGroup->FreeReference();
 	}
 }
 
@@ -291,7 +287,6 @@ void seProperty::SetNodeGroup(sePropertyNodeGroup *nodeGroup){
 	pNodeSelection.RemoveAll();
 	
 	pNodeGroup->SetProperty(NULL);
-	pNodeGroup->FreeReference();
 	
 	pNodeGroup = nodeGroup;
 	
@@ -321,7 +316,6 @@ void seProperty::SetActiveNodeGroup(sePropertyNodeGroup *node){
 	
 	if(pActiveNodeGroup){
 		pActiveNodeGroup->SetActiveGroup(false);
-		pActiveNodeGroup->FreeReference();
 	}
 	
 	pActiveNodeGroup = node;

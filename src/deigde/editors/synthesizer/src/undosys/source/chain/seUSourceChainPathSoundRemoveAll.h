@@ -39,7 +39,7 @@ class seSourceChain;
  */
 class seUSourceChainPathSoundRemoveAll : public igdeUndo{
 private:
-	seSourceChain *pSource;
+	seSourceChain::Ref pSource;
 	
 	decStringList pPathSounds;
 	

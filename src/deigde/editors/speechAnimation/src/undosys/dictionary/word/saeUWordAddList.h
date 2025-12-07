@@ -39,7 +39,7 @@ class saeSAnimation;
  */
 class saeUWordAddList : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	saeWordList pWords;
 	
 	

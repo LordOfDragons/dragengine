@@ -51,7 +51,4 @@ pEnvMapProbe(NULL)
 }
 
 gdeClipboardDataOCEnvMapProbe::~gdeClipboardDataOCEnvMapProbe(){
-	if(pEnvMapProbe){
-		pEnvMapProbe->FreeReference();
-	}
 }

@@ -378,7 +378,6 @@ void deHeightTerrainSector::RemoveAllDecals(){
 		pDecalTail->SetParentHeightTerrainSector(NULL);
 		pDecalTail->SetLLHeightTerrainSectorPrev(NULL);
 		pDecalTail->SetLLHeightTerrainSectorNext(NULL);
-		pDecalTail->FreeReference();
 		pDecalTail = next;
 		pDecalCount--;
 	}

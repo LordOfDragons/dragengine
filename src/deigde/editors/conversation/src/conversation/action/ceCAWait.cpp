@@ -95,9 +95,6 @@ ceCAWait::~ceCAWait(){
 
 void ceCAWait::SetCondition(ceConversationCondition *condition){
 	if(condition != pCondition){
-		if(pCondition){
-			pCondition->FreeReference();
-		}
 		
 		pCondition = condition;
 		

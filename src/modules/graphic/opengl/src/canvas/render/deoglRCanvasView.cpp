@@ -58,9 +58,6 @@ pResizeRenderTarget(false)
 deoglRCanvasView::~deoglRCanvasView(){
 	LEAK_CHECK_FREE(GetRenderThread(), CanvasView);
 	RemoveAllChildren();
-	if(pRenderTarget){
-		pRenderTarget->FreeReference();
-	}
 }
 
 
@@ -127,8 +124,6 @@ int componentCount, int bitCount){
 		}
 		
 	}else{
-		if(pRenderTarget){
-			pRenderTarget->FreeReference();
 			pRenderTarget = nullptr;
 		}
 		

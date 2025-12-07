@@ -86,9 +86,6 @@ pNewID(newID)
 }
 
 ceUCTopicSetID::~ceUCTopicSetID(){
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

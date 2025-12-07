@@ -58,9 +58,6 @@ seUTextureImport::seUTextureImport(seTexture *texture, const seTexture *importTe
 }
 
 seUTextureImport::~seUTextureImport(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

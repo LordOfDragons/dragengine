@@ -48,7 +48,7 @@ class peeEmitter;
  */
 class peeWindowMain : public igdeEditorWindow{
 private:
-	peeWindowMainListener *pListener;
+	peeWindowMainListener::Ref pListener;
 	
 	//igdeIcon::Ref pIconEmitterNew;
 	
@@ -70,11 +70,11 @@ private:
 	igdeClipboard pClipboard;
 	peeLoadSaveSystem *pLoadSaveSystem;
 	
-	peeViewEmitter *pViewEmitter;
-	peeWindowProperties *pWindowProperties;
-	peeWindowCurves *pWindowCurves;
+	peeViewEmitter::Ref pViewEmitter;
+	peeWindowProperties::Ref pWindowProperties;
+	peeWindowCurves::Ref pWindowCurves;
 	
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	
 	
@@ -127,7 +127,7 @@ public:
 	
 	
 	/** \brief Emitter. */
-	inline peeEmitter *GetEmitter() const{ return pEmitter; }
+	inline const peeEmitter::Ref &GetEmitter() const{ return pEmitter; }
 	
 	/** \brief Set Emitter. */
 	void SetEmitter(peeEmitter *Emitter);

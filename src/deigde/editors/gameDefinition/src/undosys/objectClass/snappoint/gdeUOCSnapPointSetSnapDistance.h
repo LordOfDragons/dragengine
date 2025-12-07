@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCSnapPointSetSnapDistance : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSnapPoint *pSnapPoint;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSnapPoint::Ref pSnapPoint;
 	
 	float pOldValue;
 	float pNewValue;

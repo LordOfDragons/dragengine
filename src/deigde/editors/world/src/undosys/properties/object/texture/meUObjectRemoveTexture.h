@@ -41,8 +41,8 @@ class meObjectTexture;
  */
 class meUObjectRemoveTexture : public igdeUndo{
 private:
-	meObject *pObject;
-	meObjectTexture *pTexture;
+	meObject::Ref pObject;
+	meObjectTexture::Ref pTexture;
 	
 public:
 	/** \brief Type holding strong reference. */

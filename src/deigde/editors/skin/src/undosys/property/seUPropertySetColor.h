@@ -38,7 +38,7 @@ class seProperty;
  */
 class seUPropertySetColor : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decColor pOldColor;
 	decColor pNewColor;

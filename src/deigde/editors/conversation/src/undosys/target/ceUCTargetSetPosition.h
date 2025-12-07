@@ -38,7 +38,7 @@ class ceTarget;
  */
 class ceUCTargetSetPosition : public igdeUndo{
 private:
-	ceTarget *pTarget;
+	ceTarget::Ref pTarget;
 	
 	decVector pOldPosition;
 	decVector pNewPosition;

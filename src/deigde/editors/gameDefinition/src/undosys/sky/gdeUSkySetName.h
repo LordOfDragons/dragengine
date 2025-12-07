@@ -37,7 +37,7 @@ class gdeSky;
  */
 class gdeUSkySetName : public igdeUndo{
 private:
-	gdeSky *pSky;
+	gdeSky::Ref pSky;
 	
 	decString pOldValue;
 	decString pNewValue;

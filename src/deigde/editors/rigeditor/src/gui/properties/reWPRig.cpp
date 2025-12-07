@@ -267,9 +267,6 @@ pListener(NULL)
 reWPRig::~reWPRig(){
 	SetRig(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -284,7 +281,6 @@ void reWPRig::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	

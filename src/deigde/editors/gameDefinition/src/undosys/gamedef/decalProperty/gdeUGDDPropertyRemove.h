@@ -40,9 +40,9 @@ class gdeProperty;
  */
 class gdeUGDDPropertyRemove : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	gdeProperty *pProperty;
+	gdeProperty::Ref pProperty;
 	
 	
 	

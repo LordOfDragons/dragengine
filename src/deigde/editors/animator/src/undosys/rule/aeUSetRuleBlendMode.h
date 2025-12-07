@@ -38,7 +38,7 @@ class aeRule;
  */
 class aeUSetRuleBlendMode : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	deAnimatorRule::eBlendModes pOldMode;
 	deAnimatorRule::eBlendModes pNewMode;

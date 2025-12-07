@@ -577,9 +577,6 @@ pAnimator(nullptr)
 aeWPAnimator::~aeWPAnimator(){
 	SetAnimator(nullptr);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -594,7 +591,6 @@ void aeWPAnimator::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;

@@ -39,7 +39,6 @@ reUSetBoneIKResistance::reUSetBoneIKResistance(reRigBone *bone, const decVector 
 	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
-	pBone->AddReference();
 	
 	pOldIKResistance = bone->GetIKResistance();
 	pNewIKResistance = ikResistance;

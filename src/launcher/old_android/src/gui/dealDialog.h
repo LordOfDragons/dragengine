@@ -44,8 +44,8 @@ private:
 	dealDisplay &pDisplay;
 	
 	decString pTitle;
-	dealWidgetLayoutFlow *pContent;
-	dealDialog *pPopupDialog;
+	dealWidgetLayoutFlow::Ref pContent;
+	dealDialog::Ref pPopupDialog;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -77,10 +77,10 @@ public:
 	void SetTitle(const char *title);
 	
 	/** \brief Content layout. */
-	inline dealWidgetLayoutFlow *GetContent() const{ return pContent; }
+	inline const dealWidgetLayoutFlow::Ref &GetContent() const{ return pContent; }
 	
 	/** \brief Popup dialog or \em NULL if not set. */
-	inline dealDialog *GetPopupDialog() const{ return pPopupDialog; }
+	inline const dealDialog::Ref &GetPopupDialog() const{ return pPopupDialog; }
 	
 	/** \brief Pop up or down dialog replacing the previous one if set. */
 	void SetPopupDialog(dealDialog *dialog);

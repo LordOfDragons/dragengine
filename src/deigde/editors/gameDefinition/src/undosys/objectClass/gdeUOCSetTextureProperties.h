@@ -41,7 +41,7 @@ class gdeObjectClass;
  */
 class gdeUOCSetTextureProperties : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	gdePropertyList pOldValue;
 	gdePropertyList pNewValue;

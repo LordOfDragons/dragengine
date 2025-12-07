@@ -41,7 +41,7 @@ class meObject;
  */
 class meUObjDuplicate : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	
 public:

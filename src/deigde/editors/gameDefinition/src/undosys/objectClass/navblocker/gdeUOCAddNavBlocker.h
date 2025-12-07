@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCAddNavBlocker : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	
 	

@@ -39,9 +39,9 @@ class ceCAPlayerChoice;
  */
 class ceUCAPChoiceOptionSetText : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
 	decUnicodeString pOldText;
 	decUnicodeString pNewText;
 	

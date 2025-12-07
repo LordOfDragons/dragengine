@@ -51,7 +51,6 @@ aeULinkSetName::aeULinkSetName(aeLink *link, const char *newName){
 	SetShortInfo("Set Link Name");
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 aeULinkSetName::~aeULinkSetName(){

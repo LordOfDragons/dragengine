@@ -88,7 +88,7 @@ public:
 		unsigned char castBlue;
 		unsigned char castTransparency;
 		
-		deParticleEmitterInstance *trailEmitter;
+		deParticleEmitterInstance::Ref trailEmitter;
 	};
 	
 private:

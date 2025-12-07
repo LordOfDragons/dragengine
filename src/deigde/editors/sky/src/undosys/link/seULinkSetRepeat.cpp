@@ -56,9 +56,6 @@ pNewRepeat(newRepeat)
 }
 
 seULinkSetRepeat::~seULinkSetRepeat(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

@@ -53,7 +53,7 @@ private:
 	reRig *pRig;
 	reRigBone *pRigBone;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	igdeWDebugDrawerShape *pDDSConstraint;
 	igdeWDebugDrawerShape *pDDSJointError;
 	igdeWCoordSysArrows *pDDSCoordSys;
@@ -62,7 +62,7 @@ private:
 	igdeWAngleRange *pDDSRangeAngularX;
 	igdeWAngleRange *pDDSRangeAngularY;
 	igdeWAngleRange *pDDSRangeAngularZ;
-	deColliderVolume *pCollider;
+	deColliderVolume::Ref pCollider;
 	deColliderConstraint *pEngConstraint;
 	
 	decVector pPosition;
@@ -79,7 +79,7 @@ private:
 	
 	float pBreakingThreshold;
 	
-	reRigBone *pConstraintBone;
+	reRigBone::Ref pConstraintBone;
 	
 	decDMatrix pPoseMatrix1;
 	decDMatrix pPoseMatrix2;
@@ -126,7 +126,7 @@ public:
 	deColliderConstraint *BuildEngineColliderConstraint();
 	
 	/** \brief Retrieves the bone collider. */
-	inline deColliderVolume *GetCollider() const{ return pCollider; }
+	inline const deColliderVolume::Ref &GetCollider() const{ return pCollider; }
 	
 	/** \brief Retrieves the constraint position. */
 	inline const decVector &GetPosition() const{ return pPosition; }
@@ -180,7 +180,7 @@ public:
 	void SetBreakingThreshold(float impulseThreshold);
 	
 	/** \brief Retrieves the constraint rig bone or NULL. */
-	inline reRigBone *GetConstraintBone() const{ return pConstraintBone; }
+	inline const reRigBone::Ref &GetConstraintBone() const{ return pConstraintBone; }
 	/** \brief Sets the constraint rig bone or NULL. */
 	void SetConstraintBone(reRigBone *bone);
 	

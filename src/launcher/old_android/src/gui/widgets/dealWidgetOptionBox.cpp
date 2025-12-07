@@ -138,7 +138,6 @@ void dealWidgetOptionBox::SetGroup(dealWidgetOptionGroup *group){
 	
 	if(pGroup){
 		pGroup->Remove(this);
-		pGroup->FreeReference();
 	}
 	
 	if(group){

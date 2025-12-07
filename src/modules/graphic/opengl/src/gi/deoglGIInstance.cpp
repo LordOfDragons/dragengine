@@ -557,12 +557,6 @@ void deoglGIInstance::DropBlockMaterial(){
 void deoglGIInstance::pCleanUp(){
 	Clear();
 	
-	if(pTBOMaterial){
-		pTBOMaterial->FreeReference();
-	}
-	if(pTBOMaterial2){
-		pTBOMaterial2->FreeReference();
-	}
 }
 
 void deoglGIInstance::pInitParameters(){

@@ -39,7 +39,6 @@ reUSetBoneIKLimitsLower::reUSetBoneIKLimitsLower(reRigBone *bone, const decVecto
 	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
-	pBone->AddReference();
 	
 	pOldIKLimitsLower = bone->GetIKLimitsLower();
 	pNewIKLimitsLower = ikLimitsLower;

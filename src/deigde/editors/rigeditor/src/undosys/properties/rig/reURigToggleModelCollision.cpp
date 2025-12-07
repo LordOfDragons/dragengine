@@ -48,13 +48,9 @@ pRig(NULL)
 	SetShortInfo("Rig toggle model collision");
 	
 	pRig = rig;
-	pRig->AddReference();
 }
 
 reURigToggleModelCollision::~reURigToggleModelCollision(){
-	if(pRig){
-		pRig->FreeReference();
-	}
 }
 
 

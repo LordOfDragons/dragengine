@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 projUProjectSetGameObject::~projUProjectSetGameObject(){
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

@@ -61,12 +61,6 @@ pProperty(NULL)
 }
 
 gdeUGDWPSetMinValue::~gdeUGDWPSetMinValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

@@ -166,7 +166,6 @@ void seDynamicSkin::SetActiveRenderable(seDynamicSkinRenderable *renderable){
 	if(renderable != pActiveRenderable){
 		if(pActiveRenderable){
 			pActiveRenderable->SetActive(false);
-			pActiveRenderable->FreeReference();
 		}
 		
 		pActiveRenderable = renderable;
@@ -189,7 +188,4 @@ void seDynamicSkin::pCleanUp(){
 	SetActiveRenderable(NULL);
 	RemoveAllRenderables();
 	
-	if(pEngDynamicSkin){
-		pEngDynamicSkin->FreeReference();
-	}
 }

@@ -35,7 +35,7 @@ class seController;
  */
 class seUControllerToggleClamp : public igdeUndo{
 private:
-	seController *pController;
+	seController::Ref pController;
 	
 	
 	

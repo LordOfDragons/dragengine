@@ -84,18 +84,6 @@ ceCAIfElseCase *ifcase, ceConversationAction *action){
 }
 
 ceUCAIfElseRemove::~ceUCAIfElseRemove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalTCScaling : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	decVector2 pOldScaling;
 	decVector2 pNewScaling;
 	

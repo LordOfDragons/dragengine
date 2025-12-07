@@ -38,7 +38,7 @@ class ceConversationTopic;
  */
 class ceUCActionPaste : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
+	ceConversationTopic::Ref pTopic;
 	ceConversationActionList pActions;
 	int pIndex;
 	

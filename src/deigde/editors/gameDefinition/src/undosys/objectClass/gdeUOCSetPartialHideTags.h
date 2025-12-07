@@ -40,7 +40,7 @@ class gdeObjectClass;
  */
 class gdeUOCSetPartialHideTags : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;

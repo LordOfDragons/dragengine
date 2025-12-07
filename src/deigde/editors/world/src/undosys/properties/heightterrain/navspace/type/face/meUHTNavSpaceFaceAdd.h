@@ -37,8 +37,8 @@ class meHeightTerrainNavSpaceFace;
  */
 class meUHTNavSpaceFaceAdd : public igdeUndo{
 private:
-	meHeightTerrainNavSpaceType *pType;
-	meHeightTerrainNavSpaceFace *pFace;
+	meHeightTerrainNavSpaceType::Ref pType;
+	meHeightTerrainNavSpaceFace::Ref pFace;
 	
 	
 	

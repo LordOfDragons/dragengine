@@ -38,7 +38,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetCombineMode : public igdeUndo{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	deSkinPropertyNode::eCombineModes pOldValue;
 	deSkinPropertyNode::eCombineModes pNewValue;

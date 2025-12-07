@@ -41,7 +41,7 @@ class meHTVVariation;
  */
 class meUHTVVarSetRestitution : public igdeUndo{
 private:
-	meHTVVariation *pVariation;
+	meHTVVariation::Ref pVariation;
 	float pOldRestitution;
 	float pNewRestitution;
 	

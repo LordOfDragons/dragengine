@@ -376,8 +376,6 @@ void deoalWorld::AllSoundLevelMetersRemoved(){
 //////////////////////
 
 void deoalWorld::pCleanUp(){
-	if(pAWorld){
-		pAWorld->FreeReference();
 		pAWorld = NULL;
 	}
 	

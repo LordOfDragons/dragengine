@@ -62,12 +62,6 @@ pTexture(NULL)
 }
 
 gdeUOCTextureSetRotation::~gdeUOCTextureSetRotation(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

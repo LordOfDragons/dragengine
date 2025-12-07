@@ -55,9 +55,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeSetRotation::~seUPropertyNodeSetRotation(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

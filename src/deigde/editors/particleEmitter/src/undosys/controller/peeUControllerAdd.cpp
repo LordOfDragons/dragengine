@@ -58,12 +58,6 @@ peeUControllerAdd::peeUControllerAdd(peeEmitter *emitter, peeController *control
 }
 
 peeUControllerAdd::~peeUControllerAdd(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pEmitter){
-		pEmitter->FreeReference();
-	}
 }
 
 

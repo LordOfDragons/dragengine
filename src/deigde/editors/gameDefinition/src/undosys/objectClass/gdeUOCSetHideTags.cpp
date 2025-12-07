@@ -58,9 +58,6 @@ pObjectClass(NULL)
 }
 
 gdeUOCSetHideTags::~gdeUOCSetHideTags(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

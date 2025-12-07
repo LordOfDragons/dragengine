@@ -41,10 +41,10 @@ class seDynamicSkin{
 private:
 	seSkin *pParentSkin;
 	
-	deDynamicSkin *pEngDynamicSkin;
+	deDynamicSkin::Ref pEngDynamicSkin;
 	
 	seDynamicSkinRenderableList pRenderableList;
-	seDynamicSkinRenderable *pActiveRenderable;
+	seDynamicSkinRenderable::Ref pActiveRenderable;
 	
 public:
 	/** @name Constructors and Destructors */
@@ -61,7 +61,7 @@ public:
 	inline seSkin *GetParentSkin() const{ return pParentSkin; }
 	
 	/** Retrieves the engine dynamic skin. */
-	inline deDynamicSkin *GetEngineDynamicSkin() const{ return pEngDynamicSkin; }
+	inline const deDynamicSkin::Ref &GetEngineDynamicSkin() const{ return pEngDynamicSkin; }
 	
 	/** Dispose of all resources. */
 	void Dispose();
@@ -82,7 +82,7 @@ public:
 	/** Removes all renderables. */
 	void RemoveAllRenderables();
 	/** Retrieves the active renderable or NULL if none is active. */
-	inline seDynamicSkinRenderable *GetActiveRenderable() const{ return pActiveRenderable; }
+	inline const seDynamicSkinRenderable::Ref &GetActiveRenderable() const{ return pActiveRenderable; }
 	/** Determines if there is an active renderable or not. */
 	bool HasActiveRenderable() const;
 	/** Sets the active renderable or NULL if none is active. */

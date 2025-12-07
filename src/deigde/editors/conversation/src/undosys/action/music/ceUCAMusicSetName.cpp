@@ -59,12 +59,6 @@ ceUCAMusicSetName::ceUCAMusicSetName(ceConversationTopic *topic, ceCAMusic *musi
 }
 
 ceUCAMusicSetName::~ceUCAMusicSetName(){
-	if(pMusic){
-		pMusic->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

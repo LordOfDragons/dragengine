@@ -66,9 +66,6 @@ pNavBlocker(NULL)
 }
 
 gdeWPSTIMOCNavBlocker::~gdeWPSTIMOCNavBlocker(){
-	if(pNavBlocker){
-		pNavBlocker->FreeReference();
-	}
 }
 
 

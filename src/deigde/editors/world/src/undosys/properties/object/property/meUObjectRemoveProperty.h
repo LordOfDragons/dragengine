@@ -36,7 +36,7 @@ class meObject;
  */
 class meUObjectRemoveProperty : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decString pKey;
 	decString pValue;

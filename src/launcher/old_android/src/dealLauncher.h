@@ -98,23 +98,23 @@ private:
 	JNIEnv *pJniEnv;
 	
 	eStates pState;
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	dealAssetUnpacker *pAssetUnpacker;
 	
 	dealDisplay pDisplay;
 	
-	deVirtualFileSystem *pFileSystem;
+	deVirtualFileSystem::Ref pFileSystem;
 	dealConfiguration pConfiguration;
 	dealGameManager pGameManager;
 	dealEngine pEngine;
 	
-	dealDialogMain *pDialogMain;
+	dealDialogMain::Ref pDialogMain;
 	
 	decString pGameIdentifier;
 	decString pProfileName;
 	
-	dealGame *pGame;
-	dealGameProfile *pProfile;
+	dealGame::Ref pGame;
+	dealGameProfile::Ref pProfile;
 	dealGPModuleList *pModuleParameters;
 	decString pRunArguments;
 	int pRunWidth;
@@ -123,7 +123,7 @@ private:
 	decString pWindowTitle;
 	
 	jniGlobalJObject pObjUriIntentData;
-	dealGameData *pGameData;
+	dealGameData::Ref pGameData;
 	
 	bool pFocused;
 	bool pFrozen;

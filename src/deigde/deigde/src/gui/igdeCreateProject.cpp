@@ -85,12 +85,6 @@ pGameDef(NULL){
 }
 
 igdeCreateProject::~igdeCreateProject(){
-	if(pGameDef){
-		pGameDef->FreeReference();
-	}
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

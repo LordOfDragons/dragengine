@@ -51,7 +51,6 @@ pSource(NULL)
 	
 	try{
 		pSource = source;
-		pSource->AddReference();
 		
 		SetShortInfo("Source set minimum panning");
 		
@@ -84,7 +83,4 @@ void seUSetSourceMinPanning::Redo(){
 //////////////////////
 
 void seUSetSourceMinPanning::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCParticleEmitterSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	gdeOCParticleEmitter::eProperties pProperty;
 	decString pOldValue;

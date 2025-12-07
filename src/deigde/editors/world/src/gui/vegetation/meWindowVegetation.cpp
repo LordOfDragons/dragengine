@@ -451,9 +451,6 @@ pPixelToUnits(1.0f / pUnitsToPixel)
 
 meWindowVegetation::~meWindowVegetation(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -470,7 +467,6 @@ void meWindowVegetation::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
@@ -506,9 +502,6 @@ void meWindowVegetation::SetVLayer(meHTVegetationLayer *vlayer){
 	
 	Clear();
 	
-	if(pVLayer){
-		pVLayer->FreeReference();
-	}
 	
 	pVLayer = vlayer;
 	

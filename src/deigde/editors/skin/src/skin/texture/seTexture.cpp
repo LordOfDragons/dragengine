@@ -163,8 +163,6 @@ void seTexture::UpdateEngineSkin(){
 	}
 	
 	// free the old skin
-	if(pEngSkin){
-		pEngSkin->FreeReference();
 		pEngSkin = NULL;
 	}
 	
@@ -305,7 +303,6 @@ void seTexture::SetActiveProperty(seProperty *property){
 	
 	if(pActiveProperty){
 		pActiveProperty->SetActive(false);
-		pActiveProperty->FreeReference();
 	}
 	
 	pActiveProperty = property;
@@ -360,9 +357,6 @@ void seTexture::SetTexCoordRotation(float rotation){
 void seTexture::pCleanUp(){
 	RemoveAllProperties();
 	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 }
 
 void seTexture::pUpdateTexCoordTransform(){

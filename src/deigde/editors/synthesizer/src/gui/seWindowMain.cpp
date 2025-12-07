@@ -125,9 +125,6 @@ seWindowMain::~seWindowMain(){
 	
 	SetSynthesizer(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -158,7 +155,6 @@ void seWindowMain::SetSynthesizer(seSynthesizer *synthesizer){
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
 		pSynthesizer->Dispose();
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;

@@ -540,7 +540,6 @@ void saeSAnimation::SetActivePhoneme(saePhoneme *phoneme){
 	
 	if(pActivePhoneme){
 		pActivePhoneme->SetActive(false);
-		pActivePhoneme->FreeReference();
 	}
 	
 	pActivePhoneme = phoneme;
@@ -614,7 +613,6 @@ void saeSAnimation::SetActiveWord(saeWord *word){
 	
 	if(pActiveWord){
 		pActiveWord->SetActive(false);
-		pActiveWord->FreeReference();
 	}
 	
 	pActiveWord = word;

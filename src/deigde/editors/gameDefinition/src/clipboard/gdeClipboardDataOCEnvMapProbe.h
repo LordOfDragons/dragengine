@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief EnvMapProbe. */
-	gdeOCEnvMapProbe *GetEnvMapProbe() const{ return pEnvMapProbe; }
+	const gdeOCEnvMapProbe::Ref &GetEnvMapProbe() const{ return pEnvMapProbe; }
 	/*@}*/
 };
 

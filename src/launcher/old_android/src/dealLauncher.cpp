@@ -1200,18 +1200,10 @@ void dealLauncher::pCleanUp(){
 		
 		StopAssetUnpacking();
 		
-		if(pGame){
-			pGame->FreeReference();
-		}
-		if(pProfile){
-			pProfile->FreeReference();
-		}
 		if(pModuleParameters){
 			delete pModuleParameters;
 		}
 		
-		if(pDialogMain){
-			pDialogMain->FreeReference();
 			pDialogMain = NULL;
 		}
 		
@@ -1221,8 +1213,6 @@ void dealLauncher::pCleanUp(){
 		GetLogger().LogException(LOGSOURCE, e);
 	}
 	
-	if(pGameData){
-		pGameData->FreeReference();
 		pGameData = NULL;
 	}
 	pObjUriIntentData.Clear();
@@ -1232,12 +1222,8 @@ void dealLauncher::pCleanUp(){
 		pJniEnv = NULL;
 	}
 	
-	pLogger->FreeReference();
 	pLogger = NULL; // this is vital or GetLogger() does not fall back to the null logger causing segfaults
 	
-	if(pFileSystem){
-		pFileSystem->FreeReference();
-	}
 }
 
 void dealLauncher::pInitLogger(){
@@ -1278,9 +1264,6 @@ void dealLauncher::pInitLogger(){
 		}
 		
 		// set the logger
-		if(pLogger){
-			pLogger->FreeReference();
-		}
 		pLogger = loggerChain;
 		
 	}catch(const deException &){
@@ -1318,7 +1301,6 @@ void dealLauncher::pLocateGame(){
 	/* by game identifier
 	pGame = pGameManager.GetGameList().GetWithID(gameIdentifier);
 	if(pGame){
-		pGame->AddReference();
 	}
 	*/
 	
@@ -1359,7 +1341,6 @@ void dealLauncher::pLocateProfile(){
 		}
 	}
 	
-	pProfile->AddReference();
 	
 	if(!pProfile->GetValid()){
 //		PrintProfileProblems();

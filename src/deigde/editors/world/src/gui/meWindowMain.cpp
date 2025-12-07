@@ -196,8 +196,6 @@ meWindowMain::~meWindowMain(){
 		delete pLoadTask;
 		pLoadTask = NULL;
 	}
-	if(pLoadWorld){
-		pLoadWorld->FreeReference();
 		pLoadWorld = NULL;
 	}
 	
@@ -207,18 +205,6 @@ meWindowMain::~meWindowMain(){
 	
 	SetWorld(NULL);
 	
-	if(pView3D){
-		pView3D->FreeReference();
-	}
-	if(pViewVegetation){
-		pViewVegetation->FreeReference();
-	}
-	if(pViewChangelog){
-		pViewChangelog->FreeReference();
-	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
 	
 	pClipboard.ClearAll();
 	
@@ -232,9 +218,6 @@ meWindowMain::~meWindowMain(){
 		delete pLoadSaveSystem;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -268,7 +251,6 @@ void meWindowMain::SetWorld(meWorld *world){
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
 		pWorld->Dispose();
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;
@@ -2332,7 +2314,6 @@ void meWindowMain::pUpdateLoading(){
 			pLoadWorld->ClearScalingOfNonScaledElements();
 			
 			SetWorld(pLoadWorld);
-			pLoadWorld->FreeReference();
 			pLoadWorld = NULL;
 			
 			SetProgressVisible(false);
@@ -2355,8 +2336,6 @@ void meWindowMain::pUpdateLoading(){
 			delete pLoadTask;
 			pLoadTask = NULL;
 		}
-		if(pLoadWorld){
-			pLoadWorld->FreeReference();
 			pLoadWorld = NULL;
 		}
 		pLoadFilename = "";

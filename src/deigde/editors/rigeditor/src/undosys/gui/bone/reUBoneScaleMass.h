@@ -43,13 +43,13 @@ class reRigBone;
 class reUBoneScaleMass : public igdeUndo{
 private:
 	struct sBone{
-		reRigBone *bone;
+		reRigBone::Ref bone;
 		float oldMass;
 		float newMass;
 	};
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	float pNewMass;
 	

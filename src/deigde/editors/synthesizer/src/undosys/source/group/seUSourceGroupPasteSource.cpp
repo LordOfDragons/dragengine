@@ -75,9 +75,6 @@ pIndex(index)
 }
 
 seUSourceGroupPasteSource::~seUSourceGroupPasteSource(){
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

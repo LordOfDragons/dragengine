@@ -67,15 +67,6 @@ pLogic(NULL)
 }
 
 ceUCCLogicRemoveAll::~ceUCCLogicRemoveAll(){
-	if(pLogic){
-		pLogic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

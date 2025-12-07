@@ -109,10 +109,4 @@ void aeURemoveController::Redo(){
 //////////////////////
 
 void aeURemoveController::pCleanUp(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pAnimator){
-		pAnimator->FreeReference();
-	}
 }

@@ -46,13 +46,9 @@ pNewBone(newBone)
 	SetShortInfo("Bone transformator set input bone");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleBTransSetInputBone::~aeURuleBTransSetInputBone(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

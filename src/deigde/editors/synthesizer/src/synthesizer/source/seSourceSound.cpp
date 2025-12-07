@@ -70,14 +70,10 @@ pTargetSpeed(copy.pTargetSpeed),
 pTargetPlay(copy.pTargetPlay)
 {
 	if(pSound){
-		pSound->AddReference();
 	}
 }
 
 seSourceSound::~seSourceSound(){
-	if(pSound){
-		pSound->FreeReference();
-	}
 }
 
 
@@ -96,8 +92,6 @@ void seSourceSound::SetPathSound(const char *path){
 }
 
 void seSourceSound::UpdateSound(){
-	if(pSound){
-		pSound->FreeReference();
 		pSound = NULL;
 	}
 	

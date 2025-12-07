@@ -67,15 +67,6 @@ ceStrip *strip, const char *newID){
 }
 
 ceUCAASpeakStripSetID::~ceUCAASpeakStripSetID(){
-	if(pStrip){
-		pStrip->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

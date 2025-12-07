@@ -154,8 +154,6 @@ void deoglParticleEmitter::pCleanUp(){
 	}
 	
 	// types holds a reference to pREmitter. do not remove it earlier
-	if(pREmitter){
-		pREmitter->FreeReference();
 		pREmitter = NULL;
 	}
 }

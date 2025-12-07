@@ -59,12 +59,6 @@ pBillboard(NULL)
 }
 
 gdeUOCBillboardTogglePartialHide::~gdeUOCBillboardTogglePartialHide(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

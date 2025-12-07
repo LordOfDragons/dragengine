@@ -38,7 +38,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetOffLookAtTo : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decVector pOldPos;
 	decVector pNewPos;

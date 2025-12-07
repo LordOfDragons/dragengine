@@ -58,9 +58,6 @@ pDirtyType(true){
 }
 
 deoglParticleEmitterType::~deoglParticleEmitterType(){
-	if(pRType){
-		pRType->FreeReference();
-	}
 }
 
 

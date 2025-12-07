@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCCameraSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	
 	decString pOldValue;
 	decString pNewValue;

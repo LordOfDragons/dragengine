@@ -51,7 +51,7 @@ private:
 	
 	decDMatrix pMatrix;
 	
-	deoglEnvironmentMap *pEnvMap;
+	deoglEnvironmentMap::Ref pEnvMap;
 	
 	bool pWorldMarkedRemove;
 	
@@ -109,7 +109,7 @@ public:
 	
 	
 	/** Retrieves the environment map or NULL if not existing. */
-	inline deoglEnvironmentMap *GetEnvironmentMap() const{ return pEnvMap; }
+	inline const deoglEnvironmentMap::Ref &GetEnvironmentMap() const{ return pEnvMap; }
 	
 	
 	

@@ -67,9 +67,6 @@ pBillboard(NULL)
 }
 
 gdeWPSTIMOCBillboard::~gdeWPSTIMOCBillboard(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
 }
 
 

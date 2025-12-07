@@ -65,9 +65,6 @@ pIndex(0)
 }
 
 seULayerMoveDown::~seULayerMoveDown(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

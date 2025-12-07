@@ -54,13 +54,9 @@ pLink(NULL)
 	SetShortInfo("Set Link Curve");
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seULinkSetCurve::~seULinkSetCurve(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

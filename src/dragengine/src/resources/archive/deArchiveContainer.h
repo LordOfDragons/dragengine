@@ -45,7 +45,7 @@ public:
 	
 private:
 	const decPath pArchivePath;
-	deArchive *pArchive;
+	deArchive::Ref pArchive;
 	
 	deArchiveContainer *pLLManagerPrev;
 	deArchiveContainer *pLLManagerNext;
@@ -77,7 +77,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Archive. */
-	inline deArchive *GetArchive() const{ return pArchive; }
+	inline const deArchive::Ref &GetArchive() const{ return pArchive; }
 	
 	/** \brief Archive path to map as root. */
 	inline const decPath &GetArchivePath(){ return pArchivePath; }

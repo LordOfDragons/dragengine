@@ -134,12 +134,8 @@ feWindowMain::~feWindowMain(){
 	
 	SetFont(NULL);
 	
-	if(pViewFontImage){
-		pViewFontImage->FreeReference();
 		pViewFontImage = NULL;
 	}
-	if(pWndProps){
-		pWndProps->FreeReference();
 		pWndProps = NULL;
 	}
 	
@@ -148,9 +144,6 @@ feWindowMain::~feWindowMain(){
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -191,7 +184,6 @@ void feWindowMain::SetFont(feFont *font){
 		pFont->RemoveNotifier(pListener);
 		
 		pFont->Dispose();
-		pFont->FreeReference();
 	}
 	
 	pFont = font;

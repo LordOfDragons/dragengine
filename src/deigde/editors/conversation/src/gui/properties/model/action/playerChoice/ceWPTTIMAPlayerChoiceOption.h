@@ -40,10 +40,10 @@ class ceWPTTIMAPlayerChoiceOptionActions;
  */
 class ceWPTTIMAPlayerChoiceOption : public ceWPTTreeItemModel{
 private:
-	ceCAPlayerChoiceOption *pOption;
+	ceCAPlayerChoiceOption::Ref pOption;
 	int pIndex;
-	ceWPTTIMAPlayerChoiceOptionCondition *pCondition;
-	ceWPTTIMAPlayerChoiceOptionActions *pActions;
+	ceWPTTIMAPlayerChoiceOptionCondition::Ref pCondition;
+	ceWPTTIMAPlayerChoiceOptionActions::Ref pActions;
 	
 	
 	
@@ -65,7 +65,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief If-Else Case. */
-	inline ceCAPlayerChoiceOption *GetOption() const{ return pOption; }
+	inline const ceCAPlayerChoiceOption::Ref &GetOption() const{ return pOption; }
 	
 	/** \brief Index. */
 	inline int GetIndex() const{ return pIndex; }
@@ -77,10 +77,10 @@ public:
 	ceWPTTIMAPlayerChoice *GetModelPlayerChoice() const;
 	
 	/** \brief Model with condition or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceOptionCondition *GetChildCondition() const{ return pCondition; }
+	inline const ceWPTTIMAPlayerChoiceOptionCondition::Ref &GetChildCondition() const{ return pCondition; }
 	
 	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceOptionActions *GetChildActions() const{ return pActions; }
+	inline const ceWPTTIMAPlayerChoiceOptionActions::Ref &GetChildActions() const{ return pActions; }
 	
 	/** \brief Update if-case. */
 	void Update();

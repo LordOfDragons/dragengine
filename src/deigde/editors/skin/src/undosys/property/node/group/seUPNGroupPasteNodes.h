@@ -39,7 +39,7 @@ class seClipboardDataPropertyNode;
  */
 class seUPNGroupPasteNodes : public igdeUndo{
 private:
-	sePropertyNodeGroup *pGroup;
+	sePropertyNodeGroup::Ref pGroup;
 	sePropertyNodeList pNodes;
 	int pLayer;
 	

@@ -62,12 +62,6 @@ pLight(NULL)
 }
 
 gdeUOCLightSetPosition::~gdeUOCLightSetPosition(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

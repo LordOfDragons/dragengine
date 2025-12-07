@@ -299,15 +299,9 @@ bool reRigPush::IsVisible() const{
 void reRigPush::pCleanUp(){
 	SetRig(NULL);
 	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
 	
 	if(pDDSPush){
 		delete pDDSPush;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

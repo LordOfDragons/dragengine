@@ -43,8 +43,8 @@ class aeAnimator;
  */
 class aeUMoveControllerDown : public igdeUndo{
 private:
-	aeAnimator *pAnimator;
-	aeController *pController;
+	aeAnimator::Ref pAnimator;
+	aeController::Ref pController;
 	int pIndex;
 	
 public:

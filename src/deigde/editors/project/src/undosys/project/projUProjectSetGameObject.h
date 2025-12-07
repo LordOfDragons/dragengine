@@ -37,7 +37,7 @@ class projProject;
  */
 class projUProjectSetGameObject : public igdeUndo{
 private:
-	projProject *pProject;
+	projProject::Ref pProject;
 	
 	decString pOldValue;
 	decString pNewValue;

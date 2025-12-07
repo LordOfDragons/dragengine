@@ -36,7 +36,7 @@ class peeEmitter;
  */
 class peeUEmitterToggleEmitBurst : public igdeUndo{
 private:
-	peeEmitter *pEmitter;
+	peeEmitter::Ref pEmitter;
 	
 	
 	

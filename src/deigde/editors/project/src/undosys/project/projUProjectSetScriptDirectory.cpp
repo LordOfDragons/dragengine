@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 projUProjectSetScriptDirectory::~projUProjectSetScriptDirectory(){
-	if(pProject){
-		pProject->FreeReference();
-	}
 }
 
 

@@ -69,15 +69,6 @@ ceUCAASpeakWordRemove::ceUCAASpeakWordRemove(ceConversationTopic *topic, ceCAAct
 }
 
 ceUCAASpeakWordRemove::~ceUCAASpeakWordRemove(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

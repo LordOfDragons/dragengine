@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCASetAParamSetValueVariable : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCASetActorParameter *pAction;
+	ceConversationTopic::Ref pTopic;
+	ceCASetActorParameter::Ref pAction;
 	decString pOldName;
 	decString pNewName;
 	

@@ -176,7 +176,6 @@ void deoglRCanvasPaint::pCleanUp(){
 	}
 	if(pVBOBlock){
 		pVBOBlock->DelayedRemove();
-		pVBOBlock->FreeReference();
 	}
 }
 

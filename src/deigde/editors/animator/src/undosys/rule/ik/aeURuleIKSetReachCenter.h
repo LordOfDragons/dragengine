@@ -38,7 +38,7 @@ class aeRuleInverseKinematic;
  */
 class aeURuleIKSetReachCenter : public igdeUndo{
 private:
-	aeRuleInverseKinematic *pRule;
+	aeRuleInverseKinematic::Ref pRule;
 	
 	decVector pOldValue;
 	decVector pNewValue;

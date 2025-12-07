@@ -63,12 +63,6 @@ pBillboard(NULL)
 }
 
 gdeUOCRemoveBillboard::~gdeUOCRemoveBillboard(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

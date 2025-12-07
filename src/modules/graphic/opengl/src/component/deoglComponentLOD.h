@@ -37,7 +37,7 @@ public:
 	deoglComponent &pComponent;
 	const int pLODIndex;
 	
-	deoglRComponentLOD *pRLOD;
+	deoglRComponentLOD::Ref pRLOD;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -60,7 +60,7 @@ public:
 	inline int GetLODIndex() const{ return pLODIndex; }
 	
 	/** Render component lod. */
-	inline deoglRComponentLOD *GetRLOD() const{ return pRLOD; }
+	inline const deoglRComponentLOD::Ref &GetRLOD() const{ return pRLOD; }
 	/*@}*/
 	
 private:

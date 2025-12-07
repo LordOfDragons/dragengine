@@ -112,9 +112,6 @@ void debpPhysicsBody::SetShape(debpBulletShape *shape){
 		pFreeRigidBody();
 	}
 	
-	if(pShape){
-		pShape->FreeReference();
-	}
 	
 	pShape = shape;
 	pShapeSurface = 0.0f;
@@ -558,9 +555,6 @@ void debpPhysicsBody::RemoveConstraint(debpColliderConstraint *constraint){
 void debpPhysicsBody::pCleanUp(){
 	pFreeRigidBody();
 	
-	if(pShape){
-		pShape->FreeReference();
-	}
 	
 	// constraints should not be linked any more at this time. if though this is for
 	// some strange reason still the case notify them that we are no more valid. we

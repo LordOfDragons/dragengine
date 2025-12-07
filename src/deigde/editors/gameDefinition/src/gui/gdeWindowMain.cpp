@@ -208,21 +208,12 @@ gdeWindowMain::~gdeWindowMain(){
 	
 	SetActiveGameDefinition(NULL);
 	
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
-	if(pViewActiveObject){
-		pViewActiveObject->FreeReference();
-	}
 	
 	if(pConfiguration){
 		delete pConfiguration;
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -253,7 +244,6 @@ void gdeWindowMain::SetActiveGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pActiveGameDefinition){
 		pActiveGameDefinition->RemoveListener(pListener);
-		pActiveGameDefinition->FreeReference();
 	}
 	
 	pActiveGameDefinition = gameDefinition;

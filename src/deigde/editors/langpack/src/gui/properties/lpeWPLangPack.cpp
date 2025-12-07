@@ -196,9 +196,6 @@ pLangPack(NULL)
 lpeWPLangPack::~lpeWPLangPack(){
 	SetLangPack(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -213,7 +210,6 @@ void lpeWPLangPack::SetLangPack(lpeLangPack *langpack){
 	
 	if(pLangPack){
 		pLangPack->RemoveListener(pListener);
-		pLangPack->FreeReference();
 	}
 	
 	pLangPack = langpack;

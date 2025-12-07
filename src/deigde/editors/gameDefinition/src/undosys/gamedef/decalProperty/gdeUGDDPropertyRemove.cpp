@@ -61,12 +61,6 @@ pProperty(NULL)
 }
 
 gdeUGDDPropertyRemove::~gdeUGDDPropertyRemove(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

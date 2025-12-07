@@ -78,9 +78,6 @@ void deoglRVideoPlayer::SetVideo(deoglRVideo *video){
 		return;
 	}
 	
-	if(pVideo){
-		pVideo->FreeReference();
-	}
 	
 	pVideo = video;
 	

@@ -136,9 +136,6 @@ void deoglDSRenderableCamera::DropCamera(){
 //////////////////////
 
 void deoglDSRenderableCamera::pCleanUp(){
-	if(pRRenderableCamera){
-		pRRenderableCamera->FreeReference();
-	}
 	
 	if(pCamera){
 		pCamera->GetNotifyRenderables().Remove(this);

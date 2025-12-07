@@ -82,10 +82,4 @@ void aeURuleGroupRemoveRule::Redo(){
 //////////////////////
 
 void aeURuleGroupRemoveRule::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }

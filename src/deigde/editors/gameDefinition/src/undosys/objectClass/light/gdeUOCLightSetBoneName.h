@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetBoneName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	decString pOldValue;
 	decString pNewValue;

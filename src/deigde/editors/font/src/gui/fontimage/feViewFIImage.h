@@ -42,7 +42,7 @@ class feViewFIImage : public igdeViewRenderWindow{
 private:
 	feWindowMain &pWindowMain;
 	
-	feFont *pFont;
+	feFont::Ref pFont;
 	
 	int pBorderSize;
 	int pZoom;
@@ -74,7 +74,7 @@ public:
 	
 	
 	/** \brief Font. */
-	inline feFont *GetFont() const{ return pFont; }
+	inline const feFont::Ref &GetFont() const{ return pFont; }
 	
 	/** \brief Set font. */
 	void SetFont(feFont *font);

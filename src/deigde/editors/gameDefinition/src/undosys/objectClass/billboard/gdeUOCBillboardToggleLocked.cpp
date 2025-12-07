@@ -59,12 +59,6 @@ pBillboard(NULL)
 }
 
 gdeUOCBillboardToggleLocked::~gdeUOCBillboardToggleLocked(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

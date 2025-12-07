@@ -54,8 +54,6 @@ pUpdateTracker(0)
 }
 
 deoglSky::~deoglSky(){
-	if(pRSky){
-		pRSky->FreeReference();
 		pRSky = NULL;
 	}
 }

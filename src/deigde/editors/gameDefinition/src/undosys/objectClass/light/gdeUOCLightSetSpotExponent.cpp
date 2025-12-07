@@ -62,12 +62,6 @@ pLight(NULL)
 }
 
 gdeUOCLightSetSpotExponent::~gdeUOCLightSetSpotExponent(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

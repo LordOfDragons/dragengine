@@ -63,12 +63,6 @@ pNewName(newName)
 }
 
 ceUCASetVarSetValueVariable::~ceUCASetVarSetValueVariable(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

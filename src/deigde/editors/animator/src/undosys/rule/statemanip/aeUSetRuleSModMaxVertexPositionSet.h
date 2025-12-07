@@ -36,7 +36,7 @@ class aeRuleStateManipulator;
  */
 class aeUSetRuleSModMaxVertexPositionSet : public igdeUndo{
 private:
-	aeRuleStateManipulator *pRule;
+	aeRuleStateManipulator::Ref pRule;
 	
 	float pOldMax;
 	float pNewMax;

@@ -57,12 +57,6 @@ pMaskRenderTarget(NULL){
 }
 
 deoglRCanvas::~deoglRCanvas(){
-	if(pMask){
-		pMask->FreeReference();
-	}
-	if(pMaskRenderTarget){
-		pMaskRenderTarget->FreeReference();
-	}
 }
 
 
@@ -103,9 +97,6 @@ void deoglRCanvas::SetMask(deoglRCanvas *mask){
 		return;
 	}
 	
-	if(pMask){
-		pMask->FreeReference();
-	}
 	
 	pMask = mask;
 	

@@ -627,7 +627,6 @@ void igdeEngineController::pDestroyMainRenderWindow(){
 		return;
 	}
 	
-	pMainRenderWindow->FreeReference();
 	pMainRenderWindow = NULL;
 }
 

@@ -272,7 +272,6 @@ pMaxLines(500)
 projPanelRemoteClient::~projPanelRemoteClient(){
 	if(pListener){
 		pClient->RemoveListener(pListener);
-		pListener->FreeReference();
 	}
 }
 

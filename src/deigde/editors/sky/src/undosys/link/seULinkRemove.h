@@ -40,12 +40,12 @@ class seSky;
 class seULinkRemove : public igdeUndo{
 private:
 	struct sTarget{
-		seLayer *layer;
+		seLayer::Ref layer;
 		deSkyLayer::eTargets target;
 	};
 	
-	seSky *pSky;
-	seLink *pLink;
+	seSky::Ref pSky;
+	seLink::Ref pLink;
 	
 	sTarget *pTargets;
 	int pTargetCount;

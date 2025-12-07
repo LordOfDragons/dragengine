@@ -47,7 +47,4 @@ pAModel(new deoalAModel(oal.GetAudioThread(), model)){
 }
 
 deoalModel::~deoalModel(){
-	if(pAModel){
-		pAModel->FreeReference();
-	}
 }

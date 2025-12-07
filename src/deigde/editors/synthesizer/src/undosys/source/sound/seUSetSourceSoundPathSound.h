@@ -37,7 +37,7 @@ class seSourceSound;
  */
 class seUSetSourceSoundPathSound : public igdeUndo{
 private:
-	seSourceSound *pSource;
+	seSourceSound::Ref pSource;
 	
 	decString pOldPath;
 	decString pNewPath;

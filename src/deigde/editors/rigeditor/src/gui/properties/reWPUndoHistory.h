@@ -37,8 +37,8 @@ class reWPUndoHistoryListener;
  */
 class reWPUndoHistory : public igdeWPUndoHistory{
 private:
-	reRig *pRig;
-	reWPUndoHistoryListener *pListener;
+	reRig::Ref pRig;
+	reWPUndoHistoryListener::Ref pListener;
 	
 	
 	
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Rig. */
-	inline reRig *GetRig() const{ return pRig; }
+	inline const reRig::Ref &GetRig() const{ return pRig; }
 	
 	/** \brief Set rig. */
 	void SetRig(reRig *rig);

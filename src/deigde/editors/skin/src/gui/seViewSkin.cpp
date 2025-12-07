@@ -97,9 +97,6 @@ void seViewSkin::SetSkin(seSkin *skin){
 	
 	SetRenderWorld(NULL);
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	pSkin = skin;
 	

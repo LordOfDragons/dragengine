@@ -36,8 +36,8 @@ class seWPUndoHistoryListener;
  * \brief Undo History Panel.
  */
 class seWPUndoHistory : public igdeWPUndoHistory{
-	seWPUndoHistoryListener *pListener;
-	seSkin *pSkin;
+	seWPUndoHistoryListener::Ref pListener;
+	seSkin::Ref pSkin;
 	
 	
 	
@@ -58,7 +58,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Skin. */
-	inline seSkin *GetSkin() const{ return pSkin; }
+	inline const seSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** \brief Set skin. */
 	void SetSkin(seSkin *skin);

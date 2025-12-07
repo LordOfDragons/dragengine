@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCCamera *pCamera;
+	gdeOCCamera::Ref pCamera;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Camera. */
-	gdeOCCamera *GetCamera() const{ return pCamera; }
+	const gdeOCCamera::Ref &GetCamera() const{ return pCamera; }
 	/*@}*/
 };
 

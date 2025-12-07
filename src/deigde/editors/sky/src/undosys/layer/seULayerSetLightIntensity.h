@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerSetLightIntensity : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	float pOldIntensity;
 	float pNewIntensity;

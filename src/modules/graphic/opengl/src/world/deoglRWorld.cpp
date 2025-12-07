@@ -198,7 +198,6 @@ void deoglRWorld::SetHeightTerrain(deoglRHeightTerrain *heightTerrain){
 	
 	if(pHeightTerrain){
 		pHeightTerrain->SetParentWorld(NULL);
-		pHeightTerrain->FreeReference();
 	}
 	
 	pHeightTerrain = heightTerrain;
@@ -795,7 +794,6 @@ void deoglRWorld::RemoveAllComponents(){
 		pRootComponent->SetParentWorld(nullptr);
 		pRootComponent->SetWorldMarkedRemove(false);
 		pComponentCount--;
-		pRootComponent->FreeReference();
 		
 		pRootComponent = next;
 	}
@@ -1175,7 +1173,6 @@ void deoglRWorld::RemoveAllBillboards(){
 		pRootBillboard->SetParentWorld(NULL);
 		pRootBillboard->SetWorldMarkedRemove(false);
 		pBillboardCount--;
-		pRootBillboard->FreeReference();
 		
 		pRootBillboard = next;
 	}
@@ -1479,7 +1476,6 @@ void deoglRWorld::pCleanUp(){
 	while(pRootBillboard){
 		deoglRBillboard * const next = pRootBillboard->GetLLWorldNext();
 		pRootBillboard->PrepareQuickDispose();
-		pRootBillboard->FreeReference();
 		pRootBillboard = next;
 	}
 	
@@ -1487,7 +1483,6 @@ void deoglRWorld::pCleanUp(){
 	while(pRootComponent){
 		deoglRComponent * const next = pRootComponent->GetLLWorldNext();
 		pRootComponent->PrepareQuickDispose();
-		pRootComponent->FreeReference();
 		pRootComponent = next;
 	}
 	
@@ -1588,7 +1583,6 @@ void deoglRWorld::pFreeSkyEnvMap(){
 	if(pSkyEnvMap){
 		RemoveEnvMap(pSkyEnvMap);
 		
-		pSkyEnvMap->FreeReference();
 		pSkyEnvMap = NULL;
 	}
 }

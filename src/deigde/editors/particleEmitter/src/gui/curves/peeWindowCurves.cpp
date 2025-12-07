@@ -163,9 +163,6 @@ pEmitter(NULL)
 
 peeWindowCurves::~peeWindowCurves(){
 	SetEmitter(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -182,7 +179,6 @@ void peeWindowCurves::SetEmitter(peeEmitter *emitter){
 	
 	if(pEmitter){
 		pEmitter->RemoveListener(pListener);
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;

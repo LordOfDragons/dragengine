@@ -47,8 +47,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRLink *pLink;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRLink::Ref pLink;
 	
 public:
 	/** \name Constructors and Destructors */

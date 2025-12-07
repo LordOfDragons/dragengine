@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCNavBlockerSetBoneName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	decString pOldValue;
 	decString pNewValue;

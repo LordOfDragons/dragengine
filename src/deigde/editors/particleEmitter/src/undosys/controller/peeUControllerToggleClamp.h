@@ -36,7 +36,7 @@ class peeController;
  */
 class peeUControllerToggleClamp : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	
 	

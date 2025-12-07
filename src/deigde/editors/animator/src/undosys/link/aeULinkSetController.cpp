@@ -50,7 +50,6 @@ aeULinkSetController::aeULinkSetController(aeLink *link, aeController *newContro
 	SetShortInfo("Set Link Controller");
 	
 	pLink = link;
-	pLink->AddReference();
 	
 	pOldController = link->GetController();
 	if(pOldController) pOldController->AddReference();

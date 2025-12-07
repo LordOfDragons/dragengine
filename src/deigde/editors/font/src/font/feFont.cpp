@@ -161,8 +161,6 @@ void feFont::Invalidate(){
 void feFont::Rebuild(){
 	if(pDirtyFont){
 		// free the old font
-		if(pEngFont){
-			pEngFont->FreeReference();
 			pEngFont = NULL;
 		}
 		
@@ -367,7 +365,6 @@ void feFont::pCleanUp(){
 	
 	if(pFontImage){
 		pFontImage->SetParentFont(NULL);
-		pFontImage->FreeReference();
 	}
 	
 	if(pGlyphSelection) delete pGlyphSelection;

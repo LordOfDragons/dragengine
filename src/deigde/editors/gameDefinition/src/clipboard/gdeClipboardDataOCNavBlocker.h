@@ -45,7 +45,7 @@ public:
 	
 	
 private:
-	gdeOCNavigationBlocker *pNavBlocker;
+	gdeOCNavigationBlocker::Ref pNavBlocker;
 	
 	
 	
@@ -71,7 +71,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief NavBlocker. */
-	gdeOCNavigationBlocker *GetNavBlocker() const{ return pNavBlocker; }
+	const gdeOCNavigationBlocker::Ref &GetNavBlocker() const{ return pNavBlocker; }
 	/*@}*/
 };
 

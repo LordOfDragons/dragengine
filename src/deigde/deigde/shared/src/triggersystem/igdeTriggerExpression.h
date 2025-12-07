@@ -44,7 +44,7 @@ public:
 	
 	
 private:
-	igdeTriggerExpressionComponent *pRootComponent;
+	igdeTriggerExpressionComponent::Ref pRootComponent;
 	bool pResult;
 	bool pEnabled;
 	
@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Root expression component or null if not set. */
-	inline igdeTriggerExpressionComponent *GetRootComponent() const{ return pRootComponent; }
+	inline const igdeTriggerExpressionComponent::Ref &GetRootComponent() const{ return pRootComponent; }
 	
 	/** \brief Set root expression component or null if not set. */
 	void SetRootComponent(igdeTriggerExpressionComponent *component);

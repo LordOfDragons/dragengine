@@ -155,12 +155,6 @@ aeWindowMain::~aeWindowMain(){
 	
 	SetAnimator(NULL);
 	
-	if(pView3D){
-		pView3D->FreeReference();
-	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
 	
 	pClipboard.ClearAll();
 	
@@ -171,9 +165,6 @@ aeWindowMain::~aeWindowMain(){
 		delete pLoadSaveSystem;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -205,7 +196,6 @@ void aeWindowMain::SetAnimator(aeAnimator *animator){
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
 		pAnimator->Dispose();
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;

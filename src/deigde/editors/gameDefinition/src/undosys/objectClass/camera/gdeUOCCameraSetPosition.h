@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCCameraSetPosition : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	
 	decVector pOldValue;
 	decVector pNewValue;

@@ -60,12 +60,6 @@ ceUCATriggerSetAction::ceUCATriggerSetAction(ceConversationTopic *topic, ceCATri
 }
 
 ceUCATriggerSetAction::~ceUCATriggerSetAction(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

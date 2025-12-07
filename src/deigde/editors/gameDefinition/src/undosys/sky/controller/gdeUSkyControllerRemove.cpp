@@ -62,12 +62,6 @@ pController(NULL)
 }
 
 gdeUSkyControllerRemove::~gdeUSkyControllerRemove(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

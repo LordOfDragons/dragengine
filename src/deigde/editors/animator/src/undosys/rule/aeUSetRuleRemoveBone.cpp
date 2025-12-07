@@ -66,13 +66,9 @@ aeUSetRuleRemoveBone::aeUSetRuleRemoveBone(aeRule* rule, const char* pattern){
 	}
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleRemoveBone::~aeUSetRuleRemoveBone(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -40,12 +40,12 @@ class reRigShapeList;
 class reURemoveShape : public igdeUndo{
 private:
 	struct sEntry{
-		reRigShape *shape;
-		reRigBone *bone;
+		reRigShape::Ref shape;
+		reRigBone::Ref bone;
 	};
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	sEntry *pEntries;
 	int pEntryCount;

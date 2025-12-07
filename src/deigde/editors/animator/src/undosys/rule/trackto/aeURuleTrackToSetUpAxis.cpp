@@ -51,13 +51,9 @@ aeURuleTrackToSetUpAxis::aeURuleTrackToSetUpAxis(aeRuleTrackTo *rule, deAnimator
 	SetShortInfo("TrackTo Set Up Axis");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleTrackToSetUpAxis::~aeURuleTrackToSetUpAxis(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

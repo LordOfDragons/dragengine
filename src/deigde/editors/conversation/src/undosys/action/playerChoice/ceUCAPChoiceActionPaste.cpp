@@ -81,12 +81,6 @@ ceUCActionPaste(topic, actions, index)
 }
 
 ceUCAPChoiceActionPaste::~ceUCAPChoiceActionPaste(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
 }
 
 

@@ -35,7 +35,7 @@ class gdeCategory;
  */
 class gdeWPSTIMCategory : public gdeWPSTreeItemModel{
 private:
-	gdeCategory *pCategory;
+	gdeCategory::Ref pCategory;
 	
 	
 	
@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Category. */
-	inline gdeCategory *GetCategory() const{ return pCategory; }
+	inline const gdeCategory::Ref &GetCategory() const{ return pCategory; }
 	
 	
 	

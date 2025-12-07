@@ -45,9 +45,6 @@ pFadeTime(0.0f){
 }
 
 deoglRenderPlanEnvMap::~deoglRenderPlanEnvMap(){
-	if(pEnvMap){
-		pEnvMap->FreeReference();
-	}
 }
 
 
@@ -60,9 +57,6 @@ void deoglRenderPlanEnvMap::SetEnvMap(deoglEnvironmentMap *envmap){
 		return;
 	}
 	
-	if(pEnvMap){
-		pEnvMap->FreeReference();
-	}
 	
 	pEnvMap = envmap;
 	

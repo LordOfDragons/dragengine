@@ -37,8 +37,8 @@ class ceControllerValue;
  */
 class ceUCFPControllerAdd : public igdeUndo{
 private:
-	ceFacePose *pFacePose;
-	ceControllerValue *pController;
+	ceFacePose::Ref pFacePose;
+	ceControllerValue::Ref pController;
 	
 public:
 	/** \brief Type holding strong reference. */

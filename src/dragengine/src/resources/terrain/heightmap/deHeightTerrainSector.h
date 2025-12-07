@@ -63,7 +63,7 @@ private:
 	decPointerOrderedSet pNavSpaces;
 	
 	deDecal *pDecalRoot;
-	deDecal *pDecalTail;
+	deDecal::Ref pDecalTail;
 	int pDecalCount;
 	
 	

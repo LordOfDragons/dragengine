@@ -268,9 +268,6 @@ pGameDefinition(nullptr)
 gdeWPSOCWorld::~gdeWPSOCWorld(){
 	SetGameDefinition(nullptr);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -284,7 +281,6 @@ void gdeWPSOCWorld::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

@@ -424,9 +424,6 @@ pGameDefinition(NULL)
 gdeWPSOCNavigationBlocker::~gdeWPSOCNavigationBlocker(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -441,7 +438,6 @@ void gdeWPSOCNavigationBlocker::SetGameDefinition(gdeGameDefinition *gameDefinit
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

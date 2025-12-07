@@ -38,7 +38,7 @@ class reRigBone;
  */
 class reUSetBoneCentralMassPoint : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decVector pOldCentralMassPoint;
 	decVector pNewCentralMassPoint;

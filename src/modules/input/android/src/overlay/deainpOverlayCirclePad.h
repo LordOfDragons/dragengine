@@ -72,7 +72,7 @@ private:
 	float pUpDownPerSecond;
 	
 	deCanvasView *pCanvas;
-	deCanvasImage *pCImage;
+	deCanvasImage::Ref pCImage;
 	
 public:
 	/** \name Constructors and Destructors */

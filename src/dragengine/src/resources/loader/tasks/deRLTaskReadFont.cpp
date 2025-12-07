@@ -98,9 +98,6 @@ pSucceeded(false)
 }
 
 deRLTaskReadFont::~deRLTaskReadFont(){
-	if(pInternalTask){
-		pInternalTask->FreeReference();
-	}
 }
 
 

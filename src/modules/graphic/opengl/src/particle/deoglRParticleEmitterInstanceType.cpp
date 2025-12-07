@@ -110,12 +110,6 @@ deoglRParticleEmitterInstanceType::~deoglRParticleEmitterInstanceType(){
 		pRTSInstance->ReturnToPool();
 	}
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pUseSkin){
-		pUseSkin->FreeReference();
-	}
 	if(pTUCGeometryDepthTest){
 		pTUCGeometryDepthTest->RemoveUsage();
 	}
@@ -158,9 +152,6 @@ void deoglRParticleEmitterInstanceType::SetDynamicSkin(deoglRDynamicSkin *dynami
 		return;
 	}
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	
 	pDynamicSkin = dynamicSkin;
 	
@@ -177,9 +168,6 @@ void deoglRParticleEmitterInstanceType::SetUseSkin(deoglRSkin *skin){
 		return;
 	}
 	
-	if(pUseSkin){
-		pUseSkin->FreeReference();
-	}
 	
 	pUseSkin = skin;
 	

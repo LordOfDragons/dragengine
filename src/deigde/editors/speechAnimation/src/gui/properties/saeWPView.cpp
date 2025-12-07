@@ -189,9 +189,6 @@ pSAnimation(NULL)
 saeWPView::~saeWPView(){
 	SetSAnimation(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -209,7 +206,6 @@ void saeWPView::SetSAnimation(saeSAnimation *sanimation){
 	
 	if(pSAnimation){
 		pSAnimation->RemoveListener(pListener);
-		pSAnimation->FreeReference();
 	}
 	
 	pSAnimation = sanimation;

@@ -46,7 +46,7 @@ public:
 
 private:
 	struct sBone{
-		reRigBone *bone;
+		reRigBone::Ref bone;
 		float oldMass;
 		float newMass;
 	};
@@ -54,7 +54,7 @@ private:
 	
 	
 private:
-	reRig *pRig;
+	reRig::Ref pRig;
 	
 	float pDensity;
 	

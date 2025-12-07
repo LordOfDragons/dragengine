@@ -54,9 +54,6 @@ ceUCCShotSetCamOrbitFrom::ceUCCShotSetCamOrbitFrom(ceCameraShot *cameraShot, con
 }
 
 ceUCCShotSetCamOrbitFrom::~ceUCCShotSetCamOrbitFrom(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

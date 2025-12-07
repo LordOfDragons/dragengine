@@ -94,9 +94,6 @@ pEnableVPS(rule.GetEnableVertexPositionSet())
 }
 
 dearRuleAnimation::~dearRuleAnimation(){
-	if(pMove){
-		pMove->FreeReference();
-	}
 }
 
 
@@ -219,8 +216,6 @@ void dearRuleAnimation::RuleChanged(){
 //////////////////////
 
 void dearRuleAnimation::pUpdateMove(){
-	if(pMove){
-		pMove->FreeReference();
 		pMove = NULL;
 	}
 	
@@ -228,7 +223,6 @@ void dearRuleAnimation::pUpdateMove(){
 	if(animation){
 		pMove = animation->GetMoveNamed(pAnimation.GetMoveName());
 		if(pMove){
-			pMove->AddReference();
 		}
 	}
 }

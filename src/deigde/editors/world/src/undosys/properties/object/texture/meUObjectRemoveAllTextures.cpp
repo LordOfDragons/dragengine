@@ -72,9 +72,6 @@ meUObjectRemoveAllTextures::meUObjectRemoveAllTextures(meObject *object){
 
 meUObjectRemoveAllTextures::~meUObjectRemoveAllTextures(){
 	pTextureList.RemoveAllTextures();
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

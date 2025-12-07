@@ -75,7 +75,6 @@ void cePlaybackActor::SetTextBoxText(ceTextBoxText *text){
 			if(pTextBox){
 				pTextBox->GetTextList().Remove(pTextBoxText);
 			}
-			pTextBoxText->FreeReference();
 		}
 		
 		pTextBoxText = text;

@@ -62,12 +62,6 @@ pProperty(property)
 }
 
 gdeUOCNavSpaceSetPropertyName::~gdeUOCNavSpaceSetPropertyName(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

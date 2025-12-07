@@ -36,8 +36,8 @@ class seSky;
  */
 class seULayerAdd : public igdeUndo{
 private:
-	seSky *pSky;
-	seLayer *pLayer;
+	seSky::Ref pSky;
+	seLayer::Ref pLayer;
 	
 	
 	

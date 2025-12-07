@@ -36,7 +36,7 @@ class reRigShape;
  */
 class reUShapeSetProperty : public igdeUndo{
 private:
-	reRigShape *pShape;
+	reRigShape::Ref pShape;
 	
 	decString pOldProperty;
 	decString pNewProperty;

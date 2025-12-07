@@ -35,7 +35,7 @@ class gdeOCParticleEmitter;
  */
 class gdeWPSTIMOCParticleEmitter : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCParticleEmitter *pParticleEmitter;
+	gdeOCParticleEmitter::Ref pParticleEmitter;
 	
 	
 public:
@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Particle emitter. */
-	inline gdeOCParticleEmitter *GetOCParticleEmitter() const{ return pParticleEmitter; }
+	inline const gdeOCParticleEmitter::Ref &GetOCParticleEmitter() const{ return pParticleEmitter; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

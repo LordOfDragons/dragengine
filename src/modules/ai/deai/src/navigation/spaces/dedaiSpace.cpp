@@ -500,7 +500,6 @@ void dedaiSpace::UpdateDDSSpace(){
 			pDDSMismatching = NULL;
 			pDDSHighlightCostType = NULL;
 			
-			pDebugDrawer->FreeReference();
 			pDebugDrawer = NULL;
 		}
 	}
@@ -746,9 +745,6 @@ void dedaiSpace::pCleanUp(){
 		delete pGrid;
 	}
 	
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
-	}
 }
 
 void dedaiSpace::pUpdateMatrices(){

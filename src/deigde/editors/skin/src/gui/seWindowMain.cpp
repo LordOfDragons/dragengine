@@ -160,15 +160,6 @@ seWindowMain::~seWindowMain(){
 	
 	SetSkin(NULL);
 	
-	if(pViewConstructed){
-		pViewConstructed->FreeReference();
-	}
-	if(pViewSkin){
-		pViewSkin->FreeReference();
-	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
 	
 	pClipboard.ClearAll();
 	
@@ -179,9 +170,6 @@ seWindowMain::~seWindowMain(){
 		delete pLoadSaveSystem;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -215,7 +203,6 @@ void seWindowMain::SetSkin(seSkin *skin){
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
 		pSkin->Dispose();
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;

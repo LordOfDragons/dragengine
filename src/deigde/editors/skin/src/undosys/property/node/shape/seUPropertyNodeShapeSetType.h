@@ -38,7 +38,7 @@ class sePropertyNodeShape;
  */
 class seUPropertyNodeShapeSetType : public igdeUndo{
 private:
-	sePropertyNodeShape *pNode;
+	sePropertyNodeShape::Ref pNode;
 	
 	deSkinPropertyNodeShape::eShapeTypes pOldValue;
 	deSkinPropertyNodeShape::eShapeTypes pNewValue;

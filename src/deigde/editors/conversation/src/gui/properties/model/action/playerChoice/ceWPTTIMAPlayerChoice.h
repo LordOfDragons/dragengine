@@ -37,7 +37,7 @@ class ceWPTTIMAPlayerChoiceActions;
  */
 class ceWPTTIMAPlayerChoice : public ceWPTTIMAction{
 private:
-	ceWPTTIMAPlayerChoiceActions *pActions;
+	ceWPTTIMAPlayerChoiceActions::Ref pActions;
 	
 	
 	
@@ -65,7 +65,7 @@ public:
 	ceWPTTIMAPlayerChoiceOption *GetOptionChild(ceCAPlayerChoiceOption *option) const;
 	
 	/** \brief Model with actions or \em NULL. */
-	inline ceWPTTIMAPlayerChoiceActions *GetActionsChild() const{ return pActions; }
+	inline const ceWPTTIMAPlayerChoiceActions::Ref &GetActionsChild() const{ return pActions; }
 	
 	/** \brief Update action. */
 	void Update() override;

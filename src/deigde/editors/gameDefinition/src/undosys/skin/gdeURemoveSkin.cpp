@@ -63,12 +63,6 @@ pSkin(NULL)
 }
 
 gdeURemoveSkin::~gdeURemoveSkin(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

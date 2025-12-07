@@ -175,9 +175,6 @@ void ceConversationFile::SetActiveTopic(ceConversationTopic *topic){
 		return;
 	}
 	
-	if(pActiveTopic){
-		pActiveTopic->FreeReference();
-	}
 	
 	pActiveTopic = topic;
 	

@@ -42,8 +42,8 @@ class meHTVVariation;
  */
 class meUHTVVariationRemove : public igdeUndo{
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVVariation *pVariation;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVVariation::Ref pVariation;
 	int pIndex;
 	
 public:

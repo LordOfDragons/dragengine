@@ -39,7 +39,7 @@ class deImage;
  */
 class feUFontImportImage : public igdeUndo{
 private:
-	feFontImage *pImage;
+	feFontImage::Ref pImage;
 	
 	int pOldWidth;
 	int pOldHeight;

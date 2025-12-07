@@ -58,9 +58,6 @@ pNewMissingText(newMissingText)
 }
 
 lpeULangPackSetMissingText::~lpeULangPackSetMissingText(){
-	if(pLangPack){
-		pLangPack->FreeReference();
-	}
 }
 
 

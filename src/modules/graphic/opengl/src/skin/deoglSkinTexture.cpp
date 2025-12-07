@@ -879,9 +879,6 @@ void deoglSkinTexture::pCleanUp(){
 		pRenderThread.GetShader().InvalidateSSBOSkinTextures();
 	}
 	
-	if(pSharedSPBElement){
-		pSharedSPBElement->FreeReference();
-	}
 	
 	int i;
 	for(i=0; i<deoglSkinChannel::CHANNEL_COUNT; i++){

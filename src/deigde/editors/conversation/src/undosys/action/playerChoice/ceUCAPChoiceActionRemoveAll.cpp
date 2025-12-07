@@ -75,15 +75,6 @@ ceCAPlayerChoice *playerChoice, ceCAPlayerChoiceOption *option){
 }
 
 ceUCAPChoiceActionRemoveAll::~ceUCAPChoiceActionRemoveAll(){
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

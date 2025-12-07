@@ -37,7 +37,7 @@ class aeRule;
  */
 class aeUSetRuleVertexPositionSets : public igdeUndo{
 protected:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;

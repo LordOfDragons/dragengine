@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerSetTransparency : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	float pOldTransparency;
 	float pNewTransparency;

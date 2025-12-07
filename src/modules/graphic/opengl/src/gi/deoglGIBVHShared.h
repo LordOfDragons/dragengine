@@ -58,18 +58,18 @@ class deoglGIBVHShared{
 private:
 	deoglRenderThread &pRenderThread;
 	
-	deoglDynamicTBOFloat32 *pTBONodeBox;
-	deoglDynamicTBOUInt16 *pTBOIndex;
-	deoglDynamicTBOUInt16 *pTBOFace;
-	deoglDynamicTBOFloat32 *pTBOVertex;
-	deoglDynamicTBOFloat16 *pTBOTexCoord;
-	deoglDynamicTBOUInt32 *pTBOMaterial;
-	deoglDynamicTBOFloat16 *pTBOMaterial2;
+	deoglDynamicTBOFloat32::Ref pTBONodeBox;
+	deoglDynamicTBOUInt16::Ref pTBOIndex;
+	deoglDynamicTBOUInt16::Ref pTBOFace;
+	deoglDynamicTBOFloat32::Ref pTBOVertex;
+	deoglDynamicTBOFloat16::Ref pTBOTexCoord;
+	deoglDynamicTBOUInt32::Ref pTBOMaterial;
+	deoglDynamicTBOFloat16::Ref pTBOMaterial2;
 	
-	deoglDynamicTBOShared *pSharedTBONode;
-	deoglDynamicTBOShared *pSharedTBOFace;
-	deoglDynamicTBOShared *pSharedTBOVertex;
-	deoglDynamicTBOShared *pSharedTBOMaterial;
+	deoglDynamicTBOShared::Ref pSharedTBONode;
+	deoglDynamicTBOShared::Ref pSharedTBOFace;
+	deoglDynamicTBOShared::Ref pSharedTBOVertex;
+	deoglDynamicTBOShared::Ref pSharedTBOMaterial;
 	
 	
 	
@@ -91,31 +91,31 @@ public:
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	
 	/** TBO for BVH node boundaries. */
-	inline deoglDynamicTBOFloat32 *GetTBONodeBox() const{ return pTBONodeBox; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBONodeBox() const{ return pTBONodeBox; }
 	
 	/** TBO for BVH node indices. */
-	inline deoglDynamicTBOUInt16 *GetTBOIndex() const{ return pTBOIndex; }
+	inline const deoglDynamicTBOUInt16::Ref &GetTBOIndex() const{ return pTBOIndex; }
 	
 	/** TBO for mesh faces. */
-	inline deoglDynamicTBOUInt16 *GetTBOFace() const{ return pTBOFace; }
+	inline const deoglDynamicTBOUInt16::Ref &GetTBOFace() const{ return pTBOFace; }
 	
 	/** TBO for mesh vertices. */
-	inline deoglDynamicTBOFloat32 *GetTBOVertex() const{ return pTBOVertex; }
+	inline const deoglDynamicTBOFloat32::Ref &GetTBOVertex() const{ return pTBOVertex; }
 	
 	/** TBO for mesh texture coordinates. */
-	inline deoglDynamicTBOFloat16 *GetTBOTexCoord() const{ return pTBOTexCoord; }
+	inline const deoglDynamicTBOFloat16::Ref &GetTBOTexCoord() const{ return pTBOTexCoord; }
 	
 	/** TBO for material parameters. */
-	inline deoglDynamicTBOUInt32 *GetTBOMaterial() const{ return pTBOMaterial; }
+	inline const deoglDynamicTBOUInt32::Ref &GetTBOMaterial() const{ return pTBOMaterial; }
 	
 	/** TBO for material float parameters. */
-	inline deoglDynamicTBOFloat16 *GetTBOMaterial2() const{ return pTBOMaterial2; }
+	inline const deoglDynamicTBOFloat16::Ref &GetTBOMaterial2() const{ return pTBOMaterial2; }
 	
 	/** Shared TBOs. */
-	inline deoglDynamicTBOShared *GetSharedTBONode() const{ return pSharedTBONode; }
-	inline deoglDynamicTBOShared *GetSharedTBOFace() const{ return pSharedTBOFace; }
-	inline deoglDynamicTBOShared *GetSharedTBOVertex() const{ return pSharedTBOVertex; }
-	inline deoglDynamicTBOShared *GetSharedTBOMaterial() const{ return pSharedTBOMaterial; }
+	inline const deoglDynamicTBOShared::Ref &GetSharedTBONode() const{ return pSharedTBONode; }
+	inline const deoglDynamicTBOShared::Ref &GetSharedTBOFace() const{ return pSharedTBOFace; }
+	inline const deoglDynamicTBOShared::Ref &GetSharedTBOVertex() const{ return pSharedTBOVertex; }
+	inline const deoglDynamicTBOShared::Ref &GetSharedTBOMaterial() const{ return pSharedTBOMaterial; }
 	/*@}*/
 	
 	

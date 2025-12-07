@@ -38,11 +38,11 @@ class peeParameter;
  */
 class peeUParameterSetControllerSpread : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
-	peeController *pOldController;
-	peeController *pNewController;
+	peeController::Ref pOldController;
+	peeController::Ref pNewController;
 	
 	
 	

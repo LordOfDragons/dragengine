@@ -71,7 +71,6 @@ pDDSCoordSystem(NULL)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pOCLight->AddReference();
 	
 	try{
 		pCreateDebugDrawer();
@@ -218,9 +217,6 @@ void gdeVAOLight::pCleanUp(){
 		pDebugDrawer = NULL;
 	}
 	
-	if(pOCLight){
-		pOCLight->FreeReference();
-	}
 }
 
 

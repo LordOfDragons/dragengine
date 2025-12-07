@@ -123,7 +123,4 @@ decColor deoglLumimeter::MeasureColor(){
 //////////////////////
 
 void deoglLumimeter::pCleanUp(){
-	if(pRLumimeter){
-		pRLumimeter->FreeReference();
-	}
 }

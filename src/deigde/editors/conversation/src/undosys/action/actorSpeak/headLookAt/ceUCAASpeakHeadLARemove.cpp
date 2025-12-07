@@ -69,15 +69,6 @@ ceUCAASpeakHeadLARemove::ceUCAASpeakHeadLARemove(ceConversationTopic *topic, ceC
 }
 
 ceUCAASpeakHeadLARemove::~ceUCAASpeakHeadLARemove(){
-	if(pHeadLA){
-		pHeadLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

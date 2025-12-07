@@ -46,7 +46,7 @@ public:
 	deGraphicOpenGl &pOgl;
 	const deDecal &pDecal;
 	
-	deoglRDecal *pRDecal;
+	deoglRDecal::Ref pRDecal;
 	
 	deoglDynamicSkin *pDynamicSkin;
 	
@@ -92,7 +92,7 @@ public:
 	
 	
 	/** Render decal. */
-	inline deoglRDecal *GetRDecal() const{ return pRDecal; }
+	inline const deoglRDecal::Ref &GetRDecal() const{ return pRDecal; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

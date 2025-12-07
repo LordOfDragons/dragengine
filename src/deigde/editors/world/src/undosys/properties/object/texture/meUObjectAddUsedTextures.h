@@ -39,7 +39,7 @@ class meObject;
  */
 class meUObjectAddUsedTextures : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decStringList pTextureNameList;
 	meObjectTextureList pTextureList;
 	

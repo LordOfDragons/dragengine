@@ -38,7 +38,7 @@ class peeType;
  */
 class peeUTypeSetEmitController : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	deParticleEmitterType::eEmitControllers pController;
 	
 	decString pOldTarget;

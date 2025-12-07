@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCCameraSetViewDistance : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	
 	float pOldValue;
 	float pNewValue;

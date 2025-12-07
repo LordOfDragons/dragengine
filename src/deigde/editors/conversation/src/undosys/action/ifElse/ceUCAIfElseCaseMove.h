@@ -38,9 +38,9 @@ class ceCAIfElse;
  */
 class ceUCAIfElseCaseMove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAIfElse *pIfElse;
-	ceCAIfElseCase *pCase;
+	ceConversationTopic::Ref pTopic;
+	ceCAIfElse::Ref pIfElse;
+	ceCAIfElseCase::Ref pCase;
 	int pOldIndex;
 	int pNewIndex;
 	

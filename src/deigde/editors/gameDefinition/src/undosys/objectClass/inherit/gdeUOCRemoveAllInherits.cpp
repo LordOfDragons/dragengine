@@ -56,9 +56,6 @@ pObjectClass(NULL)
 }
 
 gdeUOCRemoveAllInherits::~gdeUOCRemoveAllInherits(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

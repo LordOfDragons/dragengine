@@ -51,7 +51,4 @@ pNavSpace(NULL)
 }
 
 gdeClipboardDataOCNavSpace::~gdeClipboardDataOCNavSpace(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }

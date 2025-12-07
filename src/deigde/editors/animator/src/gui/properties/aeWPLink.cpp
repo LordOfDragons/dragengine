@@ -654,9 +654,6 @@ pPreventUpdate(false)
 aeWPLink::~aeWPLink(){
 	SetAnimator(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -671,7 +668,6 @@ void aeWPLink::SetAnimator(aeAnimator *animator){
 	
 	if(pAnimator){
 		pAnimator->RemoveNotifier(pListener);
-		pAnimator->FreeReference();
 	}
 	
 	pAnimator = animator;

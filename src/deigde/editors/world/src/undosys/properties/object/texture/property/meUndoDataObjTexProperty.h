@@ -37,7 +37,7 @@ class meObjectTexture;
  */
 class meUndoDataObjTexProperty : public deObject{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decString pOldValue;
 	bool pPropertyExists;
 	decStringDictionary pOldProperties;
@@ -65,7 +65,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Texture. */
-	inline meObjectTexture *GetTexture() const{ return pTexture; }
+	inline const meObjectTexture::Ref &GetTexture() const{ return pTexture; }
 	
 	/** \brief Old property value. */
 	inline const decString &GetOldValue() const{ return pOldValue; }

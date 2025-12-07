@@ -62,12 +62,6 @@ pActorSpeak(NULL)
 }
 
 ceUCAASpeakWordClear::~ceUCAASpeakWordClear(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

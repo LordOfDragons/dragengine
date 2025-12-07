@@ -94,7 +94,6 @@ pDynamicSkin(NULL)
 	try{
 		pEngSkin = texture.GetEngineSkin();
 		if(pEngSkin){
-			pEngSkin->AddReference();
 		}
 		
 		UpdateDynamicSkin();
@@ -144,9 +143,6 @@ void meObjectTexture::LoadSkin(){
 		}
 	}
 	
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 	pEngSkin = engSkin;
 	
 	UpdateDynamicSkin();
@@ -240,8 +236,6 @@ void meObjectTexture::UpdateDynamicSkin(){
 		pDynamicSkin->AddRenderable(renderable);
 		
 	}else{
-		if(pDynamicSkin){
-			pDynamicSkin->FreeReference();
 			pDynamicSkin = NULL;
 		}
 	}
@@ -387,10 +381,4 @@ void meObjectTexture::SetActiveProperty(const char *property){
 //////////////////////
 
 void meObjectTexture::pCleanUp(){
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pEngSkin){
-		pEngSkin->FreeReference();
-	}
 }

@@ -56,9 +56,6 @@ pNewSize(newSize)
 }
 
 seUBodySetSize::~seUBodySetSize(){
-	if(pBody){
-		pBody->FreeReference();
-	}
 }
 
 

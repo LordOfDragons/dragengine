@@ -293,15 +293,9 @@ void mePathFindTest::Update(){
 void mePathFindTest::pCleanUp(){
 	SetWorld(NULL);
 	
-	if(pEngNavigator){
-		pEngNavigator->FreeReference();
-	}
 	
 	if(pDDSPath){
 		delete pDDSPath;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

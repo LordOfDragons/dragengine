@@ -53,9 +53,6 @@ seUPropertySetRenderableName::seUPropertySetRenderableName(seProperty *property,
 }
 
 seUPropertySetRenderableName::~seUPropertySetRenderableName(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

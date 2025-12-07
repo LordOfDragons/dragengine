@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 projUProfileSetWindowSize::~projUProfileSetWindowSize(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

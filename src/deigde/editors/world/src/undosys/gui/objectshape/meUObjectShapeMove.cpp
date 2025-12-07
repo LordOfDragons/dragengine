@@ -78,9 +78,6 @@ meUObjectShapeMove::meUObjectShapeMove(meObject *object, const char *property, c
 }
 
 meUObjectShapeMove::~meUObjectShapeMove(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }
 
 

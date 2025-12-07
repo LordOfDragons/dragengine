@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerTogglePlaying : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	
 	

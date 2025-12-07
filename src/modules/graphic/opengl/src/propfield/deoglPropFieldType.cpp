@@ -138,8 +138,6 @@ void deoglPropFieldType::InstanceCountChanged(){
 //////////////////////
 
 void deoglPropFieldType::pCleanUp(){
-	if(pRType){
-		pRType->FreeReference();
 		pRType = NULL;
 	}
 }

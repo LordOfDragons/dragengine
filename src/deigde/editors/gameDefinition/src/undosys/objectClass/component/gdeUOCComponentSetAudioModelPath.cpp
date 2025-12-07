@@ -62,12 +62,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentSetAudioModelPath::~gdeUOCComponentSetAudioModelPath(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

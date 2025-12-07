@@ -84,7 +84,4 @@ void meUDecalRemoveProperty::Redo(){
 //////////////////////
 
 void meUDecalRemoveProperty::pCleanUp(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }

@@ -44,16 +44,12 @@ aeULinkSetVertexPositionSetMaximum::aeULinkSetVertexPositionSetMaximum(aeLink *l
 	SetShortInfo("Link set vertex position set maximum");
 	
 	pLink = link;
-	pLink->AddReference();
 	
 	pOldValue = link->GetVertexPositionSetMaximum();
 	pNewValue = newValue;
 }
 
 aeULinkSetVertexPositionSetMaximum::~aeULinkSetVertexPositionSetMaximum(){
-	if(pLink){
-		pLink->FreeReference();
-	}
 }
 
 

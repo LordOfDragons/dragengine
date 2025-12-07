@@ -127,9 +127,6 @@ void deAudioSystem::SetActiveMicrophone(deMicrophone *microphone){
 		return;
 	}
 	
-	if(pActiveMic){
-		pActiveMic->FreeReference();
-	}
 	
 	pActiveMic = microphone;
 	
@@ -349,7 +346,4 @@ void deAudioSystem::LoadHeightTerrain(deHeightTerrain &heightTerrain){
 //////////////////////
 
 void deAudioSystem::pCleanUp(){
-	if(pActiveMic){
-		pActiveMic->FreeReference();
-	}
 }

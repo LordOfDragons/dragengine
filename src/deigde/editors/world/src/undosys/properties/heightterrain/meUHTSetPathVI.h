@@ -44,7 +44,7 @@ class meHeightTerrainSector;
  */
 class meUHTSetPathVI : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
 	
 	decString pOldPath;

@@ -139,9 +139,6 @@ void deoglDSRenderableCanvas::CanvasViewRequiresSync(){
 //////////////////////
 
 void deoglDSRenderableCanvas::pCleanUp(){
-	if(pRRenderableCanvas){
-		pRRenderableCanvas->FreeReference();
-	}
 	
 	if(pCanvasView){
 		pCanvasView->RemoveListener(this);

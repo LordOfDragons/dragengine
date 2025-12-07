@@ -55,8 +55,8 @@ class aeSubAnimator{
 private:
 	deEngine *pEngine;
 	
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
 	
 	decString pPathAnimator;
 	
@@ -72,7 +72,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Retrieves the engine animator or NULL if not existing. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	
 	/** Retrieves the path to the animator file. */
 	inline const decString &GetPathAnimator() const{ return pPathAnimator; }

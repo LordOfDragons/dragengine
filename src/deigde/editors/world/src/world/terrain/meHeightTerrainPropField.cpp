@@ -275,9 +275,6 @@ void meHeightTerrainPropField::pCleanUp(){
 		delete [] pVInstances;
 	}
 	
-	if(pEngPF){
-		pEngPF->FreeReference();
-	}
 	
 	if(pListener){
 		delete pListener;

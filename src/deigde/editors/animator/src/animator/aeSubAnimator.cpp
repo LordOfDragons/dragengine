@@ -95,8 +95,6 @@ void aeSubAnimator::SetPathAnimator(const char *path){
 void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 	pEngAnimatorInstance->SetAnimation(NULL);
 	
-	if(pEngAnimator){
-		pEngAnimator->FreeReference();
 		pEngAnimator = NULL;
 	}
 	
@@ -184,8 +182,6 @@ void aeSubAnimator::LoadAnimator(aeLoadSaveSystem &lssys){
 		if(animator){
 			animator->FreeReference();
 		}
-		if(pEngAnimator){
-			pEngAnimator->FreeReference();
 			pEngAnimator = NULL;
 		}
 	}
@@ -365,12 +361,10 @@ void aeSubAnimator::pCleanUp(){
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetAnimator(NULL);
 		pEngAnimatorInstance->SetComponent(NULL);
-		pEngAnimatorInstance->FreeReference();
 	}
 	
 	if(pEngAnimator){
 		pEngAnimator->SetRig(NULL);
 		pEngAnimator->SetAnimation(NULL);
-		pEngAnimator->FreeReference();
 	}
 }

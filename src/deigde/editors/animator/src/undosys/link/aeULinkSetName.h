@@ -41,7 +41,7 @@ class aeLink;
  */
 class aeULinkSetName : public igdeUndo{
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	decString pOldName;
 	decString pNewName;

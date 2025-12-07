@@ -35,7 +35,7 @@ class feFontGlyph;
  */
 class feUGlyphSetHeight : public igdeUndo{
 private:
-	feFontGlyph *pGlyph;
+	feFontGlyph::Ref pGlyph;
 	int pOldValue, pNewValue;
 	
 	

@@ -38,9 +38,9 @@ class ceStrip;
  */
 class ceUCAASpeakFaceAdd : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pFacePose;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pFacePose;
 	int pIndex;
 	
 public:

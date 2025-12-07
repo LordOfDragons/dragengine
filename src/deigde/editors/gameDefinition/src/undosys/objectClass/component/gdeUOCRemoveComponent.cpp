@@ -63,12 +63,6 @@ pComponent(NULL)
 }
 
 gdeUOCRemoveComponent::~gdeUOCRemoveComponent(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

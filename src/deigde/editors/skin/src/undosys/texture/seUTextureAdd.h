@@ -38,8 +38,8 @@ class seTexture;
  */
 class seUTextureAdd : public igdeUndo{
 private:
-	seTexture *pTexture;
-	seSkin *pSkin;
+	seTexture::Ref pTexture;
+	seSkin::Ref pSkin;
 	
 public:
 	/** \brief Type holding strong reference. */

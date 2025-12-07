@@ -59,12 +59,6 @@ ceUCACameraShotSetName::ceUCACameraShotSetName(ceConversationTopic *topic, ceCAC
 }
 
 ceUCACameraShotSetName::~ceUCACameraShotSetName(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

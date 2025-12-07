@@ -54,9 +54,6 @@ ceUCCShotSetOffCamFrom::ceUCCShotSetOffCamFrom(ceCameraShot *cameraShot, const d
 }
 
 ceUCCShotSetOffCamFrom::~ceUCCShotSetOffCamFrom(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

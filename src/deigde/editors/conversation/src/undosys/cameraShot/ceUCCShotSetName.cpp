@@ -83,9 +83,6 @@ ceUCCShotSetName::ceUCCShotSetName(ceCameraShot *cameraShot, const char *newName
 	}catch(const deException &){
 		pActionList.RemoveAll();
 		
-		if(pCameraShot){
-			pCameraShot->FreeReference();
-		}
 		
 		throw;
 	}
@@ -94,9 +91,6 @@ ceUCCShotSetName::ceUCCShotSetName(ceCameraShot *cameraShot, const char *newName
 ceUCCShotSetName::~ceUCCShotSetName(){
 	pActionList.RemoveAll();
 	
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

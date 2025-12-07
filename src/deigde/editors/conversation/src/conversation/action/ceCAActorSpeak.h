@@ -51,7 +51,7 @@ public:
 	
 private:
 	deEngine *pEngine;
-	deSound *pEngSound;
+	deSound::Ref pEngSound;
 	bool pLoaded;
 	
 	decString pActor;

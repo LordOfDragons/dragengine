@@ -597,9 +597,6 @@ void deoglLight::pCleanUp(){
 		delete pSkinStateController;
 	}
 	
-	if(pRLight){
-		pRLight->FreeReference();
-	}
 	
 	if(pLightCanvas){
 		pLightCanvas->RemoveListener(this);

@@ -58,12 +58,6 @@ pNavSpace(NULL)
 }
 
 meUHTNavSpaceAdd::~meUHTNavSpaceAdd(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pSector){
-		pSector->FreeReference();
-	}
 }
 
 

@@ -61,9 +61,6 @@ pCapturePending(false)
 
 deoglCaptureCanvas::~deoglCaptureCanvas(){
 	pOgl.GetCaptureCanvasList().Remove(this);
-	if(pRCaptureCanvas){
-		pRCaptureCanvas->FreeReference();
-	}
 }
 
 

@@ -38,8 +38,8 @@ class projProfile;
  */
 class projUProfileRemove : public igdeUndo{
 private:
-	projProject *pProject;
-	projProfile *pProfile;
+	projProject::Ref pProject;
+	projProfile::Ref pProfile;
 	
 	
 	

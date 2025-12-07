@@ -131,24 +131,12 @@ peeWindowMain::~peeWindowMain(){
 	
 	SetEmitter(NULL);
 	
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
-	if(pWindowCurves){
-		pWindowCurves->FreeReference();
-	}
-	if(pViewEmitter){
-		pViewEmitter->FreeReference();
-	}
 	
 	if(pConfiguration){
 		delete pConfiguration;
 	}
 	if(pLoadSaveSystem){
 		delete pLoadSaveSystem;
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -182,7 +170,6 @@ void peeWindowMain::SetEmitter(peeEmitter *emitter){
 		pEmitter->RemoveListener(pListener);
 		
 		pEmitter->Dispose();
-		pEmitter->FreeReference();
 	}
 	
 	pEmitter = emitter;

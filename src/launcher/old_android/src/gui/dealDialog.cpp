@@ -55,12 +55,6 @@ pPopupDialog(NULL)
 }
 
 dealDialog::~dealDialog(){
-	if(pPopupDialog){
-		pPopupDialog->FreeReference();
-	}
-	if(pContent){
-		pContent->FreeReference();
-	}
 }
 
 
@@ -83,7 +77,6 @@ void dealDialog::SetPopupDialog(dealDialog *dialog){
 	
 	if(pPopupDialog){
 		pPopupDialog->OnDeactivate();
-		pPopupDialog->FreeReference();
 	}
 	
 	pPopupDialog = dialog;

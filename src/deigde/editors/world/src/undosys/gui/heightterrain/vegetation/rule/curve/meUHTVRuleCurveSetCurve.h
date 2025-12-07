@@ -40,8 +40,8 @@ class meHTVRuleCurve;
  */
 class meUHTVRuleCurveSetCurve : public igdeUndo{
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleCurve *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleCurve::Ref pRule;
 	
 	decCurveBezier pOldCurve;
 	decCurveBezier pNewCurve;

@@ -57,9 +57,6 @@ pNewMinimum(newMinimum)
 }
 
 seUControllerSetMinimum::~seUControllerSetMinimum(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

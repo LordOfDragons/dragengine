@@ -98,12 +98,6 @@ pCategory(NULL)
 }
 
 gdeUCategoryRemove::~gdeUCategoryRemove(){
-	if(pCategory){
-		pCategory->FreeReference();
-	}
-	if(pParent){
-		pParent->FreeReference();
-	}
 }
 
 

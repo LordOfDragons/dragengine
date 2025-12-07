@@ -275,9 +275,6 @@ pActivePanel(NULL)
 seWPEffect::~seWPEffect(){
 	SetSynthesizer(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -292,7 +289,6 @@ void seWPEffect::SetSynthesizer(seSynthesizer *synthesizer){
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;

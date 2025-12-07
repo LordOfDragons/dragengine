@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeMoveDown : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	int pIndex;
 	
 	

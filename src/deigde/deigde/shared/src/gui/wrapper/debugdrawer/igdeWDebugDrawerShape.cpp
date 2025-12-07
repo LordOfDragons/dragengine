@@ -191,9 +191,6 @@ void igdeWDebugDrawerShape::SetParentDebugDrawer(deDebugDrawer *debugDrawer){
 		pEngDDShape = NULL;
 	}
 	
-	if(pEngDebugDrawer){
-		pEngDebugDrawer->FreeReference();
-	}
 	
 	pEngDebugDrawer = debugDrawer;
 	

@@ -58,12 +58,6 @@ pParticleEmitter(NULL)
 }
 
 gdeUAddParticleEmitter::~gdeUAddParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

@@ -41,7 +41,7 @@ class ceConversationActionList;
  */
 class ceUCFileSetID : public igdeUndo{
 private:
-	ceConversationFile *pFile;
+	ceConversationFile::Ref pFile;
 	
 	decString pOldID;
 	decString pNewID;

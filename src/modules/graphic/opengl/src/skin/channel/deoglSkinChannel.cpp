@@ -133,22 +133,7 @@ deoglSkinChannel::~deoglSkinChannel(){
 		delete pTexture;
 	}
 	
-	if(pCacheConstrDefSource1){
-		pCacheConstrDefSource1->FreeReference();
-	}
-	if(pCacheConstrDefSource2){
-		pCacheConstrDefSource2->FreeReference();
-	}
-	if(pCacheConstrVerifySource1){
-		pCacheConstrVerifySource1->FreeReference();
-	}
-	if(pCacheConstrVerifySource2){
-		pCacheConstrVerifySource2->FreeReference();
-	}
 	
-	if(pCacheVerify){
-		pCacheVerify->FreeReference();
-	}
 }
 
 
@@ -362,25 +347,15 @@ void deoglSkinChannel::BuildChannel(const deSkinTexture &engTexture){
 }
 
 void deoglSkinChannel::ClearCacheData(){
-	if(pCacheVerify){
-		pCacheVerify->FreeReference();
 		pCacheVerify = NULL;
 	}
 	
-	if(pCacheConstrDefSource1){
-		pCacheConstrDefSource1->FreeReference();
 		pCacheConstrDefSource1 = NULL;
 	}
-	if(pCacheConstrDefSource2){
-		pCacheConstrDefSource2->FreeReference();
 		pCacheConstrDefSource2 = NULL;
 	}
-	if(pCacheConstrVerifySource1){
-		pCacheConstrVerifySource1->FreeReference();
 		pCacheConstrVerifySource1 = NULL;
 	}
-	if(pCacheConstrVerifySource2){
-		pCacheConstrVerifySource2->FreeReference();
 		pCacheConstrVerifySource2 = NULL;
 	}
 	

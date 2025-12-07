@@ -73,9 +73,9 @@ private:
 	gdeWindowMain &pWindowMain;
 	gdeViewActiveObjectListener *pListener;
 	
-	gdeGameDefinition *pGameDefinition;
+	gdeGameDefinition::Ref pGameDefinition;
 	
-	gdeObjectClass *pObjectClass;
+	gdeObjectClass::Ref pObjectClass;
 	
 	deComponent::Ref pPreviewComponent;
 	deModel::Ref pPreviewModelBox;
@@ -130,7 +130,7 @@ public:
 	inline gdeWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Monitored game definition. */
-	inline gdeGameDefinition *GetGameDefinition() const{ return pGameDefinition; }
+	inline const gdeGameDefinition::Ref &GetGameDefinition() const{ return pGameDefinition; }
 	
 	/** \brief Set game definition to monitor. */
 	void SetGameDefinition(gdeGameDefinition *gameDefinition);
@@ -152,7 +152,7 @@ public:
 	
 	
 	/** \brief Selected object class or \em NULL. */
-	inline gdeObjectClass *GetObjectClass() const{ return pObjectClass; }
+	inline const gdeObjectClass::Ref &GetObjectClass() const{ return pObjectClass; }
 	
 	/** \brief Set camera position to show active object properly. */
 	void ResetCameraPosition();

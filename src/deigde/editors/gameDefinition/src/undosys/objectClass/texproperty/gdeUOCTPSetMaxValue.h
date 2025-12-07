@@ -40,8 +40,8 @@ class gdeProperty;
  */
 class gdeUOCTPSetMaxValue : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	float pOldValue;
 	float pNewValue;

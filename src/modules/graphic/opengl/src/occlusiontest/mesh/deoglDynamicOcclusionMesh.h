@@ -46,7 +46,7 @@ class deComponent;
 class deoglDynamicOcclusionMesh{
 public:
 	deoglRenderThread &pRenderThread;
-	deoglROcclusionMesh *pOcclusionMesh;
+	deoglROcclusionMesh::Ref pOcclusionMesh;
 	deoglRComponent *pComponent;
 	
 	decIntList pBoneMappings;
@@ -85,7 +85,7 @@ public:
 	/** Render thread. */
 	inline deoglRenderThread &GetRenderThread() const{ return pRenderThread; }
 	/** Retrieves the occlusion mesh. */
-	inline deoglROcclusionMesh *GetOcclusionMesh() const{ return pOcclusionMesh; }
+	inline const deoglROcclusionMesh::Ref &GetOcclusionMesh() const{ return pOcclusionMesh; }
 	
 	/** VBO. */
 	inline GLuint GetVBO() const{ return pVBO; }

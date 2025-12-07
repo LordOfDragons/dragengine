@@ -36,7 +36,7 @@ class peeController;
  */
 class peeUControllerSetName : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	decString pOldName;
 	decString pNewName;

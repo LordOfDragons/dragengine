@@ -58,9 +58,6 @@ pNewTarget(newTarget)
 }
 
 peeUTypeSetTrailController::~peeUTypeSetTrailController(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

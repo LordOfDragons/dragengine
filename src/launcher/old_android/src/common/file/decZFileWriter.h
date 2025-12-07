@@ -45,7 +45,7 @@
  */
 class decZFileWriter : public decBaseFileWriter{
 private:
-	decBaseFileWriter *pWriter;
+	decBaseFileWriter::Ref pWriter;
 	
 	void *pZStream;
 	

@@ -40,7 +40,7 @@ class seSynthesizer;
  */
 class seUPasteSource : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
+	seSynthesizer::Ref pSynthesizer;
 	seSourceList pSourceList;
 	seLinkList pRemoveLinkList;
 	seControllerList pRemoveControllerList;

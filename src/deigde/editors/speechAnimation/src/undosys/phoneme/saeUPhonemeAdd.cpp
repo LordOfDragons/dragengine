@@ -56,12 +56,6 @@ saeUPhonemeAdd::saeUPhonemeAdd(saeSAnimation *sanimation, saePhoneme *phoneme){
 }
 
 saeUPhonemeAdd::~saeUPhonemeAdd(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

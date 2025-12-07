@@ -61,9 +61,6 @@ pSky(NULL)
 }
 
 gdeWPSTIMSky::~gdeWPSTIMSky(){
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

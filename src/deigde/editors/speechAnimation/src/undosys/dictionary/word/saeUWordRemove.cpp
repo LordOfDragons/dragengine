@@ -59,12 +59,6 @@ saeUWordRemove::saeUWordRemove(saeWord *word){
 }
 
 saeUWordRemove::~saeUWordRemove(){
-	if(pWord){
-		pWord->FreeReference();
-	}
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

@@ -37,8 +37,8 @@ class seController;
  */
 class seUSourceSynthConTargetLess : public igdeUndo{
 private:
-	seSourceSynthesizer *pSource;
-	seController *pOldController;
+	seSourceSynthesizer::Ref pSource;
+	seController::Ref pOldController;
 	
 	
 	

@@ -48,7 +48,7 @@ private:
 	deEngine *pEngine;
 	feFont *pParentFont;
 	
-	deImage *pEngImage;
+	deImage::Ref pEngImage;
 	
 	decString pFilename;
 	int pWidth;
@@ -75,7 +75,7 @@ public:
 	/** Retrieves the linked engine object. */
 	inline deEngine *GetEngine() const{ return pEngine; }
 	/** Retrieves the engine image. */
-	inline deImage *GetEngineImage() const{ return pEngImage; }
+	inline const deImage::Ref &GetEngineImage() const{ return pEngImage; }
 	
 	/** Retrieves the parent font or NULL if not assigned. */
 	inline feFont *GetParentFont() const{ return pParentFont; }

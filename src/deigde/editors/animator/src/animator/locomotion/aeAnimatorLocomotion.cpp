@@ -1216,17 +1216,14 @@ void aeAnimatorLocomotion::pCleanUp(){
 		
 		if(pTouchSensor){
 			world->RemoveTouchSensor(pTouchSensor);
-			pTouchSensor->FreeReference();
 		}
 		
 		if(pCollider){
 			world->RemoveCollider(pCollider);
-			pCollider->FreeReference();
 		}
 		
 		if(pDebugDrawer){
 			world->RemoveDebugDrawer(pDebugDrawer);
-			pDebugDrawer->FreeReference();
 		}
 	}
 }

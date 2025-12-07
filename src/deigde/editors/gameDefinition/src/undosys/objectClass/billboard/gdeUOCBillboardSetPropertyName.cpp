@@ -62,12 +62,6 @@ pProperty(property)
 }
 
 gdeUOCBillboardSetPropertyName::~gdeUOCBillboardSetPropertyName(){
-	if(pBillboard){
-		pBillboard->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

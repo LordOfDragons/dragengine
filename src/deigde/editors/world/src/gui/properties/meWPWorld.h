@@ -51,8 +51,8 @@ class mePathFindTestType;
 class meWPWorld : public igdeContainerScroll{
 private:
 	meWindowProperties &pWindowProperties;
-	meWPWorldListener *pListener;
-	meWorld *pWorld;
+	meWPWorldListener::Ref pListener;
+	meWorld::Ref pWorld;
 	
 	igdeActionContextMenu::Ref pActionPFTTypes;
 	igdeAction::Ref pActionPFTTypeAdd;
@@ -110,7 +110,7 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** Set world. */
 	void SetWorld(meWorld *world);

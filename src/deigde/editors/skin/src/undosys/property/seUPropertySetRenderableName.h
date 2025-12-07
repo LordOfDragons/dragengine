@@ -36,7 +36,7 @@ class seProperty;
  */
 class seUPropertySetRenderableName : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	decString pOldName;
 	decString pNewName;

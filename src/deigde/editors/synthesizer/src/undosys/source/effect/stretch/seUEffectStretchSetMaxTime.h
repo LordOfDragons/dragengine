@@ -36,7 +36,7 @@ class seEffectStretch;
  */
 class seUEffectStretchSetMaxTime : public igdeUndo{
 private:
-	seEffectStretch *pSource;
+	seEffectStretch::Ref pSource;
 	
 	float pOldTime;
 	float pNewTime;

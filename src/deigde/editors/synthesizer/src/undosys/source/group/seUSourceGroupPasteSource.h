@@ -40,7 +40,7 @@ class seSourceGroup;
  */
 class seUSourceGroupPasteSource : public igdeUndo{
 private:
-	seSourceGroup *pGroup;
+	seSourceGroup::Ref pGroup;
 	seSourceList pSourceList;
 	seLinkList pRemoveLinkList;
 	seControllerList pRemoveControllerList;

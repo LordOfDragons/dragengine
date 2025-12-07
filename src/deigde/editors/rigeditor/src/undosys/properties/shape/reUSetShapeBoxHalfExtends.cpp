@@ -44,11 +44,9 @@ reUSetShapeBoxHalfExtends::reUSetShapeBoxHalfExtends(reRigShapeBox *shape, const
 	
 	SetShortInfo("Set Box Shape HalfExtends");
 	
-	pShape->AddReference();
 }
 
 reUSetShapeBoxHalfExtends::~reUSetShapeBoxHalfExtends(){
-	pShape->FreeReference();
 }
 
 

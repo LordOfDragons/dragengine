@@ -40,8 +40,8 @@ class gdeProperty;
  */
 class gdeUOCPToggleIdentifierUsage : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeProperty *pProperty;
+	gdeObjectClass::Ref pObjectClass;
+	gdeProperty::Ref pProperty;
 	
 	
 	

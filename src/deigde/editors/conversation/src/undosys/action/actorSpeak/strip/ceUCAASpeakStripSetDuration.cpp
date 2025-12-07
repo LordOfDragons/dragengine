@@ -67,15 +67,6 @@ ceStrip *strip, float newDuration){
 }
 
 ceUCAASpeakStripSetDuration::~ceUCAASpeakStripSetDuration(){
-	if(pStrip){
-		pStrip->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

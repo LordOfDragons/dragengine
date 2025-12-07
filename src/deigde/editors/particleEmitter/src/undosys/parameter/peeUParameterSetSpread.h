@@ -37,7 +37,7 @@ class peeParameter;
  */
 class peeUParameterSetSpread : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	peeParameter *pParameter;
 	
 	float pOldSpread;

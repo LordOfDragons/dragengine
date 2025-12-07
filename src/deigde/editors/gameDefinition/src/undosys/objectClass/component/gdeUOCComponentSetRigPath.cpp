@@ -62,12 +62,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentSetRigPath::~gdeUOCComponentSetRigPath(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

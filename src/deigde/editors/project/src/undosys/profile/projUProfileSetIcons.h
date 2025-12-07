@@ -39,7 +39,7 @@ class projProfile;
  */
 class projUProfileSetIcons : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;

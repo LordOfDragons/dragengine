@@ -114,7 +114,6 @@ pActive(false)
 sePropertyNode::~sePropertyNode(){
 	if(pMask){
 		pMask->SetMaskParent(nullptr);
-		pMask->FreeReference();
 	}
 	
 	if(pMapped){
@@ -334,7 +333,6 @@ void sePropertyNode::SetMask(sePropertyNode *mask){
 	
 	if(pMask){
 		pMask->SetMaskParent(NULL);
-		pMask->FreeReference();
 	}
 	
 	pMask = mask;

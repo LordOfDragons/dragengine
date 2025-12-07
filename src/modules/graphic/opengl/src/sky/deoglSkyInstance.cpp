@@ -61,9 +61,6 @@ pSkyUpdateState(0)
 }
 
 deoglSkyInstance::~deoglSkyInstance(){
-	if(pRInstance){
-		pRInstance->FreeReference();
-	}
 }
 
 

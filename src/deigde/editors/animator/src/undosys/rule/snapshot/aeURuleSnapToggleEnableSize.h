@@ -37,7 +37,7 @@ class aeRuleStateSnapshot;
  */
 class aeURuleSnapToggleEnableSize : public igdeUndo{
 private:
-	aeRuleStateSnapshot *pRule;
+	aeRuleStateSnapshot::Ref pRule;
 	
 public:
 	/** \brief Type holding strong reference. */

@@ -369,9 +369,6 @@ pProjectGameDefPathChanged(false)
 }
 
 igdeDialogNewGameProject::~igdeDialogNewGameProject(){
-	if(pNewProject){
-		pNewProject->FreeReference();
-	}
 }
 
 
@@ -458,7 +455,6 @@ bool igdeDialogNewGameProject::Accept(){
 	}
 	
 	pNewProject = createProject.GetProject();
-	pNewProject->AddReference();
 	
 	pWindowMain.AddRecentGameProject(pNewProject->GetFilePath());
 	

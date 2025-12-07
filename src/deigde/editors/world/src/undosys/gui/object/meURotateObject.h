@@ -38,7 +38,7 @@ class meWorld;
  */
 class meURotateObject : public meBaseUndoRotate{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	
 public:

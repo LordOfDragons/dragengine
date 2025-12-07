@@ -42,7 +42,7 @@ class meWorld;
  */
 class meUDecalRotate : public meBaseUndoRotate{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	meUndoDataDecal **pDecals;
 	int pDecalCount;

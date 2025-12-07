@@ -71,15 +71,6 @@ ceStrip *facePose, int newIndex){
 }
 
 ceUCAASpeakFaceMove::~ceUCAASpeakFaceMove(){
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

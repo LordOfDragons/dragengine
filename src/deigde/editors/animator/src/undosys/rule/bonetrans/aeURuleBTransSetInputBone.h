@@ -35,7 +35,7 @@ class aeRuleBoneTransformator;
  */
 class aeURuleBTransSetInputBone : public igdeUndo{
 private:
-	aeRuleBoneTransformator *pRule;
+	aeRuleBoneTransformator::Ref pRule;
 	decString pOldBone, pNewBone;
 	
 public:

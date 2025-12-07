@@ -60,16 +60,12 @@ pCurve(copy.pCurve)
 {
 	pController = copy.pController;
 	if(pController){
-		pController->AddReference();
 	}
 }
 
 seLink::~seLink(){
 	SetSynthesizer(NULL);
 	
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 
@@ -130,9 +126,6 @@ void seLink::SetController(seController *controller){
 		return;
 	}
 	
-	if(pController){
-		pController->FreeReference();
-	}
 	
 	pController = controller;
 	

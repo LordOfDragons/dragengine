@@ -99,12 +99,6 @@ pEnableVPS(rule.GetEnableVertexPositionSet())
 }
 
 dearRuleAnimationDifference::~dearRuleAnimationDifference(){
-	if(pMove1){
-		pMove1->FreeReference();
-	}
-	if(pMove2){
-		pMove2->FreeReference();
-	}
 }
 	
 
@@ -287,12 +281,8 @@ void dearRuleAnimationDifference::RuleChanged(){
 //////////////////////
 
 void dearRuleAnimationDifference::pUpdateMove(){
-	if(pMove1){
-		pMove1->FreeReference();
 		pMove1 = NULL;
 	}
-	if(pMove2){
-		pMove2->FreeReference();
 		pMove2 = NULL;
 	}
 	
@@ -300,12 +290,10 @@ void dearRuleAnimationDifference::pUpdateMove(){
 	if(animation){
 		pMove1 = animation->GetMoveNamed(pAnimationDifference.GetLeadingMoveName());
 		if(pMove1){
-			pMove1->AddReference();
 		}
 		
 		pMove2 = animation->GetMoveNamed(pAnimationDifference.GetReferenceMoveName());
 		if(pMove2){
-			pMove2->AddReference();
 		}
 	}
 }

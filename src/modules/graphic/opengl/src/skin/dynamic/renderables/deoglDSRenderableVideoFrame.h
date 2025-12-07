@@ -40,7 +40,7 @@ class deDSRenderableVideoFrame;
 class deoglDSRenderableVideoFrame : public deoglDSRenderable{
 public:
 	const deDSRenderableVideoFrame &pRenderableVideoFrame;
-	deoglRDSRenderableVideoFrame *pRRenderableVideoFrame;
+	deoglRDSRenderableVideoFrame::Ref pRRenderableVideoFrame;
 	deoglVideoPlayer *pVideoPlayer;
 	bool pDirty;
 	

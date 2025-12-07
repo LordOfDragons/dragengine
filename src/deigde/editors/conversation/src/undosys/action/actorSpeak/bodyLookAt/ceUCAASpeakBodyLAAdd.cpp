@@ -68,15 +68,6 @@ ceUCAASpeakBodyLAAdd::ceUCAASpeakBodyLAAdd(ceConversationTopic *topic, ceCAActor
 }
 
 ceUCAASpeakBodyLAAdd::~ceUCAASpeakBodyLAAdd(){
-	if(pBodyLA){
-		pBodyLA->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

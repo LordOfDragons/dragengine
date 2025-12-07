@@ -221,7 +221,6 @@ void deoglRenderWindow::SyncToRender(){
 void deoglRenderWindow::pCleanUp(){
 	if(pRRenderWindow){
 		pRRenderWindow->SetFullScreen(false); // make sure full screen is disabled if enabled
-		pRRenderWindow->FreeReference();
 	}
 	
 	#if defined OS_UNIX && !defined WITH_OPENGLES && !defined OS_BEOS && !defined OS_MACOS

@@ -174,16 +174,10 @@ deoalAVideoPlayer *videoPlayer){
 	// drop old source and decoder if present
 	pSoundDecoder = NULL;
 	
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
 		pVideoPlayer = NULL;
 	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
 		pSynthesizer = NULL;
 	}
-	if(pSound){
-		pSound->FreeReference();
 		pSound = NULL;
 	}
 	pSourceUpdateTracker = 0;
@@ -827,16 +821,10 @@ void deoalASpeaker::pCleanUp(){
 		delete pEnvironment;
 		pEnvironment = nullptr;
 	}
-	if(pSound){
-		pSound->FreeReference();
 		pSound = nullptr;
 	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
 		pSynthesizer = nullptr;
 	}
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
 		pVideoPlayer = nullptr;
 	}
 	

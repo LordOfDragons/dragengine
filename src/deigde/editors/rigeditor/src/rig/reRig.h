@@ -118,13 +118,13 @@ public:
 	};
 	
 private:
-	deWorld *pEngWorld;
-	deLight *pEngLight;
+	deWorld::Ref pEngWorld;
+	deLight::Ref pEngLight;
 	
-	deComponent *pEngComponent;
-	deAnimator *pEngAnimator;
-	deAnimatorInstance *pEngAnimatorInstance;
-	deColliderComponent *pEngSimCollider;
+	deComponent::Ref pEngComponent;
+	deAnimator::Ref pEngAnimator;
+	deAnimatorInstance::Ref pEngAnimatorInstance;
+	deColliderComponent::Ref pEngSimCollider;
 	deAnimatorRuleAnimation *pEngAnimatorAnim;
 	deAnimatorRuleStateManipulator *pEngAnimatorRestPose;
 	
@@ -134,7 +134,7 @@ private:
 	igdeWSky *pSky;
 	igdeWObject::Ref pEnvObject;
 	
-	deRig *pEngRig;
+	deRig::Ref pEngRig;
 	bool pPoseChanged;
 	
 	decString pModelPath;
@@ -155,7 +155,7 @@ private:
 	reRigBone **pBones;
 	int pBoneCount;
 	int pBoneSize;
-	reRigBone *pRootBone;
+	reRigBone::Ref pRootBone;
 	
 	reRigShape **pShapes;
 	int pShapeCount;
@@ -360,17 +360,17 @@ public:
 	/** @name Engine Specific */
 	/*@{*/
 	/** Retrieves the engine world. */
-	inline deWorld *GetEngineWorld() const{ return pEngWorld; }
+	inline const deWorld::Ref &GetEngineWorld() const{ return pEngWorld; }
 	/** Retrieves the engine animator. */
-	inline deAnimator *GetEngineAnimator() const{ return pEngAnimator; }
+	inline const deAnimator::Ref &GetEngineAnimator() const{ return pEngAnimator; }
 	/** Retrieves the engine component. */
-	inline deComponent *GetEngineComponent() const{ return pEngComponent; }
+	inline const deComponent::Ref &GetEngineComponent() const{ return pEngComponent; }
 	/** Retrieves the simulation collider. */
-	inline deColliderComponent *GetEngineSimulationCollider() const{ return pEngSimCollider; }
+	inline const deColliderComponent::Ref &GetEngineSimulationCollider() const{ return pEngSimCollider; }
 	/** Retrieves the engine light. */
-	inline deLight *GetEngineLight() const{ return pEngLight; }
+	inline const deLight::Ref &GetEngineLight() const{ return pEngLight; }
 	/** Retrieves the engine rig. */
-	inline deRig *GetEngineRig() const{ return pEngRig; }
+	inline const deRig::Ref &GetEngineRig() const{ return pEngRig; }
 	/** Retrieves the camera. */
 	inline reCamera *GetCamera() const{ return pCamera; }
 	/** Updates the world. */
@@ -450,7 +450,7 @@ public:
 	void SetAllBonesVisited(bool visited);
 	
 	/** Retrieves the root bone or NULL if not set. */
-	inline reRigBone *GetRootBone() const{ return pRootBone; }
+	inline const reRigBone::Ref &GetRootBone() const{ return pRootBone; }
 	/** Sets the root bone or NULL if not set. */
 	void SetRootBone(reRigBone *rootBone);
 	/*@}*/

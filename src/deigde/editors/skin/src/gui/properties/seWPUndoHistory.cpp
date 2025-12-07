@@ -50,9 +50,6 @@ pSkin(NULL){
 seWPUndoHistory::~seWPUndoHistory(){
 	SetSkin(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -69,7 +66,6 @@ void seWPUndoHistory::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;

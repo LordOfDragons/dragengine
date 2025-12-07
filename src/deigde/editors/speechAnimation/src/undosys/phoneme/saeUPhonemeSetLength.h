@@ -36,7 +36,7 @@ class saePhoneme;
  */
 class saeUPhonemeSetLength : public igdeUndo{
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	float pOldLength;
 	float pNewLength;

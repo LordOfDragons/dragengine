@@ -135,18 +135,9 @@ void meObjectLink::ObjectsMoved(){
 void meObjectLink::pCleanUp(){
 	SetWorld(NULL);
 	
-	if(pTarget){
-		pTarget->FreeReference();
-	}
-	if(pAnchor){
-		pAnchor->FreeReference();
-	}
 	
 	if(pDDSConnection){
 		delete pDDSConnection;
-	}
-	if(pDebugDrawer){
-		pDebugDrawer->FreeReference();
 	}
 }
 

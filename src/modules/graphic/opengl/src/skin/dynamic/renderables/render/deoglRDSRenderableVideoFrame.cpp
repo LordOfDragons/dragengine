@@ -63,9 +63,6 @@ void deoglRDSRenderableVideoFrame::SetVideoPlayer(deoglRVideoPlayer *videoPlayer
 		return;
 	}
 	
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
-	}
 	
 	pVideoPlayer = videoPlayer;
 	

@@ -53,9 +53,6 @@ pController(NULL)
 }
 
 seUControllerToggleFrozen::~seUControllerToggleFrozen(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

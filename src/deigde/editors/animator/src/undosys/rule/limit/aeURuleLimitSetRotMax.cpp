@@ -48,7 +48,6 @@ aeURuleLimitSetRotMax::aeURuleLimitSetRotMax(aeRuleLimit *rule, const decVector 
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldMax = rule->GetMaximumRotation();
 		pNewMax = newMax;
@@ -84,7 +83,4 @@ void aeURuleLimitSetRotMax::Redo(){
 //////////////////////
 
 void aeURuleLimitSetRotMax::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

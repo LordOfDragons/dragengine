@@ -94,18 +94,6 @@ ceCAPlayerChoiceOption *option, ceConversationAction *action, int newIndex){
 }
 
 ceUCAPChoiceActionMove::~ceUCAPChoiceActionMove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pOption){
-		pOption->FreeReference();
-	}
-	if(pPlayerChoice){
-		pPlayerChoice->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

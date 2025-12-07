@@ -71,15 +71,6 @@ ceStrip *gesture, int newIndex){
 }
 
 ceUCAASpeakGestureMove::~ceUCAASpeakGestureMove(){
-	if(pGesture){
-		pGesture->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

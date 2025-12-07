@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeImageSetRepeat::~seUPropertyNodeImageSetRepeat(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

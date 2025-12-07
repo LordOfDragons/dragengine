@@ -39,9 +39,9 @@ class ceCAPlayerChoiceOption;
  */
 class ceUCAPChoiceActionRemoveAll : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
-	ceCAPlayerChoiceOption *pOption;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
+	ceCAPlayerChoiceOption::Ref pOption;
 	ceConversationActionList pActionList;
 	
 public:

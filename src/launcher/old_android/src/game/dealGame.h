@@ -88,8 +88,8 @@ private:
 	bool pCanRun;
 	
 	dealGameProfileList pProfileList;
-	dealGameProfile *pGlobalProfile;
-	dealGameProfile *pGameProfile;
+	dealGameProfile::Ref pGlobalProfile;
+	dealGameProfile::Ref pGameProfile;
 	
 	decString pRunArguments;
 	
@@ -233,13 +233,13 @@ public:
 	inline const dealGameProfileList &GetProfileList() const{ return pProfileList; }
 	
 	/** \brief Global profile or \em NULL if not selected. */
-	inline dealGameProfile *GetGlobalProfile() const{ return pGlobalProfile; }
+	inline const dealGameProfile::Ref &GetGlobalProfile() const{ return pGlobalProfile; }
 	
 	/** \brief Set global profile or \em NULL if not selected. */
 	void SetGlobalProfile(dealGameProfile *profile);
 	
 	/** \brief Game profile or \em NULL if not selected. */
-	inline dealGameProfile *GetGameProfile() const{ return pGameProfile; }
+	inline const dealGameProfile::Ref &GetGameProfile() const{ return pGameProfile; }
 	
 	/** \brief Set game profile or \em NULL if not selected. */
 	void SetGameProfile(dealGameProfile *profile);

@@ -48,7 +48,7 @@ private:
 	deoglRenderThread &pRenderThread;
 	deoglRWorld *pParentWorld;
 	
-	deoglRSky *pRSky;
+	deoglRSky::Ref pRSky;
 	
 	int pOrder;
 	decLayerMask pLayerMask;
@@ -101,7 +101,7 @@ public:
 	
 	
 	/** Render sky or \em NULL. */
-	inline deoglRSky *GetRSky() const{ return pRSky; }
+	inline const deoglRSky::Ref &GetRSky() const{ return pRSky; }
 	
 	/**
 	 * Set render sky or \em NULL.

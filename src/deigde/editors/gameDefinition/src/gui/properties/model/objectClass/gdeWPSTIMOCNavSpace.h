@@ -35,7 +35,7 @@ class gdeOCNavigationSpace;
  */
 class gdeWPSTIMOCNavSpace : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCNavigationSpace *pNavSpace;
+	gdeOCNavigationSpace::Ref pNavSpace;
 	
 	
 public:
@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Navigation space. */
-	inline gdeOCNavigationSpace *GetOCNavSpace() const{ return pNavSpace; }
+	inline const gdeOCNavigationSpace::Ref &GetOCNavSpace() const{ return pNavSpace; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

@@ -62,12 +62,6 @@ pTexture(NULL)
 }
 
 gdeUOCTextureSetScale::~gdeUOCTextureSetScale(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

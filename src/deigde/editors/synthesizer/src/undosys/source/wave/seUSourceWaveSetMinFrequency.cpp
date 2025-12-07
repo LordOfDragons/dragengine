@@ -52,13 +52,9 @@ pSource(NULL)
 	pNewFrequency = newFrequency;
 	
 	pSource = source;
-	pSource->AddReference();
 }
 
 seUSourceWaveSetMinFrequency::~seUSourceWaveSetMinFrequency(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

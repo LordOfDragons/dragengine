@@ -36,8 +36,8 @@ class seSky;
  */
 class seULinkAdd : public igdeUndo{
 private:
-	seSky *pSky;
-	seLink *pLink;
+	seSky::Ref pSky;
+	seLink::Ref pLink;
 	
 	
 	

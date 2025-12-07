@@ -137,7 +137,7 @@ private:
 	bool pPaint;
 	deoglPixelBuffer::Ref pIcon;
 	
-	deoglRCanvasView *pRCanvasView;
+	deoglRCanvasView::Ref pRCanvasView;
 	
 	bool pSwapBuffers;
 	bool pNotifyPositionChanged;
@@ -248,7 +248,7 @@ public:
 	
 	
 	/** Render canvas view or \em NULL if not set. */
-	inline deoglRCanvasView *GetRCanvasView() const{ return pRCanvasView; }
+	inline const deoglRCanvasView::Ref &GetRCanvasView() const{ return pRCanvasView; }
 	
 	/** Set render canvas view or \em NULL if not set. */
 	void SetRCanvasView(deoglRCanvasView *rcanvasView);

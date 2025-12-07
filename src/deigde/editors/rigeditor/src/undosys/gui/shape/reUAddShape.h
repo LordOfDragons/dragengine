@@ -38,9 +38,9 @@ class reRigShape;
  */
 class reUAddShape : public igdeUndo{
 private:
-	reRig *pRig;
-	reRigBone *pBone;
-	reRigShape *pShape;
+	reRig::Ref pRig;
+	reRigBone::Ref pBone;
+	reRigShape::Ref pShape;
 	
 	
 	

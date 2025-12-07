@@ -56,9 +56,6 @@ pNewName(newName)
 }
 
 meUHTNavSpaceTypeSetName::~meUHTNavSpaceTypeSetName(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

@@ -79,7 +79,7 @@ private:
 	
 	decConvexVolumeList pBlockerConvexVolumeList;
 	
-	deDebugDrawer *pDebugDrawer;
+	deDebugDrawer::Ref pDebugDrawer;
 	deDebugDrawerShape *pDDSSpace;
 	deDebugDrawerShape *pDDSCorners;
 	deDebugDrawerShape *pDDSNormals;

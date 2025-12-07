@@ -57,9 +57,6 @@ pNewUpper(newValue)
 }
 
 peeUControllerSetUpper::~peeUControllerSetUpper(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

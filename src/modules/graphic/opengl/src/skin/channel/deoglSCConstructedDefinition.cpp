@@ -106,12 +106,6 @@ pCacheValid(true)
 }
 
 deoglSCConstructedDefinition::~deoglSCConstructedDefinition(){
-	if(pVerify){
-		pVerify->FreeReference();
-	}
-	if(pDefinition){
-		pDefinition->FreeReference();
-	}
 }
 
 

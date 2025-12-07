@@ -40,9 +40,9 @@ class meWorld;
 class meWPSelection : public igdeSwitcher{
 private:
 	meWindowProperties &pWindowProperties;
-	meWPSelectionListener *pListener;
+	meWPSelectionListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeWidget::Ref pPanelObject;
 	igdeWidget::Ref pPanelObjectShape;
@@ -71,7 +71,7 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

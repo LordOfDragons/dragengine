@@ -37,7 +37,7 @@ class aeRule;
  */
 class aeUSetRuleRemoveBone : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	decStringSet pBones;
 	
 	

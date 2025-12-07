@@ -36,7 +36,7 @@ class saePhoneme;
  */
 class saeUPhonemeSetSampleText : public igdeUndo{
 private:
-	saePhoneme *pPhoneme;
+	saePhoneme::Ref pPhoneme;
 	
 	decString pOldText;
 	decString pNewText;

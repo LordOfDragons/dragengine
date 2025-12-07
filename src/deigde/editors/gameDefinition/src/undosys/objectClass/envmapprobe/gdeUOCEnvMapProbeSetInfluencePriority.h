@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCEnvMapProbeSetInfluencePriority : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	int pOldValue;
 	int pNewValue;

@@ -62,12 +62,6 @@ pProperty(NULL)
 }
 
 gdeUOCTPSetIdentifierGroup::~gdeUOCTPSetIdentifierGroup(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

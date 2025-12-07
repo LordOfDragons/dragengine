@@ -52,13 +52,9 @@ pUsageCount(1)
 	if(!pVideoPlayer){
 		DETHROW(deeInvalidParam);
 	}
-	pVideoPlayer->AddReference();
 }
 
 deoglSharedVideoPlayer::~deoglSharedVideoPlayer(){
-	if(pVideoPlayer){
-		pVideoPlayer->FreeReference();
-	}
 }
 
 

@@ -37,7 +37,7 @@ class meWorld;
  */
 class meUDeleteObject : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	decObjectOrderedSet pObjects;
 	decObjectOrderedSet pAttached;
 	

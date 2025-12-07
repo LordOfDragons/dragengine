@@ -47,8 +47,8 @@ class btCollisionShape;
  */
 class debpCreateBulletShape : public decShapeVisitor{
 private:
-	debpBulletShape *pBulletShape;
-	debpBulletCompoundShape *pBulletCompoundShape;
+	debpBulletShape::Ref pBulletShape;
+	debpBulletCompoundShape::Ref pBulletCompoundShape;
 	float pCcdThreshold;
 	float pCcdRadius;
 	decVector pOffset;

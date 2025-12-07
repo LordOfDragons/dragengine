@@ -36,7 +36,7 @@ class ceGesture;
  */
 class ceUCGestureToggleHold : public igdeUndo{
 private:
-	ceGesture *pGesture;
+	ceGesture::Ref pGesture;
 	
 	
 	

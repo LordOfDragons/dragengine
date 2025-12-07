@@ -36,7 +36,7 @@ class deFont;
  */
 class DE_DLL_EXPORT deRLTaskReadFont : public deResourceLoaderTask {
 private:
-	deRLTaskReadFontInternal *pInternalTask;
+	deRLTaskReadFontInternal::Ref pInternalTask;
 	bool pSucceeded;
 	
 	

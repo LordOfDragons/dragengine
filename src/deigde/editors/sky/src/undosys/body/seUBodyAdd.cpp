@@ -58,12 +58,6 @@ pBody(NULL)
 }
 
 seUBodyAdd::~seUBodyAdd(){
-	if(pBody){
-		pBody->FreeReference();
-	}
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

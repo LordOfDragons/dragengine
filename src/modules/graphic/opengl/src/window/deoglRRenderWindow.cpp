@@ -374,9 +374,6 @@ void deoglRRenderWindow::SetRCanvasView(deoglRCanvasView *rcanvasView){
 		return;
 	}
 	
-	if(pRCanvasView){
-		pRCanvasView->FreeReference();
-	}
 	
 	pRCanvasView = rcanvasView;
 	
@@ -386,8 +383,6 @@ void deoglRRenderWindow::SetRCanvasView(deoglRCanvasView *rcanvasView){
 }
 
 void deoglRRenderWindow::DropRCanvasView(){
-	if(pRCanvasView){
-		pRCanvasView->FreeReference();
 		pRCanvasView = NULL;
 	}
 }

@@ -36,7 +36,7 @@ class saeSAnimation;
  */
 class saeUSAnimSetAnimPath : public igdeUndo{
 private:
-	saeSAnimation *pSAnimation;
+	saeSAnimation::Ref pSAnimation;
 	
 	decString pOldPath;
 	decString pNewPath;

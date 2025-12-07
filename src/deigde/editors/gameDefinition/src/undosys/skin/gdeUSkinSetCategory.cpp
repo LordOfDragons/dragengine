@@ -57,9 +57,6 @@ pSkin(NULL)
 }
 
 gdeUSkinSetCategory::~gdeUSkinSetCategory(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 }
 
 

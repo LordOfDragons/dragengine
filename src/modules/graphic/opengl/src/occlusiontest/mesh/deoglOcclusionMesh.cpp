@@ -70,7 +70,4 @@ deoglOcclusionMesh::~deoglOcclusionMesh(){
 //////////////////////
 
 void deoglOcclusionMesh::pCleanUp(){
-	if(pROcclusionMesh){
-		pROcclusionMesh->FreeReference();
-	}
 }

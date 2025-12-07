@@ -79,10 +79,4 @@ void seUAddSource::Redo(){
 //////////////////////
 
 void seUAddSource::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

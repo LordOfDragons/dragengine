@@ -67,15 +67,6 @@ pTexture(NULL)
 }
 
 gdeUOCCTextureSetPathSkin::~gdeUOCCTextureSetPathSkin(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

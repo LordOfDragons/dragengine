@@ -334,10 +334,6 @@ pPreventUpdate(false)
 seWPSynthesizer::~seWPSynthesizer(){
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
-	}
-	if(pListener){
-		pListener->FreeReference();
 	}
 }
 
@@ -353,7 +349,6 @@ void seWPSynthesizer::SetSynthesizer(seSynthesizer *synthesizer){
 	
 	if(pSynthesizer){
 		pSynthesizer->RemoveNotifier(pListener);
-		pSynthesizer->FreeReference();
 	}
 	
 	pSynthesizer = synthesizer;

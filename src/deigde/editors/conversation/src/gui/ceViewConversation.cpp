@@ -264,9 +264,6 @@ ceViewConversation::~ceViewConversation(){
 	if(pRuleOfThirdsAid){
 		delete pRuleOfThirdsAid;
 	}
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -295,7 +292,6 @@ void ceViewConversation::SetConversation(ceConversation *conversation){
 			RemoveCanvas(pConversation->GetTextBox()->GetCanvasView());
 		}
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;

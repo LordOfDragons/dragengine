@@ -36,7 +36,7 @@ class reRigConstraint;
  */
 class reUConstraintSetBreakingThreshold : public igdeUndo{
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	float pOldBreakingThreshold;
 	float pNewBreakingThreshold;

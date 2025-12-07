@@ -58,9 +58,6 @@ peeUControllerMoveUp::peeUControllerMoveUp(peeController *controller){
 }
 
 peeUControllerMoveUp::~peeUControllerMoveUp(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 

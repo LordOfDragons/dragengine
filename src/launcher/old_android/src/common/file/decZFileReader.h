@@ -45,7 +45,7 @@
  */
 class decZFileReader : public decBaseFileReader{
 private:
-	decBaseFileReader *pReader;
+	decBaseFileReader::Ref pReader;
 	int pFilePosition;
 	int pFileLength;
 	

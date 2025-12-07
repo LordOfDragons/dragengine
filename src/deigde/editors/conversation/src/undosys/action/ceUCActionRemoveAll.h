@@ -38,7 +38,7 @@ class ceConversationTopic;
  */
 class ceUCActionRemoveAll : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
+	ceConversationTopic::Ref pTopic;
 	ceConversationActionList pActionList;
 	
 public:

@@ -37,7 +37,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeData : public deObject{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	decPoint3 pPosition;
 	decPoint3 pSize;
 	float pRotation;
@@ -67,7 +67,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Node. */
-	inline sePropertyNode *GetNode() const{ return pNode; }
+	inline const sePropertyNode::Ref &GetNode() const{ return pNode; }
 	
 	/** \brief Reference position. */
 	inline const decPoint3 &GetPosition() const{ return pPosition; }

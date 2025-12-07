@@ -37,8 +37,8 @@ class seProperty;
  */
 class seUPropertyRemove : public igdeUndo{
 private:
-	seProperty *pProperty;
-	seTexture *pTexture;
+	seProperty::Ref pProperty;
+	seTexture::Ref pTexture;
 	
 public:
 	/** \brief Type holding strong reference. */

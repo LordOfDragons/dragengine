@@ -52,7 +52,6 @@ pSynthesizer(NULL)
 	
 	try{
 		pSynthesizer = synthesizer;
-		pSynthesizer->AddReference();
 		
 		SetShortInfo("Synthesizer set channel count");
 		
@@ -85,7 +84,4 @@ void seUSynthesizerSetChannelCount::Redo(){
 //////////////////////
 
 void seUSynthesizerSetChannelCount::pCleanUp(){
-	if(pSynthesizer){
-		pSynthesizer->FreeReference();
-	}
 }

@@ -63,12 +63,6 @@ pNavSpace(NULL)
 }
 
 gdeUOCRemoveNavSpace::~gdeUOCRemoveNavSpace(){
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

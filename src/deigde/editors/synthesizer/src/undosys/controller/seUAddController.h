@@ -38,8 +38,8 @@ class seSynthesizer;
  */
 class seUAddController : public igdeUndo{
 private:
-	seSynthesizer *pSynthesizer;
-	seController *pController;
+	seSynthesizer::Ref pSynthesizer;
+	seController::Ref pController;
 	
 	
 	

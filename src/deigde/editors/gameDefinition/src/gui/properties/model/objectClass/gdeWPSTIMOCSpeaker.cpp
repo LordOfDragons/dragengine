@@ -67,9 +67,6 @@ pSpeaker(NULL)
 }
 
 gdeWPSTIMOCSpeaker::~gdeWPSTIMOCSpeaker(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
 }
 
 

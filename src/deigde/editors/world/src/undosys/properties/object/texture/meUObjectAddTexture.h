@@ -46,8 +46,8 @@ public:
 	
 	
 private:
-	meObject *pObject;
-	meObjectTexture *pTexture;
+	meObject::Ref pObject;
+	meObjectTexture::Ref pTexture;
 	
 public:
 	// constructor, destructor

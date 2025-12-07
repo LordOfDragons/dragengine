@@ -62,12 +62,6 @@ pComponent(NULL)
 }
 
 gdeUOCComponentSetColRespType::~gdeUOCComponentSetColRespType(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

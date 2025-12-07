@@ -57,7 +57,7 @@ private:
 	igdeGDCSnapPoint *pSnapPoint;
 	
 	igdeWDebugDrawerShape *pDDShape;
-	deColliderVolume *pCollider;
+	deColliderVolume::Ref pCollider;
 	
 	meColliderOwner pColliderOwner;
 	

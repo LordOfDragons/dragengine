@@ -94,12 +94,8 @@ void debpCreateBulletShape::SetNoMargin(bool noMargin){
 }
 
 void debpCreateBulletShape::Reset(){
-	if(pBulletCompoundShape){
-		pBulletCompoundShape->FreeReference();
 		pBulletCompoundShape = NULL;
 	}
-	if(pBulletShape){
-		pBulletShape->FreeReference();
 		pBulletShape = NULL;
 	}
 	
@@ -614,7 +610,6 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 			transform.setIdentity(); // required, constructor does not initialize anything
 			compoundShape->addChildShape(transform, pBulletShape->GetShape());
 			bulletShape->AddChildShape(pBulletShape);
-			pBulletShape->FreeReference();
 			pBulletShape = NULL;
 		}
 		
@@ -625,9 +620,6 @@ void debpCreateBulletShape::pCreateCompoundShape(){
 		throw;
 	}
 	
-	if(pBulletCompoundShape){
-		pBulletCompoundShape->FreeReference();
-	}
 	pBulletCompoundShape = bulletShape;
 }
 
@@ -655,9 +647,6 @@ void debpCreateBulletShape::pAddCollisionShape(debpBulletShape *collisionShape){
 		printf("debpCreateBulletShape.pAddCollisionShape: set collision shape\n");
 		#endif
 		
-		if(pBulletShape){
-			pBulletShape->FreeReference();
-		}
 		pBulletShape = collisionShape;
 	}
 }

@@ -807,18 +807,13 @@ void seSynthesizer::pCleanUp(){
 		}
 		
 		pEngSynthesizerInstance->SetSynthesizer(NULL);
-		pEngSynthesizerInstance->FreeReference();
 	}
 	
-	if(pEngSynthesizer){
-		pEngSynthesizer->FreeReference();
-	}
 	
 	if(pEngSpeaker){
 		if(pEngMicrophone){
 			pEngMicrophone->RemoveSpeaker(pEngSpeaker);
 		}
-		pEngSpeaker->FreeReference();
 	}
 	
 	if(pEngWorld){
@@ -828,10 +823,8 @@ void seSynthesizer::pCleanUp(){
 			}
 			
 			pEngWorld->RemoveMicrophone(pEngMicrophone);
-			pEngMicrophone->FreeReference();
 		}
 		
-		pEngWorld->FreeReference();
 	}
 }
 

@@ -37,7 +37,7 @@ class decIntList;
 class meObjectShapeSelection{
 private:
 	meObjectShapeList pSelection;
-	meObjectShape *pActive;
+	meObjectShape::Ref pActive;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -60,7 +60,7 @@ public:
 	void RemoveAll();
 	
 	/** Retrieves the active object shape or NULL if there is none. */
-	inline meObjectShape *GetActive() const{ return pActive; }
+	inline const meObjectShape::Ref &GetActive() const{ return pActive; }
 	/** Determines if there is an active object shape. */
 	bool HasActive() const;
 	/** Sets the active object shape or NULL if there is none. */

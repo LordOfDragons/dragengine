@@ -36,7 +36,7 @@ class lpeLangPackEntry;
  */
 class lpeULangPackEntrySetName : public igdeUndo{
 private:
-	lpeLangPackEntry *pEntry;
+	lpeLangPackEntry::Ref pEntry;
 	
 	decString pOldName;
 	decString pNewName;

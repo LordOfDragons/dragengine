@@ -77,9 +77,6 @@ deoglRParticleEmitterType::~deoglRParticleEmitterType(){
 		delete [] pParameterSamples;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	if(pTextureSamples){
 		delete pTextureSamples;
@@ -271,9 +268,6 @@ void deoglRParticleEmitterType::SetSkin(deoglRSkin *skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	pSkin = skin;
 	

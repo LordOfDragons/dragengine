@@ -65,7 +65,7 @@ private:
 	debpCollisionWorld *pDynWorld;
 	btRigidBody *pRigidBody;
 	debpMotionState *pMotionState;
-	debpBulletShape *pShape;
+	debpBulletShape::Ref pShape;
 	float pShapeSurface;
 	
 	decDVector pPosition;
@@ -117,7 +117,7 @@ public:
 	void SetDynamicsWorld(debpCollisionWorld *dynWorld);
 	
 	/** \brief Collision shape or \em NULL. */
-	inline debpBulletShape *GetShape() const{ return pShape; }
+	inline const debpBulletShape::Ref &GetShape() const{ return pShape; }
 	
 	/** \brief Set collision shape or \em NULL. */
 	void SetShape(debpBulletShape *shape);

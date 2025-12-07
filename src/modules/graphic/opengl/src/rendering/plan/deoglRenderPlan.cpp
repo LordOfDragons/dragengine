@@ -833,7 +833,6 @@ void deoglRenderPlan::pWaitFinishedFindContent(const deoglRenderPlanMasked *mask
 	pRenderThread.GetRenderers().GetCanvas().SampleDebugInfoPlanPrepareFindContent(
 		*this, pTaskFindContent->GetElapsedTime() );
 	
-	pTaskFindContent->FreeReference();
 	pTaskFindContent = NULL;
 }
 

@@ -58,9 +58,6 @@ pNewValues(newValues)
 }
 
 meUObjTexSetProperties::~meUObjTexSetProperties(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

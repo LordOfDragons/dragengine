@@ -45,7 +45,7 @@ class aeRule;
  */
 class aeURuleMirrorVertexPositionSets : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	decStringList pPatterns;
 	
 public:

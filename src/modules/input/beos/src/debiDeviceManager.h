@@ -43,8 +43,8 @@ private:
 	
 	decObjectOrderedSet pDevices;
 	
-	debiDeviceMouse *pMouse;
-	debiDeviceKeyboard *pKeyboard;
+	debiDeviceMouse::Ref pMouse;
+	debiDeviceKeyboard::Ref pKeyboard;
 	
 	
 	
@@ -82,10 +82,10 @@ public:
 	
 	
 	/** \brief Mouse device. */
-	inline debiDeviceMouse *GetMouse() const{ return pMouse; }
+	inline const debiDeviceMouse::Ref &GetMouse() const{ return pMouse; }
 	
 	/** \brief Keyboard device. */
-	inline debiDeviceKeyboard *GetKeyboard() const{ return pKeyboard; }
+	inline const debiDeviceKeyboard::Ref &GetKeyboard() const{ return pKeyboard; }
 	
 	
 	

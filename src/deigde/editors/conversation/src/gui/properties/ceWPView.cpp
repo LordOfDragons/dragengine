@@ -1949,9 +1949,6 @@ pConversation(NULL)
 ceWPView::~ceWPView(){
 	SetConversation(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -1972,7 +1969,6 @@ void ceWPView::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;

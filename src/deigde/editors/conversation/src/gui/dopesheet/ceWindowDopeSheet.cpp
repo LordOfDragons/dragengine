@@ -433,9 +433,6 @@ pVAPreview(NULL)
 ceWindowDopeSheet::~ceWindowDopeSheet(){
 	SetConversation(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 	if(pVAPreview){
 		delete pVAPreview;
 	}
@@ -455,7 +452,6 @@ void ceWindowDopeSheet::SetConversation(ceConversation *conversation){
 	
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;

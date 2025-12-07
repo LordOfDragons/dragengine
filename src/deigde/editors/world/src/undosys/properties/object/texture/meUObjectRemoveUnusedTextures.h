@@ -37,7 +37,7 @@ class meObject;
  */
 class meUObjectRemoveUnusedTextures : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	meObjectTextureList pTextureList;
 	
 public:

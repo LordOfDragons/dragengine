@@ -46,9 +46,9 @@ class decBoundary;
 class ceViewConversation : public igdeViewRenderWindow{
 private:
 	ceWindowMain &pWindowMain;
-	ceViewConversationListener *pListener;
+	ceViewConversationListener::Ref pListener;
 	
-	ceConversation *pConversation;
+	ceConversation::Ref pConversation;
 	
 	ceCanvasRuleOfThirdsAid *pRuleOfThirdsAid;
 	deCanvasPaint::Ref pCanvasBackground;
@@ -75,7 +75,7 @@ public:
 	void ResetView();
 	
 	/** \brief Monitored conversation. */
-	inline ceConversation *GetConversation() const{ return pConversation; }
+	inline const ceConversation::Ref &GetConversation() const{ return pConversation; }
 	
 	/** \brief Set conversation to monitor. */
 	void SetConversation(ceConversation *conversation);

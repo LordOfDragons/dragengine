@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerMoveUp : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	int pIndex;
 	
 	

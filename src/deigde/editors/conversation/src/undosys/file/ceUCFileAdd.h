@@ -37,8 +37,8 @@ class ceConversationFile;
  */
 class ceUCFileAdd : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceConversationFile *pFile;
+	ceConversation::Ref pConversation;
+	ceConversationFile::Ref pFile;
 	
 public:
 	/** \brief Type holding strong reference. */

@@ -99,9 +99,6 @@ void ceCAPlayerChoiceOption::SetCondition(ceConversationCondition *condition){
 		return;
 	}
 	
-	if(pCondition){
-		pCondition->FreeReference();
-	}
 	
 	pCondition = condition;
 	

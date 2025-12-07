@@ -37,8 +37,8 @@ class ceCAPlayerChoice;
  */
 class ceUCAPChoiceSetVarName : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAPlayerChoice *pPlayerChoice;
+	ceConversationTopic::Ref pTopic;
+	ceCAPlayerChoice::Ref pPlayerChoice;
 	decString pOldName;
 	decString pNewName;
 	

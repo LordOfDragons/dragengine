@@ -38,8 +38,8 @@ class gdeSkin;
  */
 class gdeURemoveSkin : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeSkin *pSkin;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeSkin::Ref pSkin;
 	
 	
 	

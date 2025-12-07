@@ -38,7 +38,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetColorize : public igdeUndo{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	decColor pOldValue;
 	decColor pNewValue;

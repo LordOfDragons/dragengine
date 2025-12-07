@@ -260,7 +260,6 @@ void dealDisplay::SetDialog(dealDialog *dialog){
 	
 	if(pDialog){
 		pDialog->OnDeactivate();
-		pDialog->FreeReference();
 	}
 	
 	pDialog = dialog;
@@ -277,9 +276,6 @@ void dealDisplay::SetCaptureWidget(dealWidget *widget){
 		return;
 	}
 	
-	if(pCaptureWidget){
-		pCaptureWidget->FreeReference();
-	}
 	
 	pCaptureWidget = widget;
 	
@@ -377,25 +373,9 @@ void dealDisplay::pCleanUp(){
 	
 	if(pDialog){
 		pDialog->OnDeactivate();
-		pDialog->FreeReference();
-	}
-	if(pContent){
-		pContent->FreeReference();
 	}
 	
-	if(pFontDefault){
-		pFontDefault->FreeReference();
-	}
-	if(pDefaultGuiTheme){
-		pDefaultGuiTheme->FreeReference();
-	}
 	
-	if(pShaderShapeTex){
-		pShaderShapeTex->FreeReference();
-	}
-	if(pShaderShape){
-		pShaderShape->FreeReference();
-	}
 	
 	if(pVBOShapes){
 		glDeleteBuffers(1, &pVBOShapes);

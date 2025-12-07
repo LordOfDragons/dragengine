@@ -486,7 +486,7 @@ private:
 	dedsResourceLoader *pResourceLoader;
 //	dedsLockManager *pLockManager;
 	
-	deCollisionInfo *pColInfo;
+	deCollisionInfo::Ref pColInfo;
 	dedsColliderListenerClosest *pColliderListenerClosest;
 	dedsColliderListenerAdaptor *pColliderListenerAdaptor;
 	
@@ -645,7 +645,7 @@ public:
 	inline dedsResourceLoader *GetResourceLoader() const{ return pResourceLoader; }
 	
 	/** Retrieves the shared collision info. */
-	inline deCollisionInfo *GetCollisionInfo() const{ return pColInfo; }
+	inline const deCollisionInfo::Ref &GetCollisionInfo() const{ return pColInfo; }
 	
 	/** Shared collider listener closest. */
 	inline dedsColliderListenerClosest &GetColliderListenerClosest() const{ return *pColliderListenerClosest; }

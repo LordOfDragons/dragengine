@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCRemoveLight : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	
 	

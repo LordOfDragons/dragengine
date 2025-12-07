@@ -36,7 +36,7 @@ class aeLink;
  */
 class aeULinkToggleWrapY : public igdeUndo{
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 public:
 	/** \brief Type holding strong reference. */

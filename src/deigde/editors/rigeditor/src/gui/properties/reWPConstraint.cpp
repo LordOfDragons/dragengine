@@ -488,9 +488,6 @@ pPreventUpdate(false)
 reWPConstraint::~reWPConstraint(){
 	SetRig(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -507,7 +504,6 @@ void reWPConstraint::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -526,9 +522,6 @@ void reWPConstraint::SetConstraint(reRigConstraint *constraint){
 		return;
 	}
 	
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 	
 	pConstraint = constraint;
 	

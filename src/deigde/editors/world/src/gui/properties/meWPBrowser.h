@@ -80,9 +80,9 @@ public:
 	
 private:
 	meWindowProperties &pWindowProperties;
-	meWPBrowserListener *pListener;
+	meWPBrowserListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	
 	igdeAction::Ref pActionSetClass;
@@ -137,7 +137,7 @@ public:
 	inline meWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** \brief World. */
-	inline meWorld *GetWorld() const{ return pWorld; }
+	inline const meWorld::Ref &GetWorld() const{ return pWorld; }
 	
 	/** \brief Set world. */
 	void SetWorld(meWorld *world);

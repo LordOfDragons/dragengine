@@ -64,12 +64,6 @@ pLink(NULL)
 }
 
 seUTargetRemoveLink::~seUTargetRemoveLink(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

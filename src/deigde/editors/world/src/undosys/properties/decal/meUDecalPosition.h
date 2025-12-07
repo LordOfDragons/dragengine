@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalPosition : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decDVector pOldPosition;
 	decDVector pNewPosition;

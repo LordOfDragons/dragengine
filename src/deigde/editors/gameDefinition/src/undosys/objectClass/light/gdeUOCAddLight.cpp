@@ -59,12 +59,6 @@ pLight(NULL)
 }
 
 gdeUOCAddLight::~gdeUOCAddLight(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

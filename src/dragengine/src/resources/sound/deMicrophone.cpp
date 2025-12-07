@@ -266,7 +266,6 @@ void deMicrophone::RemoveAllSpeakers(){
 	
 	while(pSpeakerTail){
 		deSpeaker * const next = pSpeakerTail->GetLLMicrophonePrev();
-		pSpeakerTail->FreeReference();
 		pSpeakerTail = next;
 		pSpeakerCount--;
 	}

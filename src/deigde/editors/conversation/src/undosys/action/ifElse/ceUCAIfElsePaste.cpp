@@ -81,12 +81,6 @@ ceUCActionPaste(topic, actions, index)
 }
 
 ceUCAIfElsePaste::~ceUCAIfElsePaste(){
-	if(pCase){
-		pCase->FreeReference();
-	}
-	if(pIfElse){
-		pIfElse->FreeReference();
-	}
 }
 
 

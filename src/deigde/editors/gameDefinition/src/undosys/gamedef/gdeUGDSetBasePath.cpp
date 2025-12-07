@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 gdeUGDSetBasePath::~gdeUGDSetBasePath(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

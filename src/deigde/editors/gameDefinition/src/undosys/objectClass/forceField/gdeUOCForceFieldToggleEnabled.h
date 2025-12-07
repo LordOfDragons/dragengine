@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCForceFieldToggleEnabled : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCForceField *pForceField;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCForceField::Ref pForceField;
 	
 	
 	

@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeSetPosition::~seUPropertyNodeSetPosition(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

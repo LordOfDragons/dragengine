@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 gdeUGDSetVFSPath::~gdeUGDSetVFSPath(){
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

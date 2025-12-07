@@ -36,7 +36,7 @@ class sePropertyNode;
  */
 class seUPropertyNodeSetBrightness : public igdeUndo{
 private:
-	sePropertyNode *pNode;
+	sePropertyNode::Ref pNode;
 	
 	float pOldValue;
 	float pNewValue;

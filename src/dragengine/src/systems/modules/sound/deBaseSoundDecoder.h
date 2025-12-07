@@ -40,7 +40,7 @@ class decBaseFileReader;
  */
 class DE_DLL_EXPORT deBaseSoundDecoder{
 private:
-	decBaseFileReader *pFile;
+	decBaseFileReader::Ref pFile;
 	
 	
 	
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File reader. */
-	inline decBaseFileReader *GetFile() const{ return pFile; }
+	inline const decBaseFileReader::Ref &GetFile() const{ return pFile; }
 	
 	/** \brief File position in samples from the beginning. */
 	virtual int GetPosition() = 0;

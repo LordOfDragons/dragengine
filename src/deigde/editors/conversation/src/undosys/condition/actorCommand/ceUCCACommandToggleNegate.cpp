@@ -65,15 +65,6 @@ ceConversationAction *action, ceCConditionActorCommand *actorCommand){
 }
 
 ceUCCACommandToggleNegate::~ceUCCACommandToggleNegate(){
-	if(pActorCommand){
-		pActorCommand->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

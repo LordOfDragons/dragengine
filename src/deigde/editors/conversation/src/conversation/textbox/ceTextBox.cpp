@@ -230,9 +230,6 @@ void ceTextBox::UpdateCanvas(){
 void ceTextBox::pCleanUp(){
 	pTexts.RemoveAll();
 	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 }
 
 

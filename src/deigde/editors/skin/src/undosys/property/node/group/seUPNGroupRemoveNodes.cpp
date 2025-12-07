@@ -70,7 +70,6 @@ pCount(0)
 	}
 	
 	pNode = node;
-	node->AddReference();
 }
 
 seUPNGroupRemoveNodes::~seUPNGroupRemoveNodes(){
@@ -110,8 +109,5 @@ void seUPNGroupRemoveNodes::pCleanUp(){
 			pChildren[i].node->FreeReference();
 		}
 		delete [] pChildren;
-	}
-	if(pNode){
-		pNode->FreeReference();
 	}
 }

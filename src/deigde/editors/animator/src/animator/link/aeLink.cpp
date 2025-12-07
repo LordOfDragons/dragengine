@@ -77,16 +77,12 @@ pWrapY(copy.pWrapY)
 {
 	pController = copy.pController;
 	if(pController){
-		pController->AddReference();
 	}
 }
 
 aeLink::~aeLink(){
 	SetAnimator(NULL);
 	
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 
@@ -154,9 +150,6 @@ void aeLink::SetController(aeController *controller, bool notify){
 		return;
 	}
 	
-	if(pController){
-		pController->FreeReference();
-	}
 	
 	pController = controller;
 	

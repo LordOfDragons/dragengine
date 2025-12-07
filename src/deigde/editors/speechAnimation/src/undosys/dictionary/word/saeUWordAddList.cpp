@@ -63,9 +63,6 @@ pWords(words)
 }
 
 saeUWordAddList::~saeUWordAddList(){
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

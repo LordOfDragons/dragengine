@@ -40,7 +40,7 @@ private:
 	struct sDictEntry{
 		unsigned int hash;
 		decString key;
-		deObject *value;
+		deObject::Ref value;
 		sDictEntry *next;
 		
 		sDictEntry();

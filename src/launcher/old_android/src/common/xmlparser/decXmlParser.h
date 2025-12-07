@@ -57,7 +57,7 @@ class deLogger;
  */
 class decXmlParser{
 private:
-	decBaseFileReader *pFile;
+	decBaseFileReader::Ref pFile;
 	int pLine;
 	int pPos;
 	int pCurChar;
@@ -71,7 +71,7 @@ private:
 	int pFilePos;
 	int pFileLen;
 	
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	bool pHasFatalError;
 	
 	

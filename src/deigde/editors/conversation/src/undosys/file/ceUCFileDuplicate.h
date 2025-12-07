@@ -37,8 +37,8 @@ class ceConversationFile;
  */
 class ceUCFileDuplicate : public igdeUndo{
 private:
-	ceConversation *pConversation;
-	ceConversationFile *pFile;
+	ceConversation::Ref pConversation;
+	ceConversationFile::Ref pFile;
 	
 	
 	
@@ -61,7 +61,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Duplicate file. */
-	inline ceConversationFile *GetDuplicateFile() const{ return pFile; }
+	inline const ceConversationFile::Ref &GetDuplicateFile() const{ return pFile; }
 	
 	/** \brief Undo action. */
 	virtual void Undo();

@@ -62,12 +62,6 @@ ceCACoordSystemRemove *action, const char *newCoordSystemID){
 }
 
 ceUCACoordSysRemoveSetCoordSysID::~ceUCACoordSysRemoveSetCoordSysID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

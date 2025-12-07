@@ -48,7 +48,6 @@ aeURuleLimitSetScaleMin::aeURuleLimitSetScaleMin(aeRuleLimit *rule, const decVec
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		pOldMin = rule->GetMinimumScaling();
 		pNewMin = newMin;
@@ -84,7 +83,4 @@ void aeURuleLimitSetScaleMin::Redo(){
 //////////////////////
 
 void aeURuleLimitSetScaleMin::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }

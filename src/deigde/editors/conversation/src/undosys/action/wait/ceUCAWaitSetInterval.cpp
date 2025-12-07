@@ -59,12 +59,6 @@ ceUCAWaitSetInterval::ceUCAWaitSetInterval(ceConversationTopic *topic, ceCAWait 
 }
 
 ceUCAWaitSetInterval::~ceUCAWaitSetInterval(){
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

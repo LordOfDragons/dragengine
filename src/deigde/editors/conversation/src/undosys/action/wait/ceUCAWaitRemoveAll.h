@@ -38,8 +38,8 @@ class ceCAWait;
  */
 class ceUCAWaitRemoveAll : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAWait *pWait;
+	ceConversationTopic::Ref pTopic;
+	ceCAWait::Ref pWait;
 	ceConversationActionList pActionList;
 	
 public:

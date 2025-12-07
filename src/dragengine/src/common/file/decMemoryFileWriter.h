@@ -40,7 +40,7 @@ public:
 	
 	
 private:
-	decMemoryFile *pFile;
+	decMemoryFile::Ref pFile;
 	int pPosition;
 	
 	

@@ -38,7 +38,7 @@ class aeRule;
  */
 class aeUSetRuleAddVertexPositionSet : public igdeUndo{
 private:
-	aeRule *pRule;
+	aeRule::Ref pRule;
 	
 	decStringSet pVertexPositionSets;
 	

@@ -224,12 +224,6 @@ void deainpOverlayActionButton::OnRelease(){
 //////////////////////
 
 void deainpOverlayActionButton::pCleanUp(){
-	if(pCLabel){
-		pCLabel->FreeReference();
-	}
-	if(pCImage){
-		pCImage->FreeReference();
-	}
 }
 
 void deainpOverlayActionButton::pUpdateLabelSize(){

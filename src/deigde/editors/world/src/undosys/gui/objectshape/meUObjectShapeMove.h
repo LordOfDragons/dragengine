@@ -38,7 +38,7 @@ class meObjectShapeList;
  */
 class meUObjectShapeMove : public meBaseUndoMove{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;

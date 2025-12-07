@@ -38,8 +38,8 @@ class seEffect;
  */
 class seUSourceRemoveEffect : public igdeUndo{
 private:
-	seEffect *pEffect;
-	seSource *pSource;
+	seEffect::Ref pEffect;
+	seSource::Ref pSource;
 	int pIndex;
 	
 	

@@ -37,7 +37,7 @@ class projProfile;
  */
 class projUProfileSetTitle : public igdeUndo{
 private:
-	projProfile *pProfile;
+	projProfile::Ref pProfile;
 	
 	decString pOldValue;
 	decString pNewValue;

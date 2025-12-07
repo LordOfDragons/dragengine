@@ -61,12 +61,6 @@ ceUCATriggerSetName::ceUCATriggerSetName(ceConversationTopic *topic, ceCATrigger
 }
 
 ceUCATriggerSetName::~ceUCATriggerSetName(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -36,7 +36,7 @@ class seProperty;
  */
 class seUPropertyConstructedSetBitCount : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	int pOldValue;
 	int pNewValue;
 	

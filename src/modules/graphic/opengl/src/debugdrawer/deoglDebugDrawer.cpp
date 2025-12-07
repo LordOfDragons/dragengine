@@ -134,7 +134,4 @@ void deoglDebugDrawer::ShapeLayoutChanged(){
 //////////////////////
 
 void deoglDebugDrawer::pCleanUp(){
-	if(pRDebugDrawer){
-		pRDebugDrawer->FreeReference();
-	}
 }

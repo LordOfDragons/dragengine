@@ -76,7 +76,6 @@ pConnections(NULL),
 pConnectionCount(0)
 {
 	if(pChildSynthesizer){
-		pChildSynthesizer->AddReference();
 	}
 	
 	const int controllerNamesCount = copy.pControllerNameCount;
@@ -122,9 +121,6 @@ seSourceSynthesizer::~seSourceSynthesizer(){
 		delete [] pControllerNames;
 	}
 	
-	if(pChildSynthesizer){
-		pChildSynthesizer->FreeReference();
-	}
 }
 
 
@@ -158,8 +154,6 @@ void seSourceSynthesizer::UpdateChildSynthesizer(){
 	}
 	
 	// release the sub synthesizer
-	if(pChildSynthesizer){
-		pChildSynthesizer->FreeReference();
 		pChildSynthesizer = NULL;
 	}
 	
@@ -384,13 +378,10 @@ deSynthesizerSource *seSourceSynthesizer::CreateEngineSource(){
 seSourceSynthesizer &seSourceSynthesizer::operator=(const seSourceSynthesizer &copy){
 	SetPathSynthesizer(copy.pPathSynthesizer);
 	
-	if(pChildSynthesizer){
-		pChildSynthesizer->FreeReference();
 		pChildSynthesizer = NULL;
 	}
 	pChildSynthesizer = copy.pChildSynthesizer;
 	if(pChildSynthesizer){
-		pChildSynthesizer->AddReference();
 	}
 	
 	if(pControllerNames){

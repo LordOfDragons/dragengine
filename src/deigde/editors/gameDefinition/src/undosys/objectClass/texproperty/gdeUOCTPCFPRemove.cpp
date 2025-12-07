@@ -67,15 +67,6 @@ pFilePattern(NULL)
 }
 
 gdeUOCTPCFPRemove::~gdeUOCTPCFPRemove(){
-	if(pFilePattern){
-		pFilePattern->FreeReference();
-	}
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

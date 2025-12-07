@@ -93,7 +93,6 @@ bool meObjectShapeSelection::HasActive() const{
 void meObjectShapeSelection::SetActive(meObjectShape *objectShape){
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = objectShape;

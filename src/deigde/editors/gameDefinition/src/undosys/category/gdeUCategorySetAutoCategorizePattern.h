@@ -36,7 +36,7 @@
  */
 class gdeUCategorySetAutoCategorizePattern : public gdeUCategoryBase{
 private:
-	gdeCategory *pCategory;
+	gdeCategory::Ref pCategory;
 	
 	decStringSet pOldValue;
 	decStringSet pNewValue;

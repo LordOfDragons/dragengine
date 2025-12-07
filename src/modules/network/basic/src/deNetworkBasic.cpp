@@ -207,8 +207,6 @@ void deNetworkBasic::CleanUp(){
 		pMessagesReceive = NULL;
 	}*/
 	
-	if(pDatagram){
-		pDatagram->FreeReference();
 		pDatagram = NULL;
 	}
 	

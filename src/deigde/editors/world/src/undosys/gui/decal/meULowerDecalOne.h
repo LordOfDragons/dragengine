@@ -42,7 +42,7 @@ class meDecal;
 class meULowerDecalOne : public igdeUndo{
 private:
 	meWorld *pWorld;
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 public:
 	/** \brief Type holding strong reference. */

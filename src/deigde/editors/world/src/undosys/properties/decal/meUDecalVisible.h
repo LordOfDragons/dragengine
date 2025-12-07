@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalVisible : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 public:
 	/** \brief Type holding strong reference. */

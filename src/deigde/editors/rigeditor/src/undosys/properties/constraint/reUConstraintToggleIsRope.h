@@ -37,7 +37,7 @@ class reRigConstraint;
  */
 class reUConstraintToggleIsRope : public igdeUndo{
 private:
-	reRigConstraint *pConstraint;
+	reRigConstraint::Ref pConstraint;
 	
 	
 	

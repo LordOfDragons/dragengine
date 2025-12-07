@@ -67,7 +67,7 @@ public:
 	
 	
 private:
-	deVirtualFileSystem *pVFS;
+	deVirtualFileSystem::Ref pVFS;
 	decPath pCachePath;
 	
 	decStringList pMapping;

@@ -59,12 +59,6 @@ ceUCASetAParamSetActor::ceUCASetAParamSetActor(ceConversationTopic *topic, ceCAS
 }
 
 ceUCASetAParamSetActor::~ceUCASetAParamSetActor(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

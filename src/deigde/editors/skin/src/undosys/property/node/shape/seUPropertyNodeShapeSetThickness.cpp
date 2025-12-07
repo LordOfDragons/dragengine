@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeShapeSetThickness::~seUPropertyNodeShapeSetThickness(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

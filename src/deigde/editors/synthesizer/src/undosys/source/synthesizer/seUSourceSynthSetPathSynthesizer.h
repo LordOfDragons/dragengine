@@ -36,7 +36,7 @@ class seSourceSynthesizer;
  */
 class seUSourceSynthSetPathSynthesizer : public igdeUndo{
 private:
-	seSourceSynthesizer *pSource;
+	seSourceSynthesizer::Ref pSource;
 	
 	decString pOldPath;
 	decString pNewPath;

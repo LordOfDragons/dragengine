@@ -36,7 +36,7 @@ class aeLink;
  */
 class aeULinkSetBoneMinimum : public igdeUndo{
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	float pOldValue;
 	float pNewValue;

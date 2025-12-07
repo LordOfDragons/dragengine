@@ -40,7 +40,7 @@ class ceConversationCondition;
 class ceCAPlayerChoiceOption : public deObject{
 private:
 	decUnicodeString pText;
-	ceConversationCondition *pCondition;
+	ceConversationCondition::Ref pCondition;
 	ceConversationActionList pActions;
 	bool pTIMExpanded;
 	bool pTIMConditionExpanded;
@@ -78,7 +78,7 @@ public:
 	void SetText(const decUnicodeString &text);
 	
 	/** \brief Condition or \em NULL if there is none. */
-	inline ceConversationCondition *GetCondition() const{ return pCondition; }
+	inline const ceConversationCondition::Ref &GetCondition() const{ return pCondition; }
 	
 	/** \brief Set condition or \em NULL if there is none. */
 	void SetCondition(ceConversationCondition *condition);

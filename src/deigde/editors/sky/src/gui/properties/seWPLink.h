@@ -47,9 +47,9 @@ class igdeViewCurveBezier;
 class seWPLink : public igdeContainerScroll{
 private:
 	seWindowProperties &pWindowProperties;
-	seWPLinkListener *pListener;
+	seWPLinkListener::Ref pListener;
 	
-	seSky *pSky;
+	seSky::Ref pSky;
 	
 	igdeAction::Ref pActionLinkAdd;
 	igdeAction::Ref pActionLinkRemove;
@@ -80,7 +80,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief Sky. */
-	inline seSky *GetSky() const{ return pSky; }
+	inline const seSky::Ref &GetSky() const{ return pSky; }
 	
 	/** \brief Set sky. */
 	void SetSky(seSky *sky);

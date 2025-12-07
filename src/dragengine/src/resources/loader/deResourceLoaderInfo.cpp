@@ -44,9 +44,6 @@ pResource(NULL){
 }
 
 deResourceLoaderInfo::~deResourceLoaderInfo(){
-	if(pResource){
-		pResource->FreeReference();
-	}
 }
 
 
@@ -67,9 +64,6 @@ void deResourceLoaderInfo::SetResource(deFileResource *resource){
 		return;
 	}
 	
-	if(pResource){
-		pResource->FreeReference();
-	}
 	
 	pResource = resource;
 	

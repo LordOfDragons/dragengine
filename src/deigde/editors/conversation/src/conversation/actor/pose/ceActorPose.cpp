@@ -95,7 +95,6 @@ pControllerNames(pose.pControllerNames)
 	// take over animator
 	pEngAnimator = pose.pEngAnimator;
 	if(pEngAnimator){
-		pEngAnimator->AddReference();
 	}
 	
 	// clone controllers
@@ -120,7 +119,6 @@ pControllerNames(pose.pControllerNames)
 ceActorPose::~ceActorPose(){
 	if(pEngAnimator){
 		pEngAnimator->SetRig(NULL);
-		pEngAnimator->FreeReference();
 	}
 }
 
@@ -167,9 +165,6 @@ void ceActorPose::pLoadAnimator(){
 		igdeLoadAnimator(pEnvironment, pEnvironment.GetLogger(), LOGSOURCE).
 			Load(pPathAnimator, *animator, reader);
 		
-		if(pEngAnimator){
-			pEngAnimator->FreeReference();
-		}
 		pEngAnimator = animator;
 		
 	}catch(const deException &e){

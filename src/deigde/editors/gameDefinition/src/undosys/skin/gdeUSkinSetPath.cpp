@@ -57,9 +57,6 @@ pSkin(NULL)
 }
 
 gdeUSkinSetPath::~gdeUSkinSetPath(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 }
 
 

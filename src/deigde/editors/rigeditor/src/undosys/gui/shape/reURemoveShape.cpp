@@ -51,7 +51,6 @@ reURemoveShape::reURemoveShape(reRigShapeList &list){
 	
 	pRig = list.GetShapeAt(0)->GetRig();
 	if(!pRig) DETHROW(deeInvalidParam);
-	pRig->AddReference();
 	
 	pEntries = NULL;
 	pEntryCount = 0;
@@ -67,7 +66,6 @@ reURemoveShape::reURemoveShape(reRigShapeList &list){
 			if(shape->GetRig() != pRig) DETHROW(deeInvalidParam);
 			
 			pEntries[pEntryCount].shape = shape;
-			shape->AddReference();
 			
 			pEntries[pEntryCount].bone = bone;
 			if(bone) bone->AddReference();
@@ -150,7 +148,4 @@ void reURemoveShape::pCleanUp(){
 		delete [] pEntries;
 	}
 	
-	if(pRig){
-		pRig->FreeReference();
-	}
 }

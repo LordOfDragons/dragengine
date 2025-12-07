@@ -37,8 +37,8 @@ class ceControllerValue;
  */
 class ceUCFPControllerSetValue : public igdeUndo{
 private:
-	ceFacePose *pFacePose;
-	ceControllerValue *pController;
+	ceFacePose::Ref pFacePose;
+	ceControllerValue::Ref pController;
 	float pOldValue;
 	float pNewValue;
 	

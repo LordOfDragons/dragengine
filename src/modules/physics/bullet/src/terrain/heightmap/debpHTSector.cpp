@@ -224,9 +224,6 @@ void debpHTSector::SectorChanged(){
 void debpHTSector::pCleanUp(){
 	if(pPhyBody) delete pPhyBody;
 	
-	if(pBulletShape){
-		pBulletShape->FreeReference();
-	}
 	
 	if(pPoints) delete [] pPoints;
 	if(pClusters) delete [] pClusters;

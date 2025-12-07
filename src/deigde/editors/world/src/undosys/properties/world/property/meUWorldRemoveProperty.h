@@ -36,7 +36,7 @@ class meWorld;
  */
 class meUWorldRemoveProperty : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	decString pKey;
 	decString pValue;

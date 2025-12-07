@@ -43,8 +43,8 @@ class saeSAnimation;
 class saeWPView : public igdeContainerScroll{
 private:
 	saeWindowProperties &pWindowProperties;
-	saeWPViewListener *pListener;
-	saeSAnimation *pSAnimation;
+	saeWPViewListener::Ref pListener;
+	saeSAnimation::Ref pSAnimation;
 	
 	igdeEditPath::Ref pEditDisplayModelPath;
 	igdeEditPath::Ref pEditDisplaySkinPath;
@@ -75,7 +75,7 @@ public:
 	inline saeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline const saeSAnimation::Ref &GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
 	void SetSAnimation(saeSAnimation *sanimation);

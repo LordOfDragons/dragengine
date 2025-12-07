@@ -37,7 +37,7 @@ class seSource;
  */
 class seUSetSourceMaxVolume : public igdeUndo{
 private:
-	seSource *pSource;
+	seSource::Ref pSource;
 	
 	float pOldValue;
 	float pNewValue;

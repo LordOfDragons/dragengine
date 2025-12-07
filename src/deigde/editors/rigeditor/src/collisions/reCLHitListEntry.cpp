@@ -60,23 +60,15 @@ reCLHitListEntry::~reCLHitListEntry(){
 ///////////////
 
 void reCLHitListEntry::Clear(){
-	if(pBone){
-		pBone->FreeReference();
 		pBone = NULL;
 	}
 	
-	if(pShape){
-		pShape->FreeReference();
 		pShape = NULL;
 	}
 	
-	if(pConstraint){
-		pConstraint->FreeReference();
 		pConstraint = NULL;
 	}
 	
-	if(pPush){
-		pPush->FreeReference();
 		pPush = NULL;
 	}
 	

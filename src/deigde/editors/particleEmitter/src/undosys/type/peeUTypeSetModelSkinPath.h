@@ -36,7 +36,7 @@ class peeType;
  */
 class peeUTypeSetModelSkinPath : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	decString pOldPath;
 	decString pNewPath;

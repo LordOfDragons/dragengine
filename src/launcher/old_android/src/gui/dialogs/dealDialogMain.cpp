@@ -87,9 +87,6 @@ pButtonRun(NULL)
 }
 
 dealDialogMain::~dealDialogMain(){
-	if(pButtonRun){
-		pButtonRun->FreeReference();
-	}
 }
 
 

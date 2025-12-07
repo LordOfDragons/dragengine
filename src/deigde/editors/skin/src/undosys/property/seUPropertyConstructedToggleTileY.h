@@ -36,7 +36,7 @@ class seProperty;
  */
 class seUPropertyConstructedToggleTileY : public igdeUndo{
 private:
-	seProperty *pProperty;
+	seProperty::Ref pProperty;
 	
 	
 	

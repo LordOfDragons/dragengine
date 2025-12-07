@@ -36,7 +36,7 @@ class aeLink;
  */
 class aeULinkSetRepeat : public igdeUndo{
 private:
-	aeLink *pLink;
+	aeLink::Ref pLink;
 	
 	int pOldRepeat;
 	int pNewRepeat;

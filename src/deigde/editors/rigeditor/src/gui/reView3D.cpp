@@ -654,9 +654,6 @@ void reView3D::SetRig(reRig *rig){
 	
 	SetRenderWorld(NULL);
 	
-	if(pRig){
-		pRig->FreeReference();
-	}
 	
 	pRig = rig;
 	

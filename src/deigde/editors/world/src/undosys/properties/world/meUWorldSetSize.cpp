@@ -55,9 +55,6 @@ pNewValue(newValue)
 }
 
 meUWorldSetSize::~meUWorldSetSize(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }
 
 

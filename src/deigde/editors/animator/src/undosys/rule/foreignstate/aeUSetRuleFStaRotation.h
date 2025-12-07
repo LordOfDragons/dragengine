@@ -42,7 +42,7 @@ class aeRuleForeignState;
  */
 class aeUSetRuleFStaRotation : public igdeUndo{
 private:
-	aeRuleForeignState *pRule;
+	aeRuleForeignState::Ref pRule;
 	
 	float pOldScale;
 	float pNewScale;

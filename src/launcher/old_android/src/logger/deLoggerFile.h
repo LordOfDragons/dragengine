@@ -46,7 +46,7 @@ class decBaseFileWriter;
  */
 class deLoggerFile : public deLogger{
 private:
-	decBaseFileWriter *pWriter;
+	decBaseFileWriter::Ref pWriter;
 	deMutex pMutex;
 	
 	
@@ -73,7 +73,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** \brief File writer. */
-	inline decBaseFileWriter *GetWriter() const{ return pWriter; }
+	inline const decBaseFileWriter::Ref &GetWriter() const{ return pWriter; }
 	
 	
 	

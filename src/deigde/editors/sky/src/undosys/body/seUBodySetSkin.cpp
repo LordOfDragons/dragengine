@@ -56,9 +56,6 @@ pNewSkin(newSkin)
 }
 
 seUBodySetSkin::~seUBodySetSkin(){
-	if(pBody){
-		pBody->FreeReference();
-	}
 }
 
 

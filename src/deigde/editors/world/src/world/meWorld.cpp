@@ -1796,9 +1796,6 @@ void meWorld::pCleanUp(){
 		delete pFreeRoamCamera;
 	}
 	
-	if(pHeightTerrain){
-		pHeightTerrain->FreeReference();
-	}
 	
 	if(pWeather){
 		delete pWeather;
@@ -1807,27 +1804,19 @@ void meWorld::pCleanUp(){
 	pMusic = nullptr;
 	if(pPathFindTest){
 		pPathFindTest->SetWorld(nullptr);
-		pPathFindTest->FreeReference();
 	}
 	if(pLumimeter){
 		pLumimeter->SetWorld(nullptr);
-		pLumimeter->FreeReference();
 	}
 	
 	if(pGuiParams){
 		delete pGuiParams;
 	}
 	
-	if(pEngColCollider){
-		pEngColCollider->FreeReference();
-	}
 	
 	pBgObject = nullptr;
 	if(pSky){
 		delete pSky;
-	}
-	if(pEngForceField){
-		pEngForceField->FreeReference();
 	}
 	
 	if(pDEWorld){
@@ -1837,10 +1826,8 @@ void meWorld::pCleanUp(){
 			}
 			
 			pDEWorld->RemoveMicrophone(pEngMicrophone);
-			pEngMicrophone->FreeReference();
 		}
 		
-		pDEWorld->FreeReference();
 	}
 }
 

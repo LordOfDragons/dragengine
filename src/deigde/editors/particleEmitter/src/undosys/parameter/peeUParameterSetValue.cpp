@@ -58,9 +58,6 @@ peeUParameterSetValue::peeUParameterSetValue(peeType *type, peeParameter *parame
 }
 
 peeUParameterSetValue::~peeUParameterSetValue(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

@@ -37,8 +37,8 @@ class seSky;
  */
 class seUControllerAdd : public igdeUndo{
 private:
-	seSky *pSky;
-	seController *pController;
+	seSky::Ref pSky;
+	seController::Ref pController;
 	
 	
 	

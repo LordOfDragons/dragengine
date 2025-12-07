@@ -61,12 +61,6 @@ pProperty(NULL)
 }
 
 gdeUGDDPSetType::~gdeUGDDPSetType(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

@@ -44,7 +44,7 @@ private:
 	deDecal::Ref pEngDecal;
 	
 	meDecal *pDecal;
-	meObject *pParentObject;
+	meObject::Ref pParentObject;
 	
 	
 	
@@ -69,7 +69,7 @@ public:
 	inline deDecal *GetEngineDecal() const{ return pEngDecal; }
 	
 	/** \brief Parent object or NULL. */
-	inline meObject *GetParentObject() const{ return pParentObject; }
+	inline const meObject::Ref &GetParentObject() const{ return pParentObject; }
 	
 	/** \brief Set parent object. */
 	void SetParentObject(meObject *object);

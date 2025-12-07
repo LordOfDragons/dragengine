@@ -713,9 +713,6 @@ pWorld(NULL)
 
 meWPWorld::~meWPWorld(){
 	SetWorld(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -737,7 +734,6 @@ void meWPWorld::SetWorld(meWorld *world){
 		editProperties.SetIdentifiers(decStringSet());
 		
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

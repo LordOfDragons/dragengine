@@ -58,12 +58,6 @@ pLight(NULL)
 }
 
 gdeUOCLightToggleActivated::~gdeUOCLightToggleActivated(){
-	if(pLight){
-		pLight->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

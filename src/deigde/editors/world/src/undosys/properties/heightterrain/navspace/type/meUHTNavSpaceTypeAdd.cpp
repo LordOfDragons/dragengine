@@ -58,12 +58,6 @@ pType(NULL)
 }
 
 meUHTNavSpaceTypeAdd::~meUHTNavSpaceTypeAdd(){
-	if(pType){
-		pType->FreeReference();
-	}
-	if(pNavSpace){
-		pNavSpace->FreeReference();
-	}
 }
 
 

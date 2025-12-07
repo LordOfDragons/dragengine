@@ -175,7 +175,7 @@ private:
 	debnSocket *pTailSocket;
 	
 	// sending and receiving
-	deNetworkMessage *pDatagram;
+	deNetworkMessage::Ref pDatagram;
 	debnAddress pAddressReceive;
 	deNetworkMessage::Ref pSharedSendDatagram;
 	decBaseFileWriter::Ref pSharedSendDatagramWriter;

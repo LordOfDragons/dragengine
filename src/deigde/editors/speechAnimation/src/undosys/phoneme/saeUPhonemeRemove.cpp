@@ -59,12 +59,6 @@ saeUPhonemeRemove::saeUPhonemeRemove(saePhoneme *phoneme){
 }
 
 saeUPhonemeRemove::~saeUPhonemeRemove(){
-	if(pPhoneme){
-		pPhoneme->FreeReference();
-	}
-	if(pSAnimation){
-		pSAnimation->FreeReference();
-	}
 }
 
 

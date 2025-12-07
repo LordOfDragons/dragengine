@@ -36,8 +36,8 @@ class gdeObjectClass;
  */
 class gdeUOCCameraSetPropertyRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCCamera *pCamera;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCCamera::Ref pCamera;
 	decString pOldValue, pNewValue;
 	
 	

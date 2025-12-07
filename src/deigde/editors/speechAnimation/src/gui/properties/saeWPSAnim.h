@@ -49,8 +49,8 @@ class saeWPSAnim : public igdeContainerScroll{
 private:
 	saeWindowProperties &pWindowProperties;
 	
-	saeWPSAnimListener *pListener;
-	saeSAnimation *pSAnimation;
+	saeWPSAnimListener::Ref pListener;
+	saeSAnimation::Ref pSAnimation;
 	
 	igdeAction::Ref pActionWordAddIpa;
 	
@@ -97,7 +97,7 @@ public:
 	inline saeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Speech animation. */
-	inline saeSAnimation *GetSAnimation() const{ return pSAnimation; }
+	inline const saeSAnimation::Ref &GetSAnimation() const{ return pSAnimation; }
 	
 	/** Set speech animation. */
 	void SetSAnimation(saeSAnimation *sanimation);

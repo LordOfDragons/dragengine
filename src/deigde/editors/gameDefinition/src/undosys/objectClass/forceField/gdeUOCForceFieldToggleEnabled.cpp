@@ -59,12 +59,6 @@ pForceField(NULL)
 }
 
 gdeUOCForceFieldToggleEnabled::~gdeUOCForceFieldToggleEnabled(){
-	if(pForceField){
-		pForceField->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

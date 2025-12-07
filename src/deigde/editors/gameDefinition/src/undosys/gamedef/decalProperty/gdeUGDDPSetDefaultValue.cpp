@@ -62,12 +62,6 @@ pProperty(NULL)
 }
 
 gdeUGDDPSetDefaultValue::~gdeUGDDPSetDefaultValue(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

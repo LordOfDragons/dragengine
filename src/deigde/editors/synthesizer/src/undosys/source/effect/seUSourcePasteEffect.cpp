@@ -150,7 +150,4 @@ void seUSourcePasteEffect::Redo(){
 //////////////////////
 
 void seUSourcePasteEffect::pCleanUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
 }

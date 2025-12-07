@@ -38,9 +38,9 @@ class reRigConstraint;
  */
 class reUAddConstraint : public igdeUndo{
 private:
-	reRig *pRig;
-	reRigBone *pBone;
-	reRigConstraint *pConstraint;
+	reRig::Ref pRig;
+	reRigBone::Ref pBone;
+	reRigConstraint::Ref pConstraint;
 	
 	
 	

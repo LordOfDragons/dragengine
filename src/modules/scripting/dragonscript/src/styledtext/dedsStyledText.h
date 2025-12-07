@@ -48,7 +48,7 @@ class dedsStyledTextNode;
  */
 class dedsStyledText : public deObject{
 private:
-	dedsStyledTextNode *pRootNode;
+	dedsStyledTextNode::Ref pRootNode;
 	
 public:
 	/** \brief Type holding strong reference. */
@@ -66,7 +66,7 @@ public:
 	/** @name Management */
 	/*@{*/
 	/** Retrieves the root node. */
-	inline dedsStyledTextNode *GetRootNode() const{ return pRootNode; }
+	inline const dedsStyledTextNode::Ref &GetRootNode() const{ return pRootNode; }
 	/** Sets the root node. */
 	void SetRootNode(dedsStyledTextNode *node);
 	/*@}*/

@@ -65,9 +65,6 @@ pIndex(0)
 }
 
 seUBodyMoveUp::~seUBodyMoveUp(){
-	if(pBody){
-		pBody->FreeReference();
-	}
 }
 
 

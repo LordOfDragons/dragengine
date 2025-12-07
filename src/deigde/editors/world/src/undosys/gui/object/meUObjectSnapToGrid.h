@@ -41,14 +41,14 @@ class meObjectList;
 class meUObjectSnapToGrid : public igdeUndo{
 private:
 	struct sObject{
-		meObject *object;
+		meObject::Ref object;
 		decDVector position;
 	};
 	
 	
 	
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	sObject *pObjects;
 	int pObjectCount;

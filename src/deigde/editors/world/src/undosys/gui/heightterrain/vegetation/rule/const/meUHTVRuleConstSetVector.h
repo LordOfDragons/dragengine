@@ -49,8 +49,8 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
-	meHTVRuleConstant *pRule;
+	meHTVegetationLayer::Ref pVLayer;
+	meHTVRuleConstant::Ref pRule;
 	
 	decVector pOldVector;
 	decVector pNewVector;

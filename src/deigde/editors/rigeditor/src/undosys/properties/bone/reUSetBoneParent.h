@@ -36,10 +36,10 @@ class reRigBone;
  */
 class reUSetBoneParent : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
-	reRigBone *pOldParent;
-	reRigBone *pNewParent;
+	reRigBone::Ref pOldParent;
+	reRigBone::Ref pNewParent;
 	
 	
 	

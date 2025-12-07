@@ -40,7 +40,7 @@ class meObject;
  */
 class meUSetObjectPosition : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decDVector pOldPosition;
 	decDVector pNewPosition;

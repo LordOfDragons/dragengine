@@ -71,7 +71,7 @@ public:
 	};
 	
 private:
-	deLogger *pLogger;
+	deLogger::Ref pLogger;
 	AAsset *pAsset;
 	decString pTargetDirectory;
 	bool pUnpacking;

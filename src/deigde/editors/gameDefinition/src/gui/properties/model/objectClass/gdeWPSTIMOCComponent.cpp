@@ -65,9 +65,6 @@ pComponent(NULL)
 }
 
 gdeWPSTIMOCComponent::~gdeWPSTIMOCComponent(){
-	if(pComponent){
-		pComponent->FreeReference();
-	}
 }
 
 

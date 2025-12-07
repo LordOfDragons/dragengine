@@ -99,7 +99,4 @@ void deoglDSRenderableValue::SyncToRender(){
 //////////////////////
 
 void deoglDSRenderableValue::pCleanUp(){
-	if(pRRenderableValue){
-		pRRenderableValue->FreeReference();
-	}
 }

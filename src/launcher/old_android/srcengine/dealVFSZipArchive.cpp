@@ -594,14 +594,8 @@ TIME_SYSTEM dealVFSZipArchive::GetFileModificationTime(const decPath &path){
 //////////////////////
 
 void dealVFSZipArchive::pCleanUp(){
-	if(pArchiveDirectory){
-		pArchiveDirectory->FreeReference();
-	}
 	if(pZipFile){
 		unzClose(pZipFile);
-	}
-	if(pFileReader){
-		pFileReader->FreeReference();
 	}
 }
 

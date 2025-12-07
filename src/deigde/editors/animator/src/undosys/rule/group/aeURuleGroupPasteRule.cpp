@@ -155,7 +155,4 @@ void aeURuleGroupPasteRule::Redo(){
 //////////////////////
 
 void aeURuleGroupPasteRule::pCleanUp(){
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }

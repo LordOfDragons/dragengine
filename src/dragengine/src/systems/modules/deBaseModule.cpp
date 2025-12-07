@@ -283,9 +283,6 @@ deErrorTracePoint *deBaseModule::AddErrorTracePoint(const char *sourceFunc, int 
 //////////////////////
 
 void deBaseModule::pCleanUp(){
-	if(pVFS){
-		pVFS->FreeReference();
-	}
 }
 
 void deBaseModule::pCreateVFS(){

@@ -80,7 +80,7 @@ private:
 	deoglPixelBuffer::Ref pPixelBufferSamples;
 	deoglTexture *pTextureSamples;
 	
-	deoglRSkin *pSkin;
+	deoglRSkin::Ref pSkin;
 	
 	bool pEmitLight;
 	bool pHasTransparency;
@@ -151,7 +151,7 @@ public:
 	
 	
 	/** Skin. */
-	inline deoglRSkin *GetSkin() const{ return pSkin; }
+	inline const deoglRSkin::Ref &GetSkin() const{ return pSkin; }
 	
 	/** Set skin. */
 	void SetSkin(deoglRSkin *skin);

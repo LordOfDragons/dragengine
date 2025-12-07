@@ -37,7 +37,7 @@ class peeType;
  */
 class peeUTypeSetCastFrom : public igdeUndo{
 private:
-	peeType *pType;
+	peeType::Ref pType;
 	
 	deParticleEmitterType::eCastFrom pOldCastFrom;
 	deParticleEmitterType::eCastFrom pNewCastFrom;

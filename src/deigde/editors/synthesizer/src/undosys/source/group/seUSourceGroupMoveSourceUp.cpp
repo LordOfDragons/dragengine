@@ -60,12 +60,6 @@ pSource(NULL)
 }
 
 seUSourceGroupMoveSourceUp::~seUSourceGroupMoveSourceUp(){
-	if(pSource){
-		pSource->FreeReference();
-	}
-	if(pGroup){
-		pGroup->FreeReference();
-	}
 }
 
 

@@ -169,7 +169,6 @@ void sePropertyNodeSelection::SetActive(sePropertyNode *node){
 	
 	if(pActive){
 		pActive->SetActive(false);
-		pActive->FreeReference();
 	}
 	
 	pActive = node;

@@ -51,9 +51,6 @@ pPosition(0)
 }
 
 decMemoryFileReader::~decMemoryFileReader(){
-	if(pFile){
-		pFile->FreeReference();
-	}
 }
 
 

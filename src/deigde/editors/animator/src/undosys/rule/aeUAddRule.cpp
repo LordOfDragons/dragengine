@@ -82,10 +82,4 @@ void aeUAddRule::Redo(){
 //////////////////////
 
 void aeUAddRule::pCleanUp(){
-	if(pRule){
-		pRule->FreeReference();
-	}
-	if(pAnimator){
-		pAnimator->FreeReference();
-	}
 }

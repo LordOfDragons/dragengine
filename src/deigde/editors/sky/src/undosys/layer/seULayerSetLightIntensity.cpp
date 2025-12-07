@@ -56,9 +56,6 @@ pNewIntensity(newIntensity)
 }
 
 seULayerSetLightIntensity::~seULayerSetLightIntensity(){
-	if(pLayer){
-		pLayer->FreeReference();
-	}
 }
 
 

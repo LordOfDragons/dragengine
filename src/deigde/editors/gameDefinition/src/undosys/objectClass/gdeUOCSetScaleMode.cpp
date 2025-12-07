@@ -56,9 +56,6 @@ pObjectClass(NULL)
 }
 
 gdeUOCSetScaleMode::~gdeUOCSetScaleMode(){
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

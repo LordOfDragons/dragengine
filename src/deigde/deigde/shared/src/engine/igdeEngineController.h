@@ -62,7 +62,7 @@ public:
 private:
 	igdeMainWindow &pMainWindow;
 	deEngine *pEngine;
-	deRenderWindow *pMainRenderWindow;
+	deRenderWindow::Ref pMainRenderWindow;
 	bool pReadyForUse;
 	bool pRunning;
 	int pRenderCounter;

@@ -316,9 +316,6 @@ pGameDefinition(NULL)
 gdeWPSOCCamera::~gdeWPSOCCamera(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -333,7 +330,6 @@ void gdeWPSOCCamera::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

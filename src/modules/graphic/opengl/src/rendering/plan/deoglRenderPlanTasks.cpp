@@ -245,7 +245,6 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksDepth(){
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareBuildRTs(pPlan, pTaskDepth->GetElapsedTime());
 	
-	pTaskDepth->FreeReference();
 	pTaskDepth = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel
@@ -311,7 +310,6 @@ void deoglRenderPlanTasks::WaitFinishBuildingTasksGeometry(){
 	deoglRenderCanvas &rc = pPlan.GetRenderThread().GetRenderers().GetCanvas();
 	rc.SampleDebugInfoPlanPrepareBuildRTs(pPlan, pTaskGeometry->GetElapsedTime());
 	
-	pTaskGeometry->FreeReference();
 	pTaskGeometry = NULL;
 	
 	// this call does modify a shader parameter block and can thus not be parallel

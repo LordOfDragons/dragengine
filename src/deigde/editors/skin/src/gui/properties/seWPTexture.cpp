@@ -741,9 +741,6 @@ pPreventUpdateMappedTarget(false)
 seWPTexture::~seWPTexture(){
 	SetSkin(nullptr);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -758,7 +755,6 @@ void seWPTexture::SetSkin(seSkin *skin){
 	
 	if(pSkin){
 		pSkin->RemoveListener(pListener);
-		pSkin->FreeReference();
 	}
 	
 	pSkin = skin;

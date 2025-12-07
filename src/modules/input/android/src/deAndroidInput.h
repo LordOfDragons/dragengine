@@ -64,7 +64,7 @@ private:
 	
 	deainpOverlaySystem *pOverlaySystem;
 	
-	deFont *pFontDefault;
+	deFont::Ref pFontDefault;
 	
 	decTimer pInputTimer;
 	float pElapsedTime;
@@ -102,7 +102,7 @@ public:
 	inline deainpOverlaySystem *GetOverlaySystem() const{ return pOverlaySystem; }
 	
 	/** \brief Default font. */
-	inline deFont *GetDefaultFont() const{ return pFontDefault; }
+	inline const deFont::Ref &GetDefaultFont() const{ return pFontDefault; }
 	
 	/** \brief Elapsed time since the last event processing. */
 	inline float GetElapsedTime() const{ return pElapsedTime; }

@@ -39,7 +39,6 @@ reUSetBoneIKLimitsUpper::reUSetBoneIKLimitsUpper(reRigBone *bone, const decVecto
 	if(!bone) DETHROW(deeInvalidParam);
 	
 	pBone = bone;
-	pBone->AddReference();
 	
 	pOldIKLimitsUpper = bone->GetIKLimitsUpper();
 	pNewIKLimitsUpper = ikLimitsUpper;

@@ -55,9 +55,6 @@ seUPropertySetVideoPath::seUPropertySetVideoPath(seProperty *property, const cha
 }
 
 seUPropertySetVideoPath::~seUPropertySetVideoPath(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
 }
 
 

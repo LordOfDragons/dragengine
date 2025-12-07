@@ -42,7 +42,7 @@ class meWorld;
  */
 class meUDecalScale : public meBaseUndoScale{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	meUndoDataDecal **pDecals;
 	int pDecalCount;

@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 projUProfileSetWebsite::~projUProfileSetWebsite(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

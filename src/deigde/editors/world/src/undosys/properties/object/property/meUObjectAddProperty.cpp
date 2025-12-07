@@ -94,7 +94,4 @@ void meUObjectAddProperty::ProgressiveRedo(){
 //////////////////////
 
 void meUObjectAddProperty::pCleanUp(){
-	if(pObject){
-		pObject->FreeReference();
-	}
 }

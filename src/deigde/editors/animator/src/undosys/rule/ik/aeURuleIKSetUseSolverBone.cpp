@@ -46,7 +46,6 @@ aeURuleIKSetUseSolverBone::aeURuleIKSetUseSolverBone(aeRuleInverseKinematic *rul
 	
 	try{
 		pRule = rule;
-		pRule->AddReference();
 		
 		SetShortInfo("Set inverse kinematic rule use solver bone");
 		

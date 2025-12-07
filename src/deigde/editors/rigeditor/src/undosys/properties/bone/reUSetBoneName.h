@@ -36,7 +36,7 @@ class reRigBone;
  */
 class reUSetBoneName : public igdeUndo{
 private:
-	reRigBone *pBone;
+	reRigBone::Ref pBone;
 	
 	decString pOldName;
 	decString pNewName;

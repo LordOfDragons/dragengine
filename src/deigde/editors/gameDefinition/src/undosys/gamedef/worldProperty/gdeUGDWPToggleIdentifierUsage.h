@@ -40,8 +40,8 @@ class gdeProperty;
  */
 class gdeUGDWPToggleIdentifierUsage : public igdeUndo{
 private:
-	gdeGameDefinition *pGameDefinition;
-	gdeProperty *pProperty;
+	gdeGameDefinition::Ref pGameDefinition;
+	gdeProperty::Ref pProperty;
 	
 	
 	

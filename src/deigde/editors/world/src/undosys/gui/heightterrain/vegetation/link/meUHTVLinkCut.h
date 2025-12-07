@@ -47,7 +47,7 @@ public:
 	
 	
 private:
-	meHTVegetationLayer *pVLayer;
+	meHTVegetationLayer::Ref pVLayer;
 	
 	meHTVRLink **pLinks;
 	int pLinkCount;

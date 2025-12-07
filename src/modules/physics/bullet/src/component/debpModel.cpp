@@ -286,9 +286,6 @@ void debpModel::PrepareShape(){
 //////////////////////
 
 void debpModel::pCleanUp(){
-	if(pBulletShape){
-		pBulletShape->FreeReference();
-	}
 	
 	if(pFaceProbabilities){
 		delete [] pFaceProbabilities;

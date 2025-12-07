@@ -52,13 +52,9 @@ deAnimatorRuleGroup::eApplicationTypes newType){
 	SetShortInfo("Group rule set application type");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleGroupSetApplicationType::~aeURuleGroupSetApplicationType(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

@@ -54,9 +54,6 @@ ceUCCShotSetCamDistFrom::ceUCCShotSetCamDistFrom(ceCameraShot *cameraShot, float
 }
 
 ceUCCShotSetCamDistFrom::~ceUCCShotSetCamDistFrom(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

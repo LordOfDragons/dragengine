@@ -391,9 +391,6 @@ pGameDefinition(NULL)
 gdeWPSOCEnvMapProbe::~gdeWPSOCEnvMapProbe(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -408,7 +405,6 @@ void gdeWPSOCEnvMapProbe::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

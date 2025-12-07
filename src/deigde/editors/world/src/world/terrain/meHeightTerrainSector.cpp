@@ -174,7 +174,6 @@ void meHeightTerrainSector::SetHeightTerrain(meHeightTerrain *heightTerrain){
 			if(world){
 				world->RemoveDebugDrawer(pDDSelNavPoints);
 			}
-			pDDSelNavPoints->FreeReference();
 		}
 		
 		if(world){

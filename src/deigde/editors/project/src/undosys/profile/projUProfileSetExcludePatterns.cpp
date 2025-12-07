@@ -57,9 +57,6 @@ pNewValue(newValue)
 }
 
 projUProfileSetExcludePatterns::~projUProfileSetExcludePatterns(){
-	if(pProfile){
-		pProfile->FreeReference();
-	}
 }
 
 

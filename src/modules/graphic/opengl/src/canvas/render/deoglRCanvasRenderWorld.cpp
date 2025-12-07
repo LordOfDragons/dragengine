@@ -70,9 +70,6 @@ void deoglRCanvasRenderWorld::SetCamera(deoglRCamera *camera){
 		return;
 	}
 	
-	if(pCamera){
-		pCamera->FreeReference();
-	}
 	
 	pCamera = camera;
 	

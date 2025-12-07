@@ -211,9 +211,6 @@ pWorld(NULL)
 meWPSNavSpace::~meWPSNavSpace(){
 	SetWorld(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -228,7 +225,6 @@ void meWPSNavSpace::SetWorld(meWorld *world){
 	
 	if(pWorld){
 		pWorld->RemoveNotifier(pListener);
-		pWorld->FreeReference();
 	}
 	
 	pWorld = world;

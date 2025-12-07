@@ -36,7 +36,7 @@ class seTexture;
  */
 class seUTextureSetName : public igdeUndo{
 private:
-	seTexture *pTexture;
+	seTexture::Ref pTexture;
 	
 	decString pOldName;
 	decString pNewName;

@@ -45,8 +45,8 @@ private:
 	dealGameList pGameList;
 	
 	dealGameProfileList pProfileList;
-	dealGameProfile *pActiveProfile;
-	dealGameProfile *pDefaultProfile;
+	dealGameProfile::Ref pActiveProfile;
+	dealGameProfile::Ref pDefaultProfile;
 	
 public:
 	/** \name Constructors and Destructors */
@@ -86,13 +86,13 @@ public:
 	inline const dealGameProfileList &GetProfileList() const{ return pProfileList; }
 	
 	/** \brief Active profile or \em NULL if none is active. */
-	inline dealGameProfile *GetActiveProfile() const{ return pActiveProfile; }
+	inline const dealGameProfile::Ref &GetActiveProfile() const{ return pActiveProfile; }
 	
 	/** \brief Set active profile or \em NULL if none is active. */
 	void SetActiveProfile(dealGameProfile *profile);
 	
 	/** \brief Default profile. */
-	inline dealGameProfile *GetDefaultProfile() const{ return pDefaultProfile; }
+	inline const dealGameProfile::Ref &GetDefaultProfile() const{ return pDefaultProfile; }
 	
 	/** \brief Load game configurations. */
 	void LoadGameConfigs();

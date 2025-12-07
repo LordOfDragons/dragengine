@@ -41,9 +41,9 @@ class meWorld;
 class meWindowChangelog : public igdeContainerBorder{
 private:
 	meWindowMain &pWindowMain;
-	meWindowChangelogListener *pListener;
+	meWindowChangelogListener::Ref pListener;
 	
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	
 	igdeIconListBox::Ref pListChanges;
 	

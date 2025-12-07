@@ -38,9 +38,9 @@ class ceStrip;
  */
 class ceUCAASpeakStripSetID : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pStrip;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pStrip;
 	decString pOldID;
 	decString pNewID;
 	

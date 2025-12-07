@@ -130,7 +130,4 @@ void deoglParticleEmitterInstanceType::TypeChanged(){
 //////////////////////
 
 void deoglParticleEmitterInstanceType::pCleanUp(){
-	if(pRType){
-		pRType->FreeReference();
-	}
 }

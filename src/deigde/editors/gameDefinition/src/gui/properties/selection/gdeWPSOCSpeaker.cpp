@@ -477,9 +477,6 @@ pGameDefinition(NULL)
 gdeWPSOCSpeaker::~gdeWPSOCSpeaker(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -494,7 +491,6 @@ void gdeWPSOCSpeaker::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

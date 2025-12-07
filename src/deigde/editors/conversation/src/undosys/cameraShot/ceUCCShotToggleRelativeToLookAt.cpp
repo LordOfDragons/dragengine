@@ -51,9 +51,6 @@ ceUCCShotToggleRelativeToLookAt::ceUCCShotToggleRelativeToLookAt(ceCameraShot *c
 }
 
 ceUCCShotToggleRelativeToLookAt::~ceUCCShotToggleRelativeToLookAt(){
-	if(pCameraShot){
-		pCameraShot->FreeReference();
-	}
 }
 
 

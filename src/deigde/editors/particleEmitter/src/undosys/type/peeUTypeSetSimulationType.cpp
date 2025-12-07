@@ -57,9 +57,6 @@ pNewSimType(newSimType)
 }
 
 peeUTypeSetSimulationType::~peeUTypeSetSimulationType(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

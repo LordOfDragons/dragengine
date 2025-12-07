@@ -35,7 +35,7 @@ class peeController;
  */
 class peeUControllerSetLower : public igdeUndo{
 private:
-	peeController *pController;
+	peeController::Ref pController;
 	
 	float pOldLower;
 	float pOldUpper;

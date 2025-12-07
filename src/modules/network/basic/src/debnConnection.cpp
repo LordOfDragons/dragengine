@@ -846,9 +846,6 @@ void debnConnection::pCleanUp(){
 	if(pModifiedStateLinks){
 		delete pModifiedStateLinks;
 	}
-	if(pSocket){
-		pSocket->FreeReference();
-	}
 	
 	if(pReliableMessagesRecv){
 		delete pReliableMessagesRecv;
@@ -884,8 +881,6 @@ void debnConnection::pDisconnect(){
 	
 	// free the socket
 	pConnectionState = ecsDisconnected;
-	if(pSocket){
-		pSocket->FreeReference();
 		pSocket = NULL;
 	}
 	

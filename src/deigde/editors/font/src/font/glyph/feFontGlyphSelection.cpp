@@ -126,7 +126,6 @@ void feFontGlyphSelection::SetActiveGlyph(feFontGlyph *glyph){
 	if(glyph != pActive){
 		if(pActive){
 			pActive->SetActive(false);
-			pActive->FreeReference();
 		}
 		
 		pActive = glyph;

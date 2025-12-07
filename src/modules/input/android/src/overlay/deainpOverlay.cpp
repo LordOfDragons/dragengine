@@ -56,9 +56,6 @@ pLayoutVertical(decPoint(), decPoint(256, 256))
 }
 
 deainpOverlay::~deainpOverlay(){
-	if(pCanvas){
-		pCanvas->FreeReference();
-	}
 }
 
 

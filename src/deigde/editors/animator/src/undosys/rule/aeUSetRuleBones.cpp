@@ -55,13 +55,9 @@ pNewValue(newValue)
 	SetShortInfo("Set rule bones");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeUSetRuleBones::~aeUSetRuleBones(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

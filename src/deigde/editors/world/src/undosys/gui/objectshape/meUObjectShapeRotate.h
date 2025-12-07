@@ -38,7 +38,7 @@ class meObjectShapeList;
  */
 class meUObjectShapeRotate : public meBaseUndoRotate{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	decString pProperty;
 	
 	bool pPropertyExists;

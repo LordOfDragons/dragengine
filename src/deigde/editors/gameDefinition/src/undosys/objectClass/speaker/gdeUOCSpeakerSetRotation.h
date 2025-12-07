@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCSpeakerSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCSpeaker *pSpeaker;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCSpeaker::Ref pSpeaker;
 	
 	decVector pOldValue;
 	decVector pNewValue;

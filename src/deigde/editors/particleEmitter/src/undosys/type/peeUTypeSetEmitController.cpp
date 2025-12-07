@@ -58,9 +58,6 @@ pNewTarget(newTarget)
 }
 
 peeUTypeSetEmitController::~peeUTypeSetEmitController(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

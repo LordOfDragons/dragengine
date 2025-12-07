@@ -51,13 +51,9 @@ aeURuleTrackToSetTrackBone::aeURuleTrackToSetTrackBone(aeRuleTrackTo *rule, cons
 	SetShortInfo("TrackTo Set Track Bone");
 	
 	pRule = rule;
-	pRule->AddReference();
 }
 
 aeURuleTrackToSetTrackBone::~aeURuleTrackToSetTrackBone(){
-	if(pRule){
-		pRule->FreeReference();
-	}
 }
 
 

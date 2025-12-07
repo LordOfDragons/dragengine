@@ -36,7 +36,7 @@ class ceCAWait;
  */
 class ceUCAWaitPaste : public ceUCActionPaste{
 private:
-	ceCAWait *pWait;
+	ceCAWait::Ref pWait;
 	
 public:
 	/** \name Constructors and Destructors */

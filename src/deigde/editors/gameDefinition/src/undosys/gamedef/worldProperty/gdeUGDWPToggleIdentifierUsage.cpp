@@ -59,12 +59,6 @@ pProperty(NULL)
 }
 
 gdeUGDWPToggleIdentifierUsage::~gdeUGDWPToggleIdentifierUsage(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

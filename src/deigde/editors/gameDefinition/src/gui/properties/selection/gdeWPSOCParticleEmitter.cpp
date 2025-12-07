@@ -393,9 +393,6 @@ pGameDefinition(NULL)
 gdeWPSOCParticleEmitter::~gdeWPSOCParticleEmitter(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -410,7 +407,6 @@ void gdeWPSOCParticleEmitter::SetGameDefinition(gdeGameDefinition *gameDefinitio
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

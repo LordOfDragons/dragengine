@@ -55,9 +55,6 @@ pValue(value)
 }
 
 meUWorldAddProperty::~meUWorldAddProperty(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }
 
 

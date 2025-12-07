@@ -55,9 +55,6 @@ pNewValue(newValue)
 }
 
 meUWorldSetGravity::~meUWorldSetGravity(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }
 
 

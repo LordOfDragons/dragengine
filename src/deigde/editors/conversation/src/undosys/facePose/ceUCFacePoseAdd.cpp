@@ -56,12 +56,6 @@ ceUCFacePoseAdd::ceUCFacePoseAdd(ceConversation *conversation, ceFacePose *faceP
 }
 
 ceUCFacePoseAdd::~ceUCFacePoseAdd(){
-	if(pFacePose){
-		pFacePose->FreeReference();
-	}
-	if(pConversation){
-		pConversation->FreeReference();
-	}
 }
 
 

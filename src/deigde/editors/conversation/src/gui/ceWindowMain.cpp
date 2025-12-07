@@ -218,15 +218,6 @@ ceWindowMain::~ceWindowMain(){
 	
 	SetConversation(NULL);
 	
-	if(pWindowDopeSheet){
-		pWindowDopeSheet->FreeReference();
-	}
-	if(pViewConversation){
-		pViewConversation->FreeReference();
-	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
-	}
 	
 	if(pConfiguration){
 		delete pConfiguration;
@@ -235,9 +226,6 @@ ceWindowMain::~ceWindowMain(){
 		delete pLoadSaveSystem;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 	
 }
 
@@ -271,7 +259,6 @@ void ceWindowMain::SetConversation(ceConversation *conversation){
 	if(pConversation){
 		pConversation->RemoveListener(pListener);
 		pConversation->Dispose();
-		pConversation->FreeReference();
 	}
 	
 	pConversation = conversation;

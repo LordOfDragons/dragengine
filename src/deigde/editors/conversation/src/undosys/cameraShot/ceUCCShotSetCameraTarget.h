@@ -36,7 +36,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetCameraTarget : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	decString pOldTarget;
 	decString pNewTarget;

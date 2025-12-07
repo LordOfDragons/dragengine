@@ -89,15 +89,6 @@ ceCConditionLogic *logic, const ceConversationConditionList &conditions){
 
 ceUCCLogicPaste::~ceUCCLogicPaste(){
 	pConditions.RemoveAll();
-	if(pLogic){
-		pLogic->FreeReference();
-	}
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

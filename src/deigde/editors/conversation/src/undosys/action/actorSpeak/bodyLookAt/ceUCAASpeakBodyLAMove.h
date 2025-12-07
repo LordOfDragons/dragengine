@@ -38,9 +38,9 @@ class ceStrip;
  */
 class ceUCAASpeakBodyLAMove : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCAActorSpeak *pActorSpeak;
-	ceStrip *pBodyLA;
+	ceConversationTopic::Ref pTopic;
+	ceCAActorSpeak::Ref pActorSpeak;
+	ceStrip::Ref pBodyLA;
 	int pOldIndex;
 	int pNewIndex;
 	

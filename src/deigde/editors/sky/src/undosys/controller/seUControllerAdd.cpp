@@ -58,12 +58,6 @@ pController(NULL)
 }
 
 seUControllerAdd::~seUControllerAdd(){
-	if(pController){
-		pController->FreeReference();
-	}
-	if(pSky){
-		pSky->FreeReference();
-	}
 }
 
 

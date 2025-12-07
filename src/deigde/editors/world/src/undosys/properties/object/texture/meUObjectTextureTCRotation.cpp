@@ -68,9 +68,6 @@ meUObjectTextureTCRotation::meUObjectTextureTCRotation(meObjectTexture *texture,
 }
 
 meUObjectTextureTCRotation::~meUObjectTextureTCRotation(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
 }
 
 

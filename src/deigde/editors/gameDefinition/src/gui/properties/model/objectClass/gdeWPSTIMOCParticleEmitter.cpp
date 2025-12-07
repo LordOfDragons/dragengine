@@ -67,9 +67,6 @@ pParticleEmitter(NULL)
 }
 
 gdeWPSTIMOCParticleEmitter::~gdeWPSTIMOCParticleEmitter(){
-	if(pParticleEmitter){
-		pParticleEmitter->FreeReference();
-	}
 }
 
 

@@ -38,9 +38,9 @@ class seLink;
  */
 class seUTargetAddLink : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	deSkyLayer::eTargets pTarget;
-	seLink *pLink;
+	seLink::Ref pLink;
 	
 	
 	

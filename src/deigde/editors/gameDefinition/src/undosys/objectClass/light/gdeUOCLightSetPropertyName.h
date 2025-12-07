@@ -39,8 +39,8 @@ class gdeObjectClass;
  */
 class gdeUOCLightSetPropertyName : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCLight *pLight;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCLight::Ref pLight;
 	
 	gdeOCLight::eProperties pProperty;
 	decString pOldValue;

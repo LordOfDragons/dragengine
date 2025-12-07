@@ -56,9 +56,6 @@ pNewValue(newValue)
 }
 
 seUPropertyNodeTextSetColor::~seUPropertyNodeTextSetColor(){
-	if(pNode){
-		pNode->FreeReference();
-	}
 }
 
 

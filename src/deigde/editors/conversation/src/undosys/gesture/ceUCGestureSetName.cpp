@@ -84,9 +84,6 @@ ceUCGestureSetName::ceUCGestureSetName(ceGesture *gesture, const char *newName){
 	}catch(const deException &){
 		pActionList.RemoveAll();
 		
-		if(pGesture){
-			pGesture->FreeReference();
-		}
 		
 		throw;
 	}
@@ -95,9 +92,6 @@ ceUCGestureSetName::ceUCGestureSetName(ceGesture *gesture, const char *newName){
 ceUCGestureSetName::~ceUCGestureSetName(){
 	pActionList.RemoveAll();
 	
-	if(pGesture){
-		pGesture->FreeReference();
-	}
 }
 
 

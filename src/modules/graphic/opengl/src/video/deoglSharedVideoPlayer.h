@@ -42,7 +42,7 @@ class deoglSharedVideoPlayer{
 public:
 	deGraphicOpenGl &pOgl;
 	deoglSharedVideoPlayerList &pList;
-	deVideoPlayer *pVideoPlayer;
+	deVideoPlayer::Ref pVideoPlayer;
 	int pUsageCount;
 	
 	
@@ -66,7 +66,7 @@ public:
 	inline const deGraphicOpenGl &GetOpenGL() const{ return pOgl; }
 	
 	/** Video player. */
-	inline deVideoPlayer *GetVideoPlayer() const{ return pVideoPlayer; }
+	inline const deVideoPlayer::Ref &GetVideoPlayer() const{ return pVideoPlayer; }
 	
 	/** Usage count. */
 	inline int GetUsageCount() const{ return pUsageCount; }

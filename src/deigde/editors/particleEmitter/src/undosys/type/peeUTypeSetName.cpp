@@ -56,9 +56,6 @@ peeUTypeSetName::peeUTypeSetName(peeType *type, const char *newName){
 }
 
 peeUTypeSetName::~peeUTypeSetName(){
-	if(pType){
-		pType->FreeReference();
-	}
 }
 
 

@@ -38,7 +38,7 @@ class meObjectTexture;
  */
 class meUObjectTextureColorTint : public igdeUndo{
 private:
-	meObjectTexture *pTexture;
+	meObjectTexture::Ref pTexture;
 	decColor pOldColor;
 	decColor pNewColor;
 	

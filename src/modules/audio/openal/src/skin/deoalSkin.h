@@ -41,7 +41,7 @@ class deoalSkin : public deBaseAudioSkin{
 private:
 	deAudioOpenAL &pOal;
 	const deSkin &pSkin;
-	deoalASkin *pASkin;
+	deoalASkin::Ref pASkin;
 	
 	
 	
@@ -66,7 +66,7 @@ public:
 	inline const deSkin &GetSkin() const{ return pSkin; }
 	
 	/** \brief Audio skin. */
-	inline deoalASkin *GetASkin() const{ return pASkin; }
+	inline const deoalASkin::Ref &GetASkin() const{ return pASkin; }
 	/*@}*/
 };
 

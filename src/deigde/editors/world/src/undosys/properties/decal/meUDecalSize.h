@@ -38,7 +38,7 @@ class meDecal;
  */
 class meUDecalSize : public igdeUndo{
 private:
-	meDecal *pDecal;
+	meDecal::Ref pDecal;
 	
 	decVector pOldSize;
 	decVector pNewSize;

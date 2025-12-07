@@ -43,7 +43,7 @@ class meObjectList;
 class meUSetObjectClass : public igdeUndo{
 private:
 	struct sObject{
-		meObject *object;
+		meObject::Ref object;
 		decString oldcname;
 		decString newcname;
 		decVector oldsize;

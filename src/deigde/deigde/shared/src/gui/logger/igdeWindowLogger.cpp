@@ -99,9 +99,6 @@ pPendingClearLogs(false)
 
 igdeWindowLogger::~igdeWindowLogger(){
 	SetLogger(NULL);
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -116,7 +113,6 @@ void igdeWindowLogger::SetLogger(igdeLoggerHistory *logger){
 	
 	if(pLogger){
 		pLogger->RemoveListener(pListener);
-		pLogger->FreeReference();
 	}
 	
 	pLogger = logger;

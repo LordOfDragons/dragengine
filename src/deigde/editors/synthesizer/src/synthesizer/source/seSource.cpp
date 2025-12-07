@@ -457,9 +457,6 @@ void seSource::SetActiveEffect(seEffect *effect){
 		return;
 	}
 	
-	if(pActiveEffect){
-		pActiveEffect->FreeReference();
-	}
 	
 	pActiveEffect = effect;
 	

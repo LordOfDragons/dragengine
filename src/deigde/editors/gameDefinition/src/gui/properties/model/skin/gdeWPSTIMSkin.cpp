@@ -61,9 +61,6 @@ pSkin(NULL)
 }
 
 gdeWPSTIMSkin::~gdeWPSTIMSkin(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 }
 
 

@@ -63,12 +63,6 @@ pTexture(NULL)
 }
 
 gdeUOCTextureSetOffset::~gdeUOCTextureSetOffset(){
-	if(pTexture){
-		pTexture->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

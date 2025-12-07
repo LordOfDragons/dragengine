@@ -81,7 +81,6 @@ meUObjectAttachTo::meUObjectAttachTo(meWorld *world, const meObjectList &objects
 			object = objects.GetAt(pObjectCount);
 			
 			pObjects[pObjectCount].object = object;
-			object->AddReference();
 			pObjects[pObjectCount].oldAttachTo = object->GetAttachedTo();
 			if(pObjects[pObjectCount].oldAttachTo){
 				pObjects[pObjectCount].oldAttachTo->AddReference();
@@ -157,11 +156,5 @@ void meUObjectAttachTo::pCleanUp(){
 		delete [] pObjects;
 	}
 	
-	if(pAttachTo){
-		pAttachTo->FreeReference();
-	}
 	
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }

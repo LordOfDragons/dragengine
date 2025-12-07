@@ -251,9 +251,6 @@ void deoglRBillboard::SetSkin(deoglRSkin *skin){
 		return;
 	}
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
 	
 	pSkin = skin;
 	pUseSkinTexture = skin && skin->GetTextureCount() > 0 ? &skin->GetTextureAt(0) : NULL;
@@ -276,9 +273,6 @@ void deoglRBillboard::SetDynamicSkin(deoglRDynamicSkin *dynamicSkin){
 		return;
 	}
 	
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
 	
 	pDynamicSkin = dynamicSkin;
 	
@@ -754,7 +748,6 @@ void deoglRBillboard::SetRenderEnvMap(deoglEnvironmentMap *envmap){
 	
 	if(pRenderEnvMap){
 		pRenderEnvMap->GetBillboardList().RemoveIfExisting(this);
-		pRenderEnvMap->FreeReference();
 	}
 	
 	pRenderEnvMap = envmap;
@@ -780,7 +773,6 @@ void deoglRBillboard::SetRenderEnvMapFade(deoglEnvironmentMap *envmap){
 	
 	if(pRenderEnvMapFade){
 		pRenderEnvMapFade->GetBillboardList().RemoveIfExisting(this);
-		pRenderEnvMapFade->FreeReference();
 	}
 	
 	pRenderEnvMapFade = envmap;
@@ -936,22 +928,7 @@ void deoglRBillboard::PrepareQuickDispose(){
 void deoglRBillboard::pCleanUp(){
 	SetParentWorld(NULL);
 	
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pDynamicSkin){
-		pDynamicSkin->FreeReference();
-	}
-	if(pRenderEnvMap){
-		pRenderEnvMap->FreeReference();
-	}
-	if(pRenderEnvMapFade){
-		pRenderEnvMapFade->FreeReference();
-	}
 	
-	if(pSharedSPBElement){
-		pSharedSPBElement->FreeReference();
-	}
 	if(pTUCDepth){
 		pTUCDepth->RemoveUsage();
 	}

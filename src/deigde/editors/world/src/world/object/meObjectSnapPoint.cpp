@@ -165,9 +165,6 @@ void meObjectSnapPoint::pCleanUp(){
 		pObject->GetEnvironment()->SetColliderUserPointer(pCollider, NULL);
 	}
 	
-	if(pCollider){
-		pCollider->FreeReference();
-	}
 	
 	if(pDDShape){
 		delete pDDShape;

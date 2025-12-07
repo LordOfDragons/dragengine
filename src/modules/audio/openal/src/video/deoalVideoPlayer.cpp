@@ -58,9 +58,6 @@ pRequiresSeeking(false){
 }
 
 deoalVideoPlayer::~deoalVideoPlayer(){
-	if(pAVideoPlayer){
-		pAVideoPlayer->FreeReference();
-	}
 }
 
 

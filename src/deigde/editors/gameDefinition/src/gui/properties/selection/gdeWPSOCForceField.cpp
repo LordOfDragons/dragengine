@@ -580,9 +580,6 @@ pGameDefinition(NULL)
 gdeWPSOCForceField::~gdeWPSOCForceField(){
 	SetGameDefinition(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -597,7 +594,6 @@ void gdeWPSOCForceField::SetGameDefinition(gdeGameDefinition *gameDefinition){
 	
 	if(pGameDefinition){
 		pGameDefinition->RemoveListener(pListener);
-		pGameDefinition->FreeReference();
 	}
 	
 	pGameDefinition = gameDefinition;

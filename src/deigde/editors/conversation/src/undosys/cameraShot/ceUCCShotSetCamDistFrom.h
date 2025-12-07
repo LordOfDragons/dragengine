@@ -36,7 +36,7 @@ class ceCameraShot;
  */
 class ceUCCShotSetCamDistFrom : public igdeUndo{
 private:
-	ceCameraShot *pCameraShot;
+	ceCameraShot::Ref pCameraShot;
 	
 	float pOldDist;
 	float pNewDist;

@@ -37,8 +37,8 @@ class ceConversationTopic;
  */
 class ceUCACShotSetDuration : public igdeUndo{
 private:
-	ceConversationTopic *pTopic;
-	ceCACameraShot *pCameraShot;
+	ceConversationTopic::Ref pTopic;
+	ceCACameraShot::Ref pCameraShot;
 	float pOldDuration;
 	float pNewDuration;
 	

@@ -58,9 +58,6 @@ meUDecalVisible::meUDecalVisible(meDecal *decal){
 }
 
 meUDecalVisible::~meUDecalVisible(){
-	if(pDecal){
-		pDecal->FreeReference();
-	}
 }
 
 

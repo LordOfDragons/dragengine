@@ -159,12 +159,6 @@ void deainpDeviceManager::LogDevices(){
 
 void deainpDeviceManager::pCleanUp(){
 	pDevices.RemoveAll();
-	if(pKeyboard){
-		pKeyboard->FreeReference();
-	}
-	if(pMouse){
-		pMouse->FreeReference();
-	}
 }
 
 void deainpDeviceManager::pCreateDevices(){

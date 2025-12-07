@@ -39,7 +39,7 @@ class deDSRenderableCamera;
 class deoglDSRenderableCamera : public deoglDSRenderable{
 public:
 	const deDSRenderableCamera &pRenderableCamera;
-	deoglRDSRenderableCamera *pRRenderableCamera;
+	deoglRDSRenderableCamera::Ref pRRenderableCamera;
 	deoglCamera *pCamera;
 	bool pDirty;
 	

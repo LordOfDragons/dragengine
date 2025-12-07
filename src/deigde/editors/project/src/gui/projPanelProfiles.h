@@ -51,8 +51,8 @@ class projPanelProfiles : public igdeContainerSplitted{
 private:
 	projWindowMain &pWindowMain;
 	
-	projProject *pProject;
-	projPanelProfilesListener *pListener;
+	projProject::Ref pProject;
+	projPanelProfilesListener::Ref pListener;
 	
 	igdeAction::Ref pActionScriptDirectory;
 	igdeAction::Ref pActionPathConfig;
@@ -118,7 +118,7 @@ public:
 	inline projWindowMain &GetWindowMain() const{ return pWindowMain; }
 	
 	/** \brief Project. */
-	inline projProject *GetProject() const{ return pProject; }
+	inline const projProject::Ref &GetProject() const{ return pProject; }
 	
 	/** \brief Set synthesizer. */
 	void SetProject(projProject *project);

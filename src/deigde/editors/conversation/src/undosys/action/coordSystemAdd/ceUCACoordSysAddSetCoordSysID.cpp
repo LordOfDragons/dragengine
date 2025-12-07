@@ -62,12 +62,6 @@ ceCACoordSystemAdd *action, const char *newCoordSysID){
 }
 
 ceUCACoordSysAddSetCoordSysID::~ceUCACoordSysAddSetCoordSysID(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

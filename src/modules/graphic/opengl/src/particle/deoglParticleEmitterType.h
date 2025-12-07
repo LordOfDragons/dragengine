@@ -40,7 +40,7 @@ class deoglParticleEmitterType{
 private:
 	const deParticleEmitterType &pType;
 	
-	deoglRParticleEmitterType *pRType;
+	deoglRParticleEmitterType::Ref pRType;
 	
 	bool pDirtyType;
 	
@@ -59,7 +59,7 @@ public:
 	/** \name Management */
 	/*@{*/
 	/** Render type. */
-	inline deoglRParticleEmitterType *GetRType() const{ return pRType; }
+	inline const deoglRParticleEmitterType::Ref &GetRType() const{ return pRType; }
 	
 	/** Update render thread counterpart if required. */
 	void SyncToRender();

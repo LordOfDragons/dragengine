@@ -38,8 +38,8 @@ class gdeObjectClass;
  */
 class gdeUOCAddEnvMapProbe : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	
 	

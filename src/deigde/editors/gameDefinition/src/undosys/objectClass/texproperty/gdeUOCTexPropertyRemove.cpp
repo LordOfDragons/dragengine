@@ -61,12 +61,6 @@ pProperty(NULL)
 }
 
 gdeUOCTexPropertyRemove::~gdeUOCTexPropertyRemove(){
-	if(pProperty){
-		pProperty->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

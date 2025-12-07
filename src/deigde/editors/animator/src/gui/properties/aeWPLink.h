@@ -49,8 +49,8 @@ class aeEditLinkMapping;
 class aeWPLink : public igdeContainerScroll{
 private:
 	aeWindowProperties &pWindowProperties;
-	aeWPLinkListener *pListener;
-	aeAnimator *pAnimator;
+	aeWPLinkListener::Ref pListener;
+	aeAnimator::Ref pAnimator;
 	
 	igdeListBox::Ref pListLink;
 	
@@ -91,7 +91,7 @@ public:
 	inline aeWindowProperties &GetWindowProperties() const{ return pWindowProperties; }
 	
 	/** Animator. */
-	inline aeAnimator *GetAnimator() const{ return pAnimator; }
+	inline const aeAnimator::Ref &GetAnimator() const{ return pAnimator; }
 	
 	/** Set animator. */
 	void SetAnimator(aeAnimator *animator);

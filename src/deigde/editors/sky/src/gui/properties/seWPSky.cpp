@@ -111,9 +111,6 @@ pListener(NULL)
 seWPSky::~seWPSky(){
 	SetSky(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -128,7 +125,6 @@ void seWPSky::SetSky(seSky *sky){
 	
 	if(pSky){
 		pSky->RemoveListener(pListener);
-		pSky->FreeReference();
 		pSky = NULL;
 	}
 	

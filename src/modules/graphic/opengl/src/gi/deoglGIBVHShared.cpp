@@ -89,38 +89,5 @@ deoglGIBVHShared::~deoglGIBVHShared(){
 //////////////////////
 
 void deoglGIBVHShared::pCleanUp(){
-	if(pSharedTBONode){
-		pSharedTBONode->FreeReference();
-	}
-	if(pSharedTBOFace){
-		pSharedTBOFace->FreeReference();
-	}
-	if(pSharedTBOVertex){
-		pSharedTBOVertex->FreeReference();
-	}
-	if(pSharedTBOMaterial){
-		pSharedTBOMaterial->FreeReference();
-	}
 	
-	if(pTBONodeBox){
-		pTBONodeBox->FreeReference();
-	}
-	if(pTBOIndex){
-		pTBOIndex->FreeReference();
-	}
-	if(pTBOFace){
-		pTBOFace->FreeReference();
-	}
-	if(pTBOVertex){
-		pTBOVertex->FreeReference();
-	}
-	if(pTBOTexCoord){
-		pTBOTexCoord->FreeReference();
-	}
-	if(pTBOMaterial){
-		pTBOMaterial->FreeReference();
-	}
-	if(pTBOMaterial2){
-		pTBOMaterial2->FreeReference();
-	}
 }

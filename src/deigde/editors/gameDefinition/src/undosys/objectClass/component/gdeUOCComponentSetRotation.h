@@ -40,8 +40,8 @@ class gdeObjectClass;
  */
 class gdeUOCComponentSetRotation : public igdeUndo{
 private:
-	gdeObjectClass *pObjectClass;
-	gdeOCComponent *pComponent;
+	gdeObjectClass::Ref pObjectClass;
+	gdeOCComponent::Ref pComponent;
 	
 	decVector pOldValue;
 	decVector pNewValue;

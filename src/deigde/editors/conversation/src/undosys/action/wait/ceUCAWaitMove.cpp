@@ -72,15 +72,6 @@ ceUCAWaitMove::ceUCAWaitMove(ceConversationTopic *topic, ceCAWait *wait, ceConve
 }
 
 ceUCAWaitMove::~ceUCAWaitMove(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pWait){
-		pWait->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

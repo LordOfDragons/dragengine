@@ -45,9 +45,9 @@ class meHeightTerrainTexture;
  */
 class meUHTSetTexSkin : public igdeUndo{
 private:
-	meWorld *pWorld;
+	meWorld::Ref pWorld;
 	meHeightTerrainSector *pSector;
-	meHeightTerrainTexture *pTexture;
+	meHeightTerrainTexture::Ref pTexture;
 	
 	decString pOldPath;
 	decString pNewPath;

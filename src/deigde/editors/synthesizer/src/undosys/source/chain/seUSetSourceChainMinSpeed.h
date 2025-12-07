@@ -37,7 +37,7 @@ class seSourceChain;
  */
 class seUSetSourceChainMinSpeed : public igdeUndo{
 private:
-	seSourceChain *pSource;
+	seSourceChain::Ref pSource;
 	
 	float pOldSpeed;
 	float pNewSpeed;

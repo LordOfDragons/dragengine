@@ -71,21 +71,6 @@ ceUCAASpeakGestureSet::ceUCAASpeakGestureSet(ceConversationTopic *topic, ceCAAct
 }
 
 ceUCAASpeakGestureSet::~ceUCAASpeakGestureSet(){
-	if(pNewStrip){
-		pNewStrip->FreeReference();
-	}
-	if(pOldStrip){
-		pOldStrip->FreeReference();
-	}
-	if(pGesture){
-		pGesture->FreeReference();
-	}
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

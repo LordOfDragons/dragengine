@@ -40,7 +40,7 @@ class meObject;
  */
 class meUSetObjectSize : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decVector pOldSize;
 	decVector pNewSize;

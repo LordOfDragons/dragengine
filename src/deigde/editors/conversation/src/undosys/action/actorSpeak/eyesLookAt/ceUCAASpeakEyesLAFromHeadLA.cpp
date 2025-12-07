@@ -63,12 +63,6 @@ pActorSpeak(NULL)
 }
 
 ceUCAASpeakEyesLAFromHeadLA::~ceUCAASpeakEyesLAFromHeadLA(){
-	if(pActorSpeak){
-		pActorSpeak->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

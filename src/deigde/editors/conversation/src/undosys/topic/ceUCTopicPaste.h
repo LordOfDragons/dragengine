@@ -39,7 +39,7 @@ class ceConversationTopic;
  */
 class ceUCTopicPaste : public igdeUndo{
 private:
-	ceConversationFile *pFile;
+	ceConversationFile::Ref pFile;
 	ceConversationTopicList pTopics;
 	
 	

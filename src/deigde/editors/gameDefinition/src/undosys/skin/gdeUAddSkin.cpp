@@ -58,12 +58,6 @@ pSkin(NULL)
 }
 
 gdeUAddSkin::~gdeUAddSkin(){
-	if(pSkin){
-		pSkin->FreeReference();
-	}
-	if(pGameDefinition){
-		pGameDefinition->FreeReference();
-	}
 }
 
 

@@ -59,12 +59,6 @@ ceCASetActorParameter *action, ceCASetActorParameter::eOperators newOperator){
 }
 
 ceUCASetAParamSetOp::~ceUCASetAParamSetOp(){
-	if(pAction){
-		pAction->FreeReference();
-	}
-	if(pTopic){
-		pTopic->FreeReference();
-	}
 }
 
 

@@ -37,7 +37,7 @@ class meObject;
  */
 class meUObjectSetProperties : public igdeUndo{
 private:
-	meObject *pObject;
+	meObject::Ref pObject;
 	
 	decStringDictionary pOldValues;
 	decStringDictionary pNewValues;

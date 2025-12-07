@@ -35,7 +35,7 @@ class gdeOCEnvMapProbe;
  */
 class gdeWPSTIMOCEnvMapProbe : public gdeWPSTIMOCSubObject{
 private:
-	gdeOCEnvMapProbe *pEnvMapProbe;
+	gdeOCEnvMapProbe::Ref pEnvMapProbe;
 	
 	
 public:
@@ -56,7 +56,7 @@ public:
 	/** \brief Management */
 	/*@{*/
 	/** \brief Environment map probe. */
-	inline gdeOCEnvMapProbe *GetOCEnvMapProbe() const{ return pEnvMapProbe; }
+	inline const gdeOCEnvMapProbe::Ref &GetOCEnvMapProbe() const{ return pEnvMapProbe; }
 	
 	/** \brief Validate and update state accordingly. */
 	void Validate();

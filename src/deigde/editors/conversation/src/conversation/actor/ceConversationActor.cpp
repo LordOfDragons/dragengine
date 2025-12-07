@@ -378,9 +378,6 @@ void ceConversationActor::SetActivePose(ceActorPose *pose){
 		return;
 	}
 	
-	if(pActivePose){
-		pActivePose->FreeReference();
-	}
 	
 	pActivePose = pose;
 	
@@ -510,7 +507,6 @@ void ceConversationActor::AddPlayFacePose(ceFacePose *facePose, float pause, flo
 	pPlayFacePoses[pPlayFacePoseCount].length = length;
 	pPlayFacePoseCount++;
 	if(facePose){
-		facePose->AddReference();
 	}
 	
 	pPlayFacePosePos = 0;
@@ -550,7 +546,6 @@ void ceConversationActor::AddPlayHeadLookAt(ceTarget *lookAt, float pause, float
 	pPlayHeadLAs[pPlayHeadLACount].duration = duration;
 	pPlayHeadLACount++;
 	if(lookAt){
-		lookAt->AddReference();
 	}
 	
 	pPlayHeadLAPos = 0;
@@ -590,7 +585,6 @@ void ceConversationActor::AddPlayEyesLookAt(ceTarget *lookAt, float pause, float
 	pPlayEyesLAs[pPlayEyesLACount].duration = duration;
 	pPlayEyesLACount++;
 	if(lookAt){
-		lookAt->AddReference();
 	}
 	
 	pPlayEyesLAPos = 0;
@@ -665,34 +659,16 @@ void ceConversationActor::NotifyActorChanged(){
 //////////////////////
 
 void ceConversationActor::pCleanUp(){
-	if(pPlayCurEyesLA){
-		pPlayCurEyesLA->FreeReference();
-	}
-	if(pPlayLastEyesLA){
-		pPlayLastEyesLA->FreeReference();
-	}
 	if(pPlayEyesLAs){
 		RemoveAllPlayEyesLookAts();
 		delete [] pPlayEyesLAs;
 	}
 	
-	if(pPlayCurHeadLA){
-		pPlayCurHeadLA->FreeReference();
-	}
-	if(pPlayLastHeadLA){
-		pPlayLastHeadLA->FreeReference();
-	}
 	if(pPlayHeadLAs){
 		RemoveAllPlayHeadLookAts();
 		delete [] pPlayHeadLAs;
 	}
 	
-	if(pPlayCurFacePose){
-		pPlayCurFacePose->FreeReference();
-	}
-	if(pPlayLastFacePose){
-		pPlayLastFacePose->FreeReference();
-	}
 	if(pPlayFacePoses){
 		RemoveAllPlayFacePoses();
 		delete [] pPlayFacePoses;
@@ -702,9 +678,6 @@ void ceConversationActor::pCleanUp(){
 		delete [] pPlayGestures;
 	}
 	
-	if(pActivePose){
-		pActivePose->FreeReference();
-	}
 	pPoses.RemoveAll();
 	
 	SetConversation(nullptr);
@@ -712,33 +685,27 @@ void ceConversationActor::pCleanUp(){
 	if(pEngSpeaker){
 		pEngSpeaker->Stop();
 		pEngSpeaker->SetSound(nullptr);
-		pEngSpeaker->FreeReference();
 	}
 	
 	if(pEngEyesAnimatorInstance){
 		pEngEyesAnimatorInstance->SetAnimator(nullptr);
 		pEngEyesAnimatorInstance->SetComponent(nullptr);
-		pEngEyesAnimatorInstance->FreeReference();
 	}
 	if(pEngEyesAnimator){
 		pEngEyesAnimator->SetRig(nullptr);
-		pEngEyesAnimator->FreeReference();
 	}
 	
 	if(pEngFacePoseAnimatorInstance){
 		pEngFacePoseAnimatorInstance->SetAnimator(nullptr);
 		pEngFacePoseAnimatorInstance->SetComponent(nullptr);
-		pEngFacePoseAnimatorInstance->FreeReference();
 	}
 	if(pEngFacePoseAnimator){
 		pEngFacePoseAnimator->SetRig(nullptr);
-		pEngFacePoseAnimator->FreeReference();
 	}
 	
 	if(pEngGestureAnimatorInstance){
 		pEngGestureAnimatorInstance->SetAnimator(nullptr);
 		pEngGestureAnimatorInstance->SetComponent(nullptr);
-		pEngGestureAnimatorInstance->FreeReference();
 	}
 	
 	if(pSpeechAnimation){
@@ -748,10 +715,6 @@ void ceConversationActor::pCleanUp(){
 	if(pEngAnimatorInstance){
 		pEngAnimatorInstance->SetAnimator(nullptr);
 		pEngAnimatorInstance->SetComponent(nullptr);
-		pEngAnimatorInstance->FreeReference();
-	}
-	if(pEngComponent){
-		pEngComponent->FreeReference();
 	}
 }
 
@@ -821,7 +784,6 @@ void ceConversationActor::pUpdateComponent(){
 			if(pConversation){
 				pConversation->GetEngineWorld()->RemoveComponent(pEngComponent);
 			}
-			pEngComponent->FreeReference();
 			pEngComponent = nullptr;
 		}
 		
@@ -923,9 +885,6 @@ void ceConversationActor::pUpdateFacePoseAnimator(){
 			animator = engine.GetAnimatorManager()->CreateAnimator();
 			animatorXML.Load(pPathFacePoseAnimator, *animator, *reader);
 			
-			if(pEngFacePoseAnimator){
-				pEngFacePoseAnimator->FreeReference();
-			}
 			pEngFacePoseAnimator = animator;
 			
 			reader->FreeReference();
@@ -960,9 +919,6 @@ void ceConversationActor::pUpdateEyesAnimator(){
 			animator = engine.GetAnimatorManager()->CreateAnimator();
 			animatorXML.Load(pPathEyesAnimator, *animator, *reader);
 			
-			if(pEngEyesAnimator){
-				pEngEyesAnimator->FreeReference();
-			}
 			pEngEyesAnimator = animator;
 			
 			reader->FreeReference();
@@ -1219,13 +1175,9 @@ void ceConversationActor::pUpdatePlayFacePose(float elapsed){
 			
 			if(pPlayFacePoseElapsed < totalLength){
 				if(pPlayCurFacePose != facePose){
-					if(pPlayLastFacePose){
-						pPlayLastFacePose->FreeReference();
-					}
 					pPlayLastFacePose = pPlayCurFacePose;
 					pPlayCurFacePose = facePose;
 					if(facePose){
-						facePose->AddReference();
 					}
 				}
 				
@@ -1255,13 +1207,9 @@ void ceConversationActor::pUpdatePlayFacePose(float elapsed){
 				break;
 				
 			}else{
-				if(pPlayLastFacePose){
-					pPlayLastFacePose->FreeReference();
-				}
 				pPlayLastFacePose = pPlayCurFacePose;
 				pPlayCurFacePose = facePose;
 				if(facePose){
-					facePose->AddReference();
 				}
 				
 				pPlayFacePoseElapsed -= totalLength;
@@ -1382,13 +1330,9 @@ void ceConversationActor::pUpdatePlayHeadLookAt(cePlayback &playback, float elap
 			
 			if(pPlayHeadLAElapsed < totalLength){
 				if(pPlayCurHeadLA != lookAt){
-					if(pPlayLastHeadLA){
-						pPlayLastHeadLA->FreeReference();
-					}
 					pPlayLastHeadLA = pPlayCurHeadLA;
 					pPlayCurHeadLA = lookAt;
 					if(lookAt){
-						lookAt->AddReference();
 					}
 				}
 				
@@ -1418,13 +1362,9 @@ void ceConversationActor::pUpdatePlayHeadLookAt(cePlayback &playback, float elap
 				break;
 				
 			}else{
-				if(pPlayLastHeadLA){
-					pPlayLastHeadLA->FreeReference();
-				}
 				pPlayLastHeadLA = pPlayCurHeadLA;
 				pPlayCurHeadLA = lookAt;
 				if(lookAt){
-					lookAt->AddReference();
 				}
 				
 				pPlayHeadLAElapsed -= totalLength;
@@ -1494,13 +1434,9 @@ void ceConversationActor::pUpdatePlayEyesLookAt(cePlayback &playback, float elap
 			
 			if(pPlayEyesLAElapsed < totalLength){
 				if(pPlayCurEyesLA != lookAt){
-					if(pPlayLastEyesLA){
-						pPlayLastEyesLA->FreeReference();
-					}
 					pPlayLastEyesLA = pPlayCurEyesLA;
 					pPlayCurEyesLA = lookAt;
 					if(lookAt){
-						lookAt->AddReference();
 					}
 				}
 				
@@ -1530,13 +1466,9 @@ void ceConversationActor::pUpdatePlayEyesLookAt(cePlayback &playback, float elap
 				break;
 				
 			}else{
-				if(pPlayLastEyesLA){
-					pPlayLastEyesLA->FreeReference();
-				}
 				pPlayLastEyesLA = pPlayCurEyesLA;
 				pPlayCurEyesLA = lookAt;
 				if(lookAt){
-					lookAt->AddReference();
 				}
 				
 				pPlayEyesLAElapsed -= totalLength;

@@ -38,7 +38,7 @@ class aeRuleLimit;
  */
 class aeURuleLimitSetVertexPositionSetMax : public igdeUndo{
 private:
-	aeRuleLimit *pRule;
+	aeRuleLimit::Ref pRule;
 	
 	float pOldMax;
 	float pNewMax;

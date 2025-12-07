@@ -403,13 +403,7 @@ pListener(NULL)
 reWPBone::~reWPBone(){
 	SetRig(NULL);
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 	
-	if(pBone){
-		pBone->FreeReference();
-	}
 }
 
 
@@ -426,7 +420,6 @@ void reWPBone::SetRig(reRig *rig){
 	
 	if(pRig){
 		pRig->RemoveNotifier(pListener);
-		pRig->FreeReference();
 		pRig = NULL;
 	}
 	
@@ -445,9 +438,6 @@ void reWPBone::SetBone(reRigBone *bone){
 		return;
 	}
 	
-	if(pBone){
-		pBone->FreeReference();
-	}
 	
 	pBone = bone;
 	

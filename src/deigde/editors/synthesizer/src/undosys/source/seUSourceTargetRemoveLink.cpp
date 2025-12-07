@@ -54,21 +54,13 @@ pLink(NULL)
 	SetShortInfo("Source Target Remove Link");
 	
 	pSource = source;
-	pSource->AddReference();
 	
 	pTarget = target;
 	
 	pLink = link;
-	pLink->AddReference();
 }
 
 seUSourceTargetRemoveLink::~seUSourceTargetRemoveLink(){
-	if(pLink){
-		pLink->FreeReference();
-	}
-	if(pSource){
-		pSource->FreeReference();
-	}
 }
 
 

@@ -56,13 +56,9 @@ deColliderConstraint::eDegreesOfFreedom dof, float newValue){
 	
 	SetShortInfo("Constraint DOF set kinematic friction");
 	
-	pConstraint->AddReference();
 }
 
 reUConstraintDofSetKinematicFriction::~reUConstraintDofSetKinematicFriction(){
-	if(pConstraint){
-		pConstraint->FreeReference();
-	}
 }
 
 

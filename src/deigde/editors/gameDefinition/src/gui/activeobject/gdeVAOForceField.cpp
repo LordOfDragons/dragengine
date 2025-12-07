@@ -72,7 +72,6 @@ pDDSCoordSystem(NULL)
 		DETHROW(deeInvalidParam);
 	}
 	
-	pOCForceField->AddReference();
 	
 	try{
 		pCreateDebugDrawer();
@@ -196,9 +195,6 @@ void gdeVAOForceField::pCleanUp(){
 		pDebugDrawer = NULL;
 	}
 	
-	if(pOCForceField){
-		pOCForceField->FreeReference();
-	}
 }
 
 

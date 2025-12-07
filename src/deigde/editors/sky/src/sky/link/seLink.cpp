@@ -55,9 +55,6 @@ pActive(false){
 }
 
 seLink::~seLink(){
-	if(pController){
-		pController->FreeReference();
-	}
 }
 
 
@@ -95,9 +92,6 @@ void seLink::SetController(seController *controller){
 		return;
 	}
 	
-	if(pController){
-		pController->FreeReference();
-	}
 	
 	pController = controller;
 	

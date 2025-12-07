@@ -55,9 +55,6 @@ pValue(value)
 }
 
 meUWorldRemoveProperty::~meUWorldRemoveProperty(){
-	if(pWorld){
-		pWorld->FreeReference();
-	}
 }
 
 

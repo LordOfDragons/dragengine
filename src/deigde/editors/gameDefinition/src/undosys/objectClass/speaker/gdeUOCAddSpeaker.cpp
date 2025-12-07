@@ -59,12 +59,6 @@ pSpeaker(NULL)
 }
 
 gdeUOCAddSpeaker::~gdeUOCAddSpeaker(){
-	if(pSpeaker){
-		pSpeaker->FreeReference();
-	}
-	if(pObjectClass){
-		pObjectClass->FreeReference();
-	}
 }
 
 

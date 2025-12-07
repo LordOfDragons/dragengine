@@ -66,9 +66,6 @@ void deoglRCaptureCanvas::SetCanvasView(deoglRCanvasView *canvasView){
 		return;
 	}
 	
-	if(pCanvasView){
-		pCanvasView->FreeReference();
-	}
 	
 	pCanvasView = canvasView;
 	

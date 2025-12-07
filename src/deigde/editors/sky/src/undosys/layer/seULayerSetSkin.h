@@ -35,7 +35,7 @@ class seLayer;
  */
 class seULayerSetSkin : public igdeUndo{
 private:
-	seLayer *pLayer;
+	seLayer::Ref pLayer;
 	
 	decString pOldSkin;
 	decString pNewSkin;

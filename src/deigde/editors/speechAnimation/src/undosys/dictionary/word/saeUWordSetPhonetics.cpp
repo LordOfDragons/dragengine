@@ -54,9 +54,6 @@ saeUWordSetPhonetics::saeUWordSetPhonetics(saeWord *word, const decUnicodeString
 }
 
 saeUWordSetPhonetics::~saeUWordSetPhonetics(){
-	if(pWord){
-		pWord->FreeReference();
-	}
 }
 
 

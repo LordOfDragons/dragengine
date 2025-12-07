@@ -124,12 +124,8 @@ lpeWindowMain::~lpeWindowMain(){
 	
 	SetLangPack(NULL);
 	
-	if(pViewLangPack){
-		pViewLangPack->FreeReference();
 		pViewLangPack = NULL;
 	}
-	if(pWindowProperties){
-		pWindowProperties->FreeReference();
 		pWindowProperties = NULL;
 	}
 	
@@ -140,9 +136,6 @@ lpeWindowMain::~lpeWindowMain(){
 		delete pLoadSaveSystem;
 	}
 	
-	if(pListener){
-		pListener->FreeReference();
-	}
 }
 
 
@@ -168,7 +161,6 @@ void lpeWindowMain::SetLangPack(lpeLangPack *langpack){
 	
 	if(pLangPack){
 		pLangPack->RemoveListener(pListener);
-		pLangPack->FreeReference();
 	}
 	
 	pLangPack = langpack;

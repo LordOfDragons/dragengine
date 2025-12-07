@@ -255,9 +255,6 @@ void deoglDecal::VisibleChanged(){
 //////////////////////
 
 void deoglDecal::pCleanUp(){
-	if(pRDecal){
-		pRDecal->FreeReference();
-	}
 	
 	if(pDynamicSkin){
 		pDynamicSkin->RemoveListener(this);

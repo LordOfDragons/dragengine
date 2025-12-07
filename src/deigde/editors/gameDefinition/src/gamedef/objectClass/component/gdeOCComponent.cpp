@@ -99,9 +99,6 @@ pActiveTexture(NULL)
 }
 
 gdeOCComponent::~gdeOCComponent(){
-	if(pActiveTexture){
-		pActiveTexture->FreeReference();
-	}
 }
 
 
@@ -221,9 +218,6 @@ void gdeOCComponent::SetActiveTexture(gdeOCComponentTexture *texture){
 		return;
 	}
 	
-	if(pActiveTexture){
-		pActiveTexture->FreeReference();
-	}
 	
 	pActiveTexture = texture;
 	
