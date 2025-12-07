@@ -48,14 +48,10 @@
 ////////////////////////////
 
 decXmlWriter::decXmlWriter( decBaseFileWriter *file ) :
-pFile( NULL ),
+pFile(file),
 pIndent( 0 )
 {
-	if( ! file ){
-		DETHROW( deeInvalidParam );
-	}
-	
-	pFile = file;
+	DEASSERT_NOTNULL(file)
 }
 
 decXmlWriter::~decXmlWriter(){

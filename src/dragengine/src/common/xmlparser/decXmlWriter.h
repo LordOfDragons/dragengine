@@ -25,10 +25,9 @@
 #ifndef _DECXMLWRITER_H_
 #define _DECXMLWRITER_H_
 
-#include "../../dragengine_export.h"
+#include "../file/decBaseFileWriter.h"
 
 class decString;
-class decBaseFileWriter;
 class decUnicodeString;
 
 
@@ -37,7 +36,7 @@ class decUnicodeString;
  */
 class DE_DLL_EXPORT decXmlWriter{
 private:
-	decBaseFileWriter *pFile;
+	const decBaseFileWriter::Ref pFile;
 	int pIndent;
 	
 	

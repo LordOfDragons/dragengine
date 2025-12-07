@@ -663,7 +663,7 @@ void projTaskDistribute::pWriteGameXml(){
 	decMemoryFile::Ref memoryFile(decMemoryFile::Ref::NewWith(pathGameXml.GetPathUnix()));
 	{
 	decXmlWriter xmlWriter(decMemoryFileWriter::Ref::NewWith(memoryFile, false));
-	pWriteGameXml( xmlWriter );
+	pWriteGameXml(xmlWriter);
 	}
 	pZipWriteMemoryFile( memoryFile );
 }
