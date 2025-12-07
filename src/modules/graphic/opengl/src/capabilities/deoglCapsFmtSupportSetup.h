@@ -214,8 +214,8 @@ enum eTestWhats{
 
 struct sTestTextureFormat{
 	GLint format;
-	enum pixelFormat;
-	enum pixelType;
+	GLenum pixelFormat;
+	GLenum pixelType;
 	int bitsPerPixel;
 	int flags;
 	const char *name;

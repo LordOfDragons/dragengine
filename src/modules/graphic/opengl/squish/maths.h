@@ -41,14 +41,14 @@ public:
 	{
 	}
 
-	explicit Vec3(float s)
+	explicit Vec3( float s )
 	{
 		m_x = s;
 		m_y = s;
 		m_z = s;
 	}
 
-	Vec3(float x, float y, float z)
+	Vec3( float x, float y, float z )
 	{
 		m_x = x;
 		m_y = y;
@@ -61,10 +61,10 @@ public:
 	
 	Vec3 operator-() const
 	{
-		return Vec3(-m_x, -m_y, -m_z);
+		return Vec3( -m_x, -m_y, -m_z );
 	}
 	
-	Vec3& operator+=(Arg v)
+	Vec3& operator+=( Arg v )
 	{
 		m_x += v.m_x;
 		m_y += v.m_y;
@@ -72,7 +72,7 @@ public:
 		return *this;
 	}
 	
-	Vec3& operator-=(Arg v)
+	Vec3& operator-=( Arg v )
 	{
 		m_x -= v.m_x;
 		m_y -= v.m_y;
@@ -80,7 +80,7 @@ public:
 		return *this;
 	}
 	
-	Vec3& operator*=(Arg v)
+	Vec3& operator*=( Arg v )
 	{
 		m_x *= v.m_x;
 		m_y *= v.m_y;
@@ -88,7 +88,7 @@ public:
 		return *this;
 	}
 	
-	Vec3& operator*=(float s)
+	Vec3& operator*=( float s )
 	{
 		m_x *= s;
 		m_y *= s;
@@ -96,7 +96,7 @@ public:
 		return *this;
 	}
 	
-	Vec3& operator/=(Arg v)
+	Vec3& operator/=( Arg v )
 	{
 		m_x /= v.m_x;
 		m_y /= v.m_y;
@@ -104,7 +104,7 @@ public:
 		return *this;
 	}
 	
-	Vec3& operator/=(float s)
+	Vec3& operator/=( float s )
 	{
 		float t = 1.0f/s;
 		m_x *= t;
@@ -113,78 +113,78 @@ public:
 		return *this;
 	}
 	
-	friend Vec3 operator+(Arg left, Arg right)
+	friend Vec3 operator+( Arg left, Arg right )
 	{
-		Vec3 copy(left);
+		Vec3 copy( left );
 		return copy += right;
 	}
 	
-	friend Vec3 operator-(Arg left, Arg right)
+	friend Vec3 operator-( Arg left, Arg right )
 	{
-		Vec3 copy(left);
+		Vec3 copy( left );
 		return copy -= right;
 	}
 	
-	friend Vec3 operator*(Arg left, Arg right)
+	friend Vec3 operator*( Arg left, Arg right )
 	{
-		Vec3 copy(left);
+		Vec3 copy( left );
 		return copy *= right;
 	}
 	
-	friend Vec3 operator*(Arg left, float right)
+	friend Vec3 operator*( Arg left, float right )
 	{
-		Vec3 copy(left);
+		Vec3 copy( left );
 		return copy *= right;
 	}
 	
-	friend Vec3 operator*(float left, Arg right)
+	friend Vec3 operator*( float left, Arg right )
 	{
-		Vec3 copy(right);
+		Vec3 copy( right );
 		return copy *= left;
 	}
 	
-	friend Vec3 operator/(Arg left, Arg right)
+	friend Vec3 operator/( Arg left, Arg right )
 	{
-		Vec3 copy(left);
+		Vec3 copy( left );
 		return copy /= right;
 	}
 	
-	friend Vec3 operator/(Arg left, float right)
+	friend Vec3 operator/( Arg left, float right )
 	{
-		Vec3 copy(left);
+		Vec3 copy( left );
 		return copy /= right;
 	}
 	
-	friend float Dot(Arg left, Arg right)
+	friend float Dot( Arg left, Arg right )
 	{
 		return left.m_x*right.m_x + left.m_y*right.m_y + left.m_z*right.m_z;
 	}
 	
-	friend Vec3 Min(Arg left, Arg right)
+	friend Vec3 Min( Arg left, Arg right )
 	{
 		return Vec3(
-			std::min(left.m_x, right.m_x), 
-			std::min(left.m_y, right.m_y), 
-			std::min(left.m_z, right.m_z)
-);
+			std::min( left.m_x, right.m_x ), 
+			std::min( left.m_y, right.m_y ), 
+			std::min( left.m_z, right.m_z )
+		);
 	}
 
-	friend Vec3 Max(Arg left, Arg right)
+	friend Vec3 Max( Arg left, Arg right )
 	{
 		return Vec3(
-			std::max(left.m_x, right.m_x), 
-			std::max(left.m_y, right.m_y), 
-			std::max(left.m_z, right.m_z)
-);
+			std::max( left.m_x, right.m_x ), 
+			std::max( left.m_y, right.m_y ), 
+			std::max( left.m_z, right.m_z )
+		);
 	}
 
-	friend Vec3 Truncate(Arg v)
+	friend Vec3 Truncate( Arg v )
 	{
 		return Vec3(
-			v.m_x > 0.0f ? std::floor(v.m_x) : std::ceil(v.m_x), 
-			v.m_y > 0.0f ? std::floor(v.m_y) : std::ceil(v.m_y), 
-			v.m_z > 0.0f ? std::floor(v.m_z) : std::ceil(v.m_z)
-);
+			v.m_x > 0.0f ? std::floor( v.m_x ) : std::ceil( v.m_x ), 
+			v.m_y > 0.0f ? std::floor( v.m_y ) : std::ceil( v.m_y ), 
+			v.m_z > 0.0f ? std::floor( v.m_z ) : std::ceil( v.m_z )
+		);
 	}
 
 private:
@@ -193,9 +193,9 @@ private:
 	float m_z;
 };
 
-inline float LengthSquared(Vec3::Arg v)
+inline float LengthSquared( Vec3::Arg v )
 {
-	return Dot(v, v);
+	return Dot( v, v );
 }
 
 class Sym3x3
@@ -205,18 +205,18 @@ public:
 	{
 	}
 
-	Sym3x3(float s)
+	Sym3x3( float s )
 	{
-		for(int i = 0; i < 6; ++i)
+		for( int i = 0; i < 6; ++i )
 			m_x[i] = s;
 	}
 
-	float operator[](int index) const
+	float operator[]( int index ) const
 	{
 		return m_x[index];
 	}
 
-	float& operator[](int index)
+	float& operator[]( int index )
 	{
 		return m_x[index];
 	}
@@ -225,8 +225,8 @@ private:
 	float m_x[6];
 };
 
-Sym3x3 ComputeWeightedCovariance(int n, Vec3 const* points, float const* weights);
-Vec3 ComputePrincipleComponent(Sym3x3 const& matrix);
+Sym3x3 ComputeWeightedCovariance( int n, Vec3 const* points, float const* weights );
+Vec3 ComputePrincipleComponent( Sym3x3 const& matrix );
 
 } // namespace squish
 

@@ -17,10 +17,15 @@ Drag[en]gine is a modular game engine written primarily in C++ with Python build
 
 ## Excluded Files
 
-Files matching the following glob pattern must not be changed by copilot:
+Files matching the following glob pattern must not be changed:
+- `src/dragengine/base64/**/*`
+- `src/dragengine/src/extern/**/*`
+- `src/deigde/editors/project/minizip/**/*`
+- `src/modules/archive/delga/minizip/**/*`
 - `src/modules/graphic/opengl/src/extensions/*gl*.h`
 - `src/modules/graphic/opengl/src/extensions/*khr*.h`
-- `src/modules/physics/bullet/Bullet/**/*
+- `src/modules/graphic/opengl/squish/**/*`
+- `src/modules/physics/bullet/Bullet/**/*`
 - `src/modules/physics/bullet/patches/**/*`
 - `src/modules/vr/openxr/src/loader/loader_interfaces.h`
 - `src/modules/vr/openxr/src/extension/xdev/*`
@@ -166,6 +171,8 @@ The project can use both system libraries and in-tree builds from `extern/`:
 - **master** - Development branch (potentially unstable)
 - **stable** - Latest stable release branch
 - Other branches are internal feature/platform branches
+- Must not commit these files:
+   - `compile_commands.json`
 
 ## Testing
 

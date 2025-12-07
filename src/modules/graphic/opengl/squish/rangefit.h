@@ -37,11 +37,11 @@ class ColourSet;
 class RangeFit : public ColourFit
 {
 public:
-	RangeFit(ColourSet const* colours, int flags);
+	RangeFit( ColourSet const* colours, int flags );
 	
 private:
-	void Compress3(void* block) override;
-	void Compress4(void* block) override;
+	virtual void Compress3( void* block );
+	virtual void Compress4( void* block );
 	
 	Vec3 m_metric;
 	Vec3 m_start;

@@ -1,11 +1,11 @@
 /* zip.h -- IO on .zip files using zlib
    Version 1.1, February 14h, 2010
-   part of the MiniZip project - (http://www.winimage.com/zLibDll/minizip.html)
+   part of the MiniZip project - ( http://www.winimage.com/zLibDll/minizip.html )
 
-         Copyright (C) 1998-2010 Gilles Vollant (minizip) (http://www.winimage.com/zLibDll/minizip.html)
+         Copyright (C) 1998-2010 Gilles Vollant (minizip) ( http://www.winimage.com/zLibDll/minizip.html )
 
          Modifications for Zip64 support
-         Copyright (C) 2009-2010 Mathias Svensson (http://result42.com)
+         Copyright (C) 2009-2010 Mathias Svensson ( http://result42.com )
 
          For more info read MiniZip_info.txt
 
@@ -63,7 +63,7 @@ extern "C" {
 #if defined(STRICTZIP) || defined(STRICTZIPUNZIP)
 /* like the STRICT of WIN32, we define a pointer that cannot be converted
     from (void*) without cast */
-typedef struct TagzipFile__ {int unused;} zipFile__;
+typedef struct TagzipFile__ { int unused; } zipFile__;
 typedef zipFile__ *zipFile;
 #else
 typedef voidp zipFile;
@@ -247,7 +247,7 @@ extern int ZEXPORT zipOpenNewFileInZip3_64 OF((zipFile file,
                                             const char* password,
                                             uLong crcForCrypting,
                                             int zip64
-));
+                                            ));
 
 /*
   Same than zipOpenNewFileInZip2, except
@@ -274,7 +274,7 @@ extern int ZEXPORT zipOpenNewFileInZip4 OF((zipFile file,
                                             uLong crcForCrypting,
                                             uLong versionMadeBy,
                                             uLong flagBase
-));
+                                            ));
 
 
 extern int ZEXPORT zipOpenNewFileInZip4_64 OF((zipFile file,
@@ -296,7 +296,7 @@ extern int ZEXPORT zipOpenNewFileInZip4_64 OF((zipFile file,
                                             uLong versionMadeBy,
                                             uLong flagBase,
                                             int zip64
-));
+                                            ));
 /*
   Same than zipOpenNewFileInZip4, except
     versionMadeBy : value for Version made by field
