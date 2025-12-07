@@ -77,28 +77,11 @@ void igdeTriggerExpressionParser::SetExceptionOnErrors( bool exceptionsOnErrors 
 
 
 
-igdeTriggerExpression *igdeTriggerExpressionParser::StringToExpression( const char *string ) const{
-	igdeTriggerExpressionParserState state( string );
-	igdeTriggerExpressionComponent *component = NULL;
-	igdeTriggerExpression *expression = NULL;
+igdeTriggerExpression::Ref igdeTriggerExpressionParser::StringToExpression(const char *string) const{
+	const igdeTriggerExpression::Ref expression(igdeTriggerExpression::Ref::NewWith());
 	
-	try{
-		expression = new igdeTriggerExpression;
-		component = ParseExpressionComponent( state, false, false, false );
-		expression->SetRootComponent( component );
-		if( component ){
-			component->FreeReference();
-		}
-		
-	}catch( const deException & ){
-		if( component ){
-			component->FreeReference();
-		}
-		if( expression ){
-			expression->FreeReference();
-		}
-		throw;
-	}
+	igdeTriggerExpressionParserState state(string);
+	expression->SetRootComponent(ParseExpressionComponent(state, false, false, false));
 	
 	return expression;
 }

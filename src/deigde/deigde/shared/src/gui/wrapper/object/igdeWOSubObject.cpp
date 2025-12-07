@@ -309,7 +309,7 @@ void igdeWOSubObject::pInitTrigger( igdeTriggerExpression::Ref &trigger, const d
 	if( pWrapper.GetTriggerTable() && GetPropertyValue( propertyName, value ) && ! value.IsEmpty() ){
 		try{
 			const igdeTriggerExpressionParser parser;
-			trigger.TakeOver( parser.StringToExpression( value ) );
+			trigger = parser.StringToExpression(value);
 			
 		}catch( const deException & ){
 			pWrapper.GetEnvironment().GetLogger()->LogInfoFormat( "DEIGDE",

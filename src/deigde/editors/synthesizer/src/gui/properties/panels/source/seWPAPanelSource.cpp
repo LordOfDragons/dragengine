@@ -382,7 +382,8 @@ seSynthesizer *seWPAPanelSource::GetSynthesizer() const{
 }
 
 seSource *seWPAPanelSource::GetSource() const{
-	return pWPSource.GetSource();
+	seSource * const source = pWPSource.GetSource();
+	return source && source->GetType() == pRequiredType ? source : nullptr;
 }
 
 seControllerTarget *seWPAPanelSource::GetTarget() const{
@@ -403,6 +404,7 @@ seLink *seWPAPanelSource::GetListLink() const{
 
 
 void seWPAPanelSource::SetSynthesizer( seSynthesizer *synthesizer ){
+	RemoveAllTargets();
 	pWPEffect->SetSynthesizer( synthesizer );
 }
 
@@ -421,7 +423,9 @@ void seWPAPanelSource::OnActivated(){
 	}
 }
 
-
+void seWPAPanelSource::OnDeactivated(){
+	RemoveAllTargets();
+}
 
 void seWPAPanelSource::RemoveAllTargets(){
 	pCBTarget->RemoveAllItems();

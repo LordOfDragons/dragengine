@@ -440,8 +440,7 @@ void debpParticleEmitterInstanceType::FinishStepping(){
 void debpParticleEmitterInstanceType::UpdateGraphicParticles(){
 	const debpParticleEmitter * const emitter = pInstance->GetParticleEmitter();
 	const decDVector &position = pInstance->GetInstance()->GetReferencePosition();
-	const float rotationFactor = 255.0f / ( PI * 2.0f );
-	btScalar factor, velocity;
+	const float rotationFactor = 255.0f / TWO_PI;
 	int p;
 	
 	if( pParticleCount > pGraParticleSize ){
@@ -456,8 +455,8 @@ void debpParticleEmitterInstanceType::UpdateGraphicParticles(){
 	
 	if( emitter ){
 		const debpParticleEmitterType &type = emitter->GetTypeAt( pType );
-		const btScalar factorAngVelo = ( btScalar )type.GetParamFactorAngVelo();
-		const btScalar factorLinVelo = ( btScalar )type.GetParamFactorLinVelo();
+		const btScalar factorAngVelo = (btScalar)type.GetParamFactorAngVelo();
+		const btScalar factorLinVelo = (btScalar)type.GetParamFactorLinVelo();
 		
 		for( p=0; p<pParticleCount; p++ ){
 			deParticleEmitterInstanceType::sParticle &destParticle = pGraParticles[ p ];
@@ -468,21 +467,27 @@ void debpParticleEmitterInstanceType::UpdateGraphicParticles(){
 			destParticle.positionY = ( float )( srcParticle.position.y() - position.y );
 			destParticle.positionZ = ( float )( srcParticle.position.z() - position.z );
 			
-			velocity = srcParticle.linearVelocity.length();
-			if( velocity > 1e-5 ){
-				factor = 127.0f / velocity;
-				destParticle.linearDirectionX = ( signed char )decMath::clamp( ( int )( srcParticle.linearVelocity.x() * factor ), -127, 127 );
-				destParticle.linearDirectionY = ( signed char )decMath::clamp( ( int )( srcParticle.linearVelocity.y() * factor ), -127, 127 );
-				destParticle.linearDirectionZ = ( signed char )decMath::clamp( ( int )( srcParticle.linearVelocity.z() * factor ), -127, 127 );
+			const btScalar velocity = srcParticle.linearVelocity.length();
+			if(velocity > 1e-5){
+				destParticle.linearDirectionX = (unsigned char)decMath::clamp(
+					(int)(decMath::linearStep(srcParticle.linearVelocity.x(),
+						-1.0f, 1.0f, 0.0f, 255.0f)), 0, 255);
+				destParticle.linearDirectionY = (unsigned char)decMath::clamp(
+					(int)(decMath::linearStep(srcParticle.linearVelocity.y(),
+						-1.0f, 1.0f, 0.0f, 255.0f)), 0, 255);
+				destParticle.linearDirectionZ = (unsigned char)decMath::clamp(
+					(int)(decMath::linearStep(srcParticle.linearVelocity.z(),
+						-1.0f, 1.0f, 0.0f, 255.0f)), 0, 255);
 				
 			}else{ // dummy direction along z axis
-				destParticle.linearDirectionX = 0;
-				destParticle.linearDirectionY = 0;
-				destParticle.linearDirectionZ = 127;
+				destParticle.linearDirectionX = 127;
+				destParticle.linearDirectionY = 127;
+				destParticle.linearDirectionZ = 255;
 			}
-			destParticle.angularVelocity = ( signed char )decMath::clamp( ( int )( srcParticle.angularVelocity * factorAngVelo ), -127, 127 );
-			destParticle.linearVelocity = ( unsigned char )decMath::min( ( unsigned int )( velocity * factorLinVelo ), 255 );
-			destParticle.rotation = ( unsigned char )decMath::min( ( unsigned int )( srcParticle.rotation * rotationFactor ), 255 );
+			destParticle.linearVelocity = velocity * factorLinVelo;
+			destParticle.angularVelocity = srcParticle.angularVelocity * factorAngVelo;
+			destParticle.rotation = (unsigned char)decMath::clamp((unsigned int)(
+				decMath::normalize(srcParticle.rotation, 0.0f, TWO_PI) * rotationFactor), 0, 255);
 			
 			destParticle.castSize = srcParticle.castSize;
 			destParticle.castEmissivity = srcParticle.castEmissivity;

@@ -125,6 +125,9 @@ public:
 	/** \brief Panel has been activated. */
 	virtual void OnActivated();
 	
+	/** \brief Panel has been deactivated. */
+	virtual void OnDeactivated();
+	
 	/** \brief Update synthesizer. */
 	virtual void UpdateSynthesizer();
 	
@@ -152,8 +155,8 @@ public:
 	
 	
 	/** \brief Actions. */
-	inline igdeAction *GetActionLinkAdd() const{ return pActionLinkAdd; }
-	inline igdeAction *GetActionLinkRemove() const{ return pActionLinkRemove; }
+	inline const igdeAction::Ref &GetActionLinkAdd() const{ return pActionLinkAdd; }
+	inline const igdeAction::Ref &GetActionLinkRemove() const{ return pActionLinkRemove; }
 	/*@}*/
 };
 

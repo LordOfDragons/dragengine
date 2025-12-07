@@ -72,6 +72,7 @@
 #include "../../world/terrain/meHeightTerrainSector.h"
 
 #include <deigde/environment/igdeEnvironment.h>
+#include <deigde/gui/igdeApplication.h>
 #include <deigde/gui/igdeUIHelper.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/menu/igdeMenuCascade.h>
@@ -441,8 +442,8 @@ pWindowMain( windowMain ),
 pListener( NULL ),
 pWorld( NULL ),
 pVLayer( NULL ),
-pUnitsToPixel( 100.0f ),
-pPixelToUnits( 1.0f / pUnitsToPixel )
+pUnitsToPixel(igdeApplication::app().DisplayScaled(100.0f)),
+pPixelToUnits(1.0f / pUnitsToPixel)
 {
 	pListener = new meWindowVegetationListener( *this );
 	AddListener( new cBoardListener( *this ) );

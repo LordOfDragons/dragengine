@@ -552,6 +552,7 @@ void seWPSource::ShowActiveSourcePanel(){
 	}
 	
 	const deSynthesizerSourceVisitorIdentify::eSourceTypes type = source->GetType();
+	seWPAPanelSource* const activePanel = pActivePanel;
 	
 	if( type == pPanelSound->GetRequiredType() ){
 		pSwitcher->SetCurrent( epSound );
@@ -578,8 +579,13 @@ void seWPSource::ShowActiveSourcePanel(){
 		pActivePanel = NULL;
 	}
 	
-	if( pActivePanel ){
-		pActivePanel->OnActivated();
+	if(pActivePanel != activePanel){
+		if(activePanel){
+			activePanel->OnDeactivated();
+		}
+		if(pActivePanel){
+			pActivePanel->OnActivated();
+		}
 	}
 }
 

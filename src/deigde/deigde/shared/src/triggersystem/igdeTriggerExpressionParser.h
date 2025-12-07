@@ -25,11 +25,11 @@
 #ifndef _IGDETRIGGEREXPRESSIONPARSER_H_
 #define _IGDETRIGGEREXPRESSIONPARSER_H_
 
+#include "igdeTriggerExpression.h"
 #include "igdeTriggerExpressionComponent.h"
 
 #include <dragengine/common/string/decString.h>
 
-class igdeTriggerExpression;
 class igdeTriggerExpressionParserState;
 
 
@@ -72,7 +72,7 @@ public:
 	void SetExceptionOnErrors( bool exceptionsOnErrors );
 	
 	/** \brief Create trigger expression from a string. */
-	igdeTriggerExpression *StringToExpression( const char *string ) const;
+	igdeTriggerExpression::Ref StringToExpression(const char *string) const;
 	
 	/** \brief Parse an expression component. */
 	igdeTriggerExpressionComponent::Ref ParseExpressionComponent(
