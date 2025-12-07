@@ -115,9 +115,6 @@
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationActionList.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationActionReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -209,9 +206,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationConditionList.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationConditionReference.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\coordsystem\ceCoordSystem.cpp">
@@ -1686,9 +1680,6 @@
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationActionList.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\action\ceConversationActionReference.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\actor\ceConversationActor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -1780,9 +1771,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationConditionList.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\condition\ceConversationConditionReference.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\src\deigde\editors\conversation\src\conversation\coordsystem\ceCoordSystem.h">

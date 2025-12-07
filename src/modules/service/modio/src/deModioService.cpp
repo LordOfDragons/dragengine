@@ -45,7 +45,6 @@
 #include <dragengine/resources/service/deServiceManager.h>
 #include <dragengine/resources/service/deServiceObject.h>
 #include <dragengine/parallel/deParallelProcessing.h>
-#include <dragengine/threading/deThreadSafeObjectReference.h>
 
 #ifdef OS_ANDROID
 	#include <dragengine/app/deOSAndroid.h>
@@ -1217,10 +1216,13 @@ Modio::ErrorCode ec, Modio::Optional<Modio::ModInfoList> results ){
 }
 
 class cLoadResourceTask : public deParallelTask{
+public:
+	typedef deTThreadSafeObjectReference<cLoadResourceTask> Ref;
+	
 private:
 	deModioService &pService;
 	const deModioService::cInvalidator::Ref pInvalidator;
-	deThreadSafeObjectReference pTaskLoadResource;
+	deResourceLoaderTask::Ref pTaskLoadResource;
 	const decUniqueID pRequestId;
 	const decString pPath;
 	
@@ -1253,7 +1255,7 @@ public:
 			return;
 		}
 		
-		const deResourceLoaderTask * const rlt = ( deResourceLoaderTask* )( deThreadSafeObject* )pTaskLoadResource;
+		const deResourceLoaderTask * const rlt = pTaskLoadResource;
 		
 		if( ! IsCancelled() && rlt->GetState() == deResourceLoaderTask::esSucceeded ){
 			pService.OnFinishedLoadResource( pRequestId, pPath, rlt->GetResource() );
@@ -1320,9 +1322,8 @@ Modio::Optional<std::string> filename ){
 			}
 		}
 		
-		deThreadSafeObjectReference task;
-		task.TakeOver( new cLoadResourceTask( *this, id, path.GetPathUnix(), deResourceLoader::ertImage ) );
-		pModule.GetGameEngine()->GetParallelProcessing().AddTaskAsync( ( deParallelTask* )( deThreadSafeObject* )task );
+		pModule.GetGameEngine()->GetParallelProcessing().AddTaskAsync(
+			cLoadResourceTask::Ref::NewWith(*this, id, path.GetPathUnix(), deResourceLoader::ertImage));
 		
 	}catch( const deException &e ){
 		FailRequest( id, e );

@@ -54,7 +54,6 @@
 #include <dragengine/resources/rig/deRigBone.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/animator/controller/deAnimatorControllerTarget.h>
-#include <dragengine/threading/deThreadSafeObjectReference.h>
 
 
 
@@ -825,10 +824,9 @@ dearTaskApplyRules *dearAnimatorInstance::pNewTaskApplyRules(){
 	}
 	
 	// no such task exists. create a new one and add it to the list
-	deThreadSafeObjectReference task;
-	task.TakeOver( new dearTaskApplyRules( *this ) );
-	pTaskApplyRules.Add( task );
-	return ( dearTaskApplyRules* )( deThreadSafeObject* )task;
+	const dearTaskApplyRules::Ref task(dearTaskApplyRules::Ref::NewWith(*this));
+	pTaskApplyRules.Add(task);
+	return task;
 }
 
 void dearAnimatorInstance::pCancelTaskApplyRules(){

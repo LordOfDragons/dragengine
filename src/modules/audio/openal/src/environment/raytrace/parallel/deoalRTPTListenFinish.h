@@ -36,6 +36,11 @@ class decPointerList;
  * \brief Finish listen parallel task estimating room parameters.
  */
 class deoalRTPTListenFinish : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deoalRTPTListenFinish> Ref;
+	
+	
 private:
 	deoalRTParallelEnvProbe &pOwner;
 	

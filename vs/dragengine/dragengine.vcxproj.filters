@@ -1803,9 +1803,6 @@
     <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\src\dragengine\src\threading\deThreadSafeObjectReference.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\src\dragengine\src\threading\deWriteLockGuard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -3627,9 +3624,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\threading\deTThreadSafeObjectReference.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\dragengine\src\threading\deThreadSafeObjectReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dragengine\src\threading\deWriteLockGuard.h">

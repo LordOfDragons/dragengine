@@ -29,7 +29,6 @@
 #include "deParallelTask.h"
 #include "deParallelThread.h"
 #include "../common/exceptions.h"
-#include "../threading/deThreadSafeObjectReference.h"
 
 
 
@@ -131,7 +130,7 @@ void deParallelTask::RemoveAllDependsOn(){
 		return;
 	}
 	
-	deThreadSafeObjectReference guard( this );
+	const deParallelTask::Ref guard(this);
 	
 	while( pDependsOn.GetCount() > 0 ){
 		deParallelTask * const task = ( deParallelTask* )pDependsOn.GetAt( 0 );
@@ -147,7 +146,7 @@ void deParallelTask::RemoveFromAllDependedOnTasks(){
 		return;
 	}
 	
-	deThreadSafeObjectReference guard( this );
+	const deParallelTask::Ref guard(this);
 	
 	while( pDependedOnBy.GetCount() > 0 ){
 		( ( deParallelTask* )pDependedOnBy.GetAt( 0 ) )->RemoveDependsOn( this );

@@ -68,6 +68,11 @@ class deoalRTWorldBVH;
  * - Maximum first reflection delay
  */
 class deoalRTPTListen : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<deoalRTPTListen> Ref;
+	
+	
 private:
 	deoalRTParallelEnvProbe &pOwner;
 	

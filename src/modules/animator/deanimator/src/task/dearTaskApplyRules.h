@@ -35,6 +35,11 @@ class dearAnimatorInstance;
  * Task applying rules to an animator instance state.
  */
 class dearTaskApplyRules : public deParallelTask{
+public:
+	/** \brief Type holding strong reference. */
+	typedef deTThreadSafeObjectReference<dearTaskApplyRules> Ref;
+	
+	
 private:
 	dearAnimatorInstance &pInstance;
 	bool pDropped;
