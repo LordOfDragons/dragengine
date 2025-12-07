@@ -69,7 +69,7 @@ void deglConfigXML::ReadFromFile(decBaseFileReader &reader, deglConfiguration &c
 	xmlDoc->CleanCharData();
 	
 	decXmlElementTag * const root = xmlDoc->GetRoot();
-	DEASSERT_NULL(root)
+	DEASSERT_NOTNULL(root)
 	DEASSERT_TRUE(root->GetName() == "delaunchergui")
 	
 	pReadConfig(*root, config);
