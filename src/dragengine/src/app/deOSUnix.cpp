@@ -674,22 +674,34 @@ void deOSUnix::pGetDisplayInformation(){
 		// spawning multiple monitors. the reason is that XWidthOfScreen and XHeightOfScreen
 		// return the size if the virtual screen across all monitors. we need though to know
 		// the size of the individual monitor screens to properly size windows. according
-		// to documentation of xrandr the first returned resolution is the current screen
+		// to documentation of xrandr the first returned resolution is the default screen
 		// resolution. fall back to XWidthOfScreen and XHeightOfScreen in case no resolutions
 		// have been returned
-		if( resolutionCount == 0 ){
+		if(resolutionCount == 0){
 			Screen * const screen = XScreenOfDisplay( pDisplay, i );
 			di.currentResolution.x = XWidthOfScreen( screen );
 			di.currentResolution.y = XHeightOfScreen( screen );
 			
 		}else{
-			di.currentResolution = di.resolutions[ 0 ];
+			di.currentResolution = di.resolutions[0];
 		}
 		
-		XRRScreenConfiguration * const screenInfo = XRRGetScreenInfo( pDisplay, XRootWindow( pDisplay, i ) );
-		if( screenInfo ){
-			di.currentRefreshRate = XRRConfigCurrentRate( screenInfo );
-			XRRFreeScreenConfigInfo( screenInfo );
+		XRRScreenConfiguration * const screenInfo = XRRGetScreenInfo(pDisplay, XRootWindow(pDisplay, i));
+		if(screenInfo){
+			// unfortunately the default screen resolution in XRandr is not necessarily the
+			// current screen resolution. we have to query it explicitly. if this fails stick
+			// with the default screen resolution
+			{
+			Rotation rot;
+			int index = XRRConfigCurrentConfiguration(screenInfo, &rot);
+			if(index >= 0 && index < resolutionCount){
+				di.currentResolution = di.resolutions[index];
+			}
+			}
+			
+			// get the current refresh rate
+			di.currentRefreshRate = XRRConfigCurrentRate(screenInfo);
+			XRRFreeScreenConfigInfo(screenInfo);
 			
 		}else{
 			di.currentRefreshRate = 60; // XRandR not supported on display. XLib has no way to get refresh rate

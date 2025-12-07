@@ -561,7 +561,7 @@ void deoglRRenderWindow::CreateWindow(){
 			if( pWidth > 0 && pHeight > 0 ){
 				XMapWindow( display, pWindow );
 			}
-			XSync( display, False ); // required or strange problems can happen
+			XSync(display, False); // required or strange problems can happen
 			
 			pUpdateFullScreen();
 			
@@ -782,8 +782,8 @@ void deoglRRenderWindow::CenterOnScreen(){
 		return;
 	}
 	const decPoint screenSize( pRenderThread.GetContext().GetOSUnix()->GetDisplayCurrentResolution( 0 ) );
-	XMoveWindow( pRenderThread.GetContext().GetDisplay(), pWindow,
-		( screenSize.x - pWidth ) / 2, ( screenSize.y - pHeight ) / 2 );
+	XMoveWindow(pRenderThread.GetContext().GetDisplay(), pWindow,
+		(screenSize.x - pWidth) / 2, (screenSize.y - pHeight) / 2);
 #endif
 }
 
