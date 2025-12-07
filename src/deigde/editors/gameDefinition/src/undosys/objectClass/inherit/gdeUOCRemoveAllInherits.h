@@ -28,8 +28,8 @@
 
 #include "../../../gamedef/objectClass/inherit/gdeOCInheritList.h"
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 

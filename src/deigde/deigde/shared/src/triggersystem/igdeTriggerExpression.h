@@ -26,8 +26,8 @@
 #define _IGDETRIGGEREXPRESSION_H_
 
 #include <dragengine/deObject.h>
+#include "igdeTriggerExpressionComponent.h"
 
-class igdeTriggerExpressionComponent;
 class igdeTriggerTargetList;
 class igdeTriggerListener;
 

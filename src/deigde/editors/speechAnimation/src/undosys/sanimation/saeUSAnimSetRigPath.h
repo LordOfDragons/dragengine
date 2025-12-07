@@ -26,8 +26,8 @@
 #define _SAEUSANIMSETRIGPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "saeSAnimation.h"
 
-class saeSAnimation;
 
 
 

@@ -26,8 +26,8 @@
 #define _MEUNDODATANAVSPACE_H_
 
 #include <dragengine/common/math/decMath.h>
+#include "meNavigationSpace.h"
 
-class meNavigationSpace;
 
 
 

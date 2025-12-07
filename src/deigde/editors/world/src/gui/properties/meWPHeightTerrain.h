@@ -42,18 +42,18 @@
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/undo/igdeUndo.h>
+#include "meHeightTerrainTexture.h"
+#include "meWPHeightTerrainListener.h"
+#include "meHTVVariation.h"
+#include "meHTVegetationLayer.h"
+#include "meWorld.h"
 
 
 class meHeightTerrainNavSpaceType;
 class meHeightTerrain;
 class meHeightTerrainNavSpace;
 class meHeightTerrainSector;
-class meHeightTerrainTexture;
-class meHTVegetationLayer;
-class meHTVVariation;
 class meWindowProperties;
-class meWorld;
-class meWPHeightTerrainListener;
 
 
 /**

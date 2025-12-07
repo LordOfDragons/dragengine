@@ -30,10 +30,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decString.h>
+#include "meHTVegetationLayer.h"
+#include "meHTVRuleClosestProp.h"
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleClosestProp;
 
 
 

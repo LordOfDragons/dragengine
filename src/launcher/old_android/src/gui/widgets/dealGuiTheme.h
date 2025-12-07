@@ -27,9 +27,9 @@
 
 #include "../../deObject.h"
 #include "../../common/math/decMath.h"
+#include "dealFont.h"
+#include "dealImage.h"
 
-class dealFont;
-class dealImage;
 class dealDisplay;
 
 

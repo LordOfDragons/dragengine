@@ -28,8 +28,8 @@
 #include "deoglRCanvas.h"
 
 #include <dragengine/common/collection/decObjectList.h>
+#include "deoglRenderTarget.h"
 
-class deoglRenderTarget;
 class deoglRenderPlanMasked;
 
 

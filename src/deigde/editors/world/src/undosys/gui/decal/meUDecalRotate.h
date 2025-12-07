@@ -28,10 +28,10 @@
 
 // includes
 #include "../meBaseUndoRotate.h"
+#include "meWorld.h"
 
 // predefinitions
 class meUndoDataDecal;
-class meWorld;
 
 
 

@@ -26,8 +26,8 @@
 #define _SEUPROPERTYSETIMAGEPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seProperty.h"
 
-class seProperty;
 
 
 

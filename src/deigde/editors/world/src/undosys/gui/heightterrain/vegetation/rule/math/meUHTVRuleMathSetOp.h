@@ -28,8 +28,8 @@
 #include "../../../../../../world/heightterrain/rules/meHTVRuleMath.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVegetationLayer.h"
 
-class meHTVegetationLayer;
 
 
 

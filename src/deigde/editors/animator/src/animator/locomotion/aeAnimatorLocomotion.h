@@ -36,14 +36,14 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/math/smooth/decSmoothFloat.h>
 #include <dragengine/common/math/smooth/decSmoothVector.h>
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include <dragengine/src/resources/sensor/deTouchSensor.h>
+#include <dragengine/src/resources/collider/deColliderVolume.h>
 
 // predefinitions
 class aeAnimator;
 class aeAnimatorLocomotionLeg;
 
-class deColliderVolume;
-class deTouchSensor;
-class deDebugDrawer;
 class deLogger;
 
 

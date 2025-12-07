@@ -31,9 +31,9 @@
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
+#include "meObject.h"
 
 // predefinitions
-class meObject;
 
 
 

@@ -30,16 +30,16 @@
 #include <dragengine/common/math/decMath.h>
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/src/resources/animator/deAnimator.h>
+#include <dragengine/src/resources/animator/deAnimatorInstance.h>
 
 // predefinitions
 class aeLoadSaveSystem;
 
 class deEngine;
-class deAnimator;
 class deTouchSensor;
 class deComponent;
 class deAnimation;
-class deAnimatorInstance;
 class deCollider;
 class decCurveBezier;
 

@@ -35,12 +35,12 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeWPSOCBillboardListener.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCBillboard;
 class gdeWindowProperties;
-class gdeWPSOCBillboardListener;
 
 
 

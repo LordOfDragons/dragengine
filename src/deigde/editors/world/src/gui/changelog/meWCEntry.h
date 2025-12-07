@@ -28,11 +28,11 @@
 #include <deigde/gui/model/igdeListItem.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meHeightTerrainNavSpace.h"
+#include "meHeightTerrainTexture.h"
+#include "meWorld.h"
 
-class meHeightTerrainNavSpace;
-class meHeightTerrainTexture;
 class meWindowChangelog;
-class meWorld;
 
 
 

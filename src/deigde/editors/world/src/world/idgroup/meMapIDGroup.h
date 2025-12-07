@@ -27,9 +27,9 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
+#include "meIDGroup.h"
+#include "igdeGDProperty.h"
 
-class meIDGroup;
-class igdeGDProperty;
 
 
 /**

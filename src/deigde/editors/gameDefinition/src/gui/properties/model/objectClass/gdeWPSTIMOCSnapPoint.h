@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCSNAPPOINT_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCSnapPoint.h"
 
-class gdeOCSnapPoint;
 
 
 /**

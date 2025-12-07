@@ -27,13 +27,13 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/logger/deLogger.h>
 
 class decCurveBezierPoint;
 class decCurveBezier;
 class deException;
 class decXmlWriter;
 class decXmlElementTag;
-class deLogger;
 
 
 

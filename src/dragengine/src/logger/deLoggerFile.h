@@ -27,8 +27,8 @@
 
 #include "deLogger.h"
 #include "../threading/deMutex.h"
+#include "decBaseFileWriter.h"
 
-class decBaseFileWriter;
 
 
 /**

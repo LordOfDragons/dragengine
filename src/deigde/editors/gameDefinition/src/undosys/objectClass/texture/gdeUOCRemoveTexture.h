@@ -27,9 +27,9 @@
 #define _GDEUOCREMOVETEXTURE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeOCComponentTexture.h"
+#include "gdeObjectClass.h"
 
-class gdeOCComponentTexture;
-class gdeObjectClass;
 
 
 

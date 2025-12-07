@@ -28,10 +28,10 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
+#include "deoglRSky.h"
 
 class deoglRWorld;
 class deoglRenderThread;
-class deoglRSky;
 class deoglRSkyInstanceLayer;
 class deoglGIState;
 class deoglRComponent;

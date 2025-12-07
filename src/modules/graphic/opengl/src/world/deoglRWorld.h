@@ -33,15 +33,16 @@
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
+#include "deoglRComponent.h"
+#include "deoglRHeightTerrain.h"
+#include "deoglRBillboard.h"
+#include "deoglEnvironmentMap.h"
 
 class deoglEnvironmentMapList;
-class deoglRBillboard;
-class deoglRComponent;
 class deoglRDebugDrawer;
 class deoglRenderPlan;
 class deoglRenderThread;
 class deoglREnvMapProbe;
-class deoglRHeightTerrain;
 class deoglRLight;
 class deoglRLumimeter;
 class deoglRParticleEmitterInstance;
@@ -49,7 +50,6 @@ class deoglRPropField;
 class deoglRSkyInstance;
 class deoglWorldOctree;
 class deoglWorldOctreeVisitor;
-class deoglEnvironmentMap;
 class deoglRenderPlanMasked;
 class deoglGIState;
 

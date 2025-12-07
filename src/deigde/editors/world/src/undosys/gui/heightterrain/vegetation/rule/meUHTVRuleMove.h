@@ -30,10 +30,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meHTVegetationLayer.h"
+#include "meHTVRule.h"
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRule;
 
 
 

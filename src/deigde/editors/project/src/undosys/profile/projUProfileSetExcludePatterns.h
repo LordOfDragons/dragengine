@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decStringSet.h>
+#include "projProfile.h"
 
-class projProfile;
 
 
 

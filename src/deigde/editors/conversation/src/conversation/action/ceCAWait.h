@@ -29,8 +29,8 @@
 #include "ceConversationActionList.h"
 
 #include <dragengine/common/string/decString.h>
+#include "ceConversationCondition.h"
 
-class ceConversationCondition;
 
 
 

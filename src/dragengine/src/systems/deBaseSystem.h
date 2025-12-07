@@ -28,9 +28,9 @@
 #include "../common/math/decMath.h"
 #include "../common/string/decString.h"
 #include "deModuleSystem.h"
+#include <dragengine/src/systems/modules/deLoadableModule.h>
 
 class deEngine;
-class deLoadableModule;
 class deException;
 
 

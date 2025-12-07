@@ -29,11 +29,11 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "reRigPush.h"
+#include "reRig.h"
+#include "reWPPushListener.h"
 
 class reWindowProperties;
-class reRig;
-class reRigPush;
-class reWPPushListener;
 
 
 

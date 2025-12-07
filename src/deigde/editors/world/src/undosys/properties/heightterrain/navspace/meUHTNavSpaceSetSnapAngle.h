@@ -26,8 +26,8 @@
 #define _MEUHTNAVSPACESETSNAPANGLE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHeightTerrainNavSpace.h"
 
-class meHeightTerrainNavSpace;
 
 
 

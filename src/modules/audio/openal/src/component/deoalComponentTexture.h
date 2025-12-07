@@ -25,8 +25,8 @@
 #ifndef _DEOALCOMPONENTTEXTURE_H_
 #define _DEOALCOMPONENTTEXTURE_H_
 
+#include "deoalAComponentTexture.h"
 class deoalComponent;
-class deoalAComponentTexture;
 class deoalSkin;
 
 class deComponentTexture;

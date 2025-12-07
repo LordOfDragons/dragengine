@@ -32,10 +32,10 @@
 #include <deigde/gui/properties/igdeWPCamera.h>
 #include <deigde/gui/properties/igdeWPWObject.h>
 #include <deigde/gui/properties/igdeWPSky.h>
+#include "peeWPViewListener.h"
+#include "peeEmitter.h"
 
-class peeEmitter;
 class peeWindowProperties;
-class peeWPViewListener;
 
 
 

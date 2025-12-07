@@ -27,8 +27,8 @@
 #define _PROJUDISTRIBUTORSETSCRIPTDIRECTORY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "projProject.h"
 
-class projProject;
 
 
 

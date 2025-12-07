@@ -26,8 +26,8 @@
 #define _FEUFONTSETIMAGEPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "feFontImage.h"
 
-class feFontImage;
 
 
 

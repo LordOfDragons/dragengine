@@ -27,8 +27,8 @@
 
 #include "gdeVAOSubObject.h"
 #include <dragengine/resources/debug/deDebugDrawer.h>
+#include "gdeOCCamera.h"
 
-class gdeOCCamera;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 

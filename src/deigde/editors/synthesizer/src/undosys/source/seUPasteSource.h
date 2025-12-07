@@ -30,8 +30,8 @@
 #include "../../synthesizer/source/seSourceList.h"
 #include "../../synthesizer/link/seLinkList.h"
 #include "../../synthesizer/controller/seControllerList.h"
+#include "seSynthesizer.h"
 
-class seSynthesizer;
 
 
 

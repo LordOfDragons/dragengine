@@ -28,12 +28,12 @@
 #include <dragengine/systems/modules/physics/deBasePhysicsModel.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "debpBulletShapeModel.h"
 
 class deModel;
 class deModelWeight;
 class debpModelOctree;
 class dePhysicsBullet;
-class debpBulletShapeModel;
 
 
 /**

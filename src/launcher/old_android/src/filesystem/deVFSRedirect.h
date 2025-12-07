@@ -26,8 +26,8 @@
 #define _DEVFSREDIRECT_H_
 
 #include "deVFSContainer.h"
+#include "deVirtualFileSystem.h"
 
-class deVirtualFileSystem;
 
 
 /**

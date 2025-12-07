@@ -35,18 +35,18 @@
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
+#include "deoglSharedSPBElement.h"
+#include "deoglRDynamicSkin.h"
+#include "deoglEnvironmentMap.h"
+#include "deoglRSkin.h"
 
 class deoglWorldOctree;
 class deoglRWorld;
 class deoglRenderThread;
-class deoglRSkin;
 class deoglSkinState;
-class deoglRDynamicSkin;
-class deoglEnvironmentMap;
 class deoglSPBlockUBO;
 class deoglTexUnitsConfig;
 class deoglShaderParameterBlock;
-class deoglSharedSPBElement;
 class deoglRenderPlan;
 class deoglOcclusionTest;
 class deoglRenderPlanMasked;

@@ -26,9 +26,9 @@
 #define _CEUCATRIGGERSETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCATrigger.h"
+#include "ceConversationTopic.h"
 
-class ceCATrigger;
-class ceConversationTopic;
 
 
 

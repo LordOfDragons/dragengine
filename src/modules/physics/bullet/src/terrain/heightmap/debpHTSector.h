@@ -28,9 +28,9 @@
 
 // includes
 #include "dragengine/common/math/decMath.h"
+#include "debpBulletShape.h"
 
 // predefinitions
-class debpBulletShape;
 class debpHeightTerrain;
 class debpHeightTerrainShape;
 class debpPhysicsBody;

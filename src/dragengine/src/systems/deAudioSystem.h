@@ -27,11 +27,11 @@
 
 #include "deBaseSystem.h"
 #include "../common/math/decMath.h"
+#include <dragengine/src/resources/sound/deMicrophone.h>
 
 class deBaseAudioModule;
 class deComponent;
 class deDecal;
-class deMicrophone;
 class deModel;
 class deSkin;
 class deSound;

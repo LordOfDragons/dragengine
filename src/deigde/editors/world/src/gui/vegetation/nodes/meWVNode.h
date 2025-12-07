@@ -27,9 +27,9 @@
 
 #include <deigde/gui/nodeview/igdeNVNode.h>
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVRule.h"
 
 class meWVNodeSlot;
-class meHTVRule;
 class meWindowVegetation;
 
 

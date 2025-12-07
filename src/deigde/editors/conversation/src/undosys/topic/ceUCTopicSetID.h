@@ -28,8 +28,8 @@
 #include "../action/ceUndoCActionList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
 class ceConversation;
 class ceConversationActionList;
 

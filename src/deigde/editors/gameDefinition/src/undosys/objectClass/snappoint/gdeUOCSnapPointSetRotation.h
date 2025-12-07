@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeOCSnapPoint.h"
+#include "gdeObjectClass.h"
 
-class gdeOCSnapPoint;
-class gdeObjectClass;
 
 
 

@@ -29,8 +29,8 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decStringList.h>
+#include "igdeGameDefinition.h"
 
-class igdeGameDefinition;
 class igdeEnvironment;
 
 

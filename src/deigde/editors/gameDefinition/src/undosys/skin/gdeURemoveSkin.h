@@ -27,9 +27,9 @@
 #define _GDEUOCREMOVESKIN_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeSkin.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
-class gdeSkin;
 
 
 

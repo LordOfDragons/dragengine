@@ -26,8 +26,8 @@
 #define _REUSHAPESETPROPERTY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigShape.h"
 
-class reRigShape;
 
 
 

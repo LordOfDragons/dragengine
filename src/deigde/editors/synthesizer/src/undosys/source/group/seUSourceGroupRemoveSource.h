@@ -27,9 +27,9 @@
 #define _SEUSOURCEGROUPREMOVESOURCE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSource.h"
+#include "seSourceGroup.h"
 
-class seSource;
-class seSourceGroup;
 
 
 

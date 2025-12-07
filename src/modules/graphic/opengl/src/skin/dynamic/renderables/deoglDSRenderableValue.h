@@ -26,9 +26,9 @@
 #define _DEOGLDSRENDERABLEVALUE_H_
 
 #include "deoglDSRenderable.h"
+#include "deoglRDSRenderableValue.h"
 
 class deDSRenderableValue;
-class deoglRDSRenderableValue;
 
 
 

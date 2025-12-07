@@ -27,9 +27,9 @@
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeVisitor.h>
 #include <dragengine/common/math/decMath.h>
+#include "decMemoryFileWriter.h"
 
 class deSkinPropertyConstructed;
-class decMemoryFileWriter;
 class decMemoryFile;
 class deEngine;
 

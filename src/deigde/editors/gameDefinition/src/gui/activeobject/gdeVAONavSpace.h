@@ -28,8 +28,8 @@
 #include "gdeVAOSubObject.h"
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
+#include "gdeOCNavigationSpace.h"
 
-class gdeOCNavigationSpace;
 
 class igdeWDebugDrawerShape;
 

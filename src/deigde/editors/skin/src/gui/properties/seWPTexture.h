@@ -40,11 +40,11 @@
 #include <deigde/gui/composed/igdeEditPoint3.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "seSkin.h"
+#include "seWPTextureListener.h"
 
-class seSkin;
 class seTexture;
 class seWindowProperties;
-class seWPTextureListener;
 
 
 

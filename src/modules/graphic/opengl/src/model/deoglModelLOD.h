@@ -29,6 +29,7 @@
 #include "../vbo/deoglVBOLayout.h"
 
 #include <dragengine/common/math/decMath.h>
+#include "deoglSharedVBOBlock.h"
 
 class deoglRModel;
 class deoglModelFace;
@@ -36,7 +37,6 @@ class deoglModelTexture;
 class deoglModelOctree;
 class deoglModelLODTexCoordSet;
 class deoglModelLODVertPosSet;
-class deoglSharedVBOBlock;
 class deoglSharedSPB;
 class deoglSharedSPBRTIGroupList;
 class deoglGIBVHLocal;

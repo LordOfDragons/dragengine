@@ -30,8 +30,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
+#include "seProperty.h"
 
-class seProperty;
 
 
 /**

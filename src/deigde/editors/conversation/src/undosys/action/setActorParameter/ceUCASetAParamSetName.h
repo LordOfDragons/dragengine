@@ -26,9 +26,9 @@
 #define _CEUCASETAPARAMSETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCASetActorParameter.h"
+#include "ceConversationTopic.h"
 
-class ceCASetActorParameter;
-class ceConversationTopic;
 
 
 

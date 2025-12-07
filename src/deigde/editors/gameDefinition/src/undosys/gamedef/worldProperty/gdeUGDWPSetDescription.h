@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeProperty.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
-class gdeProperty;
 
 
 

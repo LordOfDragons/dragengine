@@ -27,9 +27,9 @@
 
 #include "../ceWPTTIMAction.h"
 #include "../../../../../conversation/action/ceCAPlayerChoice.h"
+#include "ceWPTTIMAPlayerChoiceActions.h"
 
 class ceWPTTIMAPlayerChoiceOption;
-class ceWPTTIMAPlayerChoiceActions;
 
 
 /**

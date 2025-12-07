@@ -26,8 +26,8 @@
 #define _SEUPROPERTYNODESETROTATION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "sePropertyNode.h"
 
-class sePropertyNode;
 
 
 

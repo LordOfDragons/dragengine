@@ -26,11 +26,11 @@
 #define _CEUCAPCHOICEOPTIONSETCONDITION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAPlayerChoiceOption.h"
+#include "ceConversationCondition.h"
+#include "ceCAPlayerChoice.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
-class ceConversationCondition;
 
 
 

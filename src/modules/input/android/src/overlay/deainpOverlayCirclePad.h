@@ -27,8 +27,8 @@
 
 #include "deainpInputBinding.h"
 #include "deainpOverlay.h"
+#include <dragengine/src/resources/canvas/deCanvasImage.h>
 
-class deCanvasImage;
 
 
 /**

@@ -32,11 +32,11 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "seSynthesizer.h"
+#include "seWPLinkListener.h"
 
-class seSynthesizer;
 class seLink;
 class seViewSynthesizer;
-class seWPLinkListener;
 
 
 

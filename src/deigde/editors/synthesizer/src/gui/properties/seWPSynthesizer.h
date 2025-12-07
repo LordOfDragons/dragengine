@@ -31,10 +31,10 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "seWPSynthesizerListener.h"
+#include "seSynthesizer.h"
 
-class seSynthesizer;
 class seViewSynthesizer;
-class seWPSynthesizerListener;
 
 
 

@@ -28,9 +28,9 @@
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseDragListener.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
+#include "peeEmitter.h"
 
 class peeWindowMain;
-class peeEmitter;
 
 
 

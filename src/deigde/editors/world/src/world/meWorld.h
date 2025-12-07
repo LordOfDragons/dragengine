@@ -46,21 +46,23 @@
 #include "navspace/meNavigationSpaceList.h"
 #include "navspace/meNavigationSpaceSelection.h"
 #include "idgroup/meIDGroupList.h"
+#include <dragengine/src/resources/world/deWorld.h>
+#include "meLumimeter.h"
+#include <dragengine/src/resources/sound/deMicrophone.h>
+#include "meHeightTerrain.h"
+#include "mePathFindTest.h"
+#include <dragengine/src/resources/forcefield/deForceField.h>
+#include <dragengine/src/resources/collider/deColliderVolume.h>
 
 class decCollisionFilter;
 class meHeightTerrainNavSpaceType;
 class meHeightTerrainNavSpace;
-class deMicrophone;
 class deEngine;
-class deWorld;
 class deImage;
 class deCollider;
 
 class meCamera;
-class meLumimeter;
-class mePathFindTest;
 class meUndoSystem;
-class meHeightTerrain;
 class meHeightTerrainSector;
 class meHeightTerrainTexture;
 class meHeightTerrainPropField;
@@ -85,10 +87,8 @@ class meWindowMain;
 class igdeEnvironment;
 class igdeWSky;
 
-class deForceField;
 
 class deBaseScriptingCollider;
-class deColliderVolume;
 class decLayerMask;
 
 class deVideo;

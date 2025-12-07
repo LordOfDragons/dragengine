@@ -26,9 +26,9 @@
 #define _DEOGLSKIN_H_
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicSkin.h>
+#include "deoglRSkin.h"
 
 class deGraphicOpenGl;
-class deoglRSkin;
 class deSkin;
 
 

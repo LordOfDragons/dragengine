@@ -31,9 +31,9 @@
 #include <dragengine/common/math/smooth/decSmoothVector.h>
 #include <dragengine/common/math/smooth/decSmoothFloat.h>
 #include <dragengine/deObject.h>
+#include <dragengine/src/resources/collider/deCollider.h>
+#include <dragengine/src/resources/collider/deColliderCollisionTest.h>
 
-class deColliderCollisionTest;
-class deCollider;
 class deAnimatorInstance;
 class decBaseFileReader;
 class decBaseFileWriter;

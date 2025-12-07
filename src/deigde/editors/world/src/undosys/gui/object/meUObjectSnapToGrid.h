@@ -28,9 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meObject.h"
+#include "meWorld.h"
 
-class meWorld;
-class meObject;
 class meObjectList;
 
 

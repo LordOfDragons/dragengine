@@ -30,8 +30,8 @@
 #include "../../../animator/rule/aeRuleList.h"
 #include "../../../animator/link/aeLinkList.h"
 #include "../../../animator/controller/aeControllerList.h"
+#include "aeRuleGroup.h"
 
-class aeRuleGroup;
 
 
 

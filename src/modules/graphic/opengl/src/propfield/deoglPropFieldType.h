@@ -26,10 +26,10 @@
 #define _DEOGLPROPFIELDTYPE_H_
 
 #include <dragengine/common/math/decMath.h>
+#include "deoglRPropFieldType.h"
 
 class deoglPropField;
 class deoglPropFieldCluster;
-class deoglRPropFieldType;
 
 class dePropFieldType;
 

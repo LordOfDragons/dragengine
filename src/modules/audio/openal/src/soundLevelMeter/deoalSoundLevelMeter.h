@@ -32,9 +32,9 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sensor/deSoundLevelMeter.h>
 #include <dragengine/systems/modules/audio/deBaseAudioSoundLevelMeter.h>
+#include "deoalASoundLevelMeter.h"
 
 class deAudioOpenAL;
-class deoalASoundLevelMeter;
 class deoalWorld;
 
 class deSoundLevelMeter;

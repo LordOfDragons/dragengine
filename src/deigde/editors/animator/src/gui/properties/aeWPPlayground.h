@@ -35,13 +35,13 @@
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "aeAnimator.h"
+#include "aeWPPlaygroundListener.h"
 
 
-class aeAnimator;
 class aeController;
 class aeWindowProperties;
 class aeAnimatorLocomotionLeg;
-class aeWPPlaygroundListener;
 
 
 

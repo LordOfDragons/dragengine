@@ -28,10 +28,10 @@
 #include "seSource.h"
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/src/resources/synthesizer/deSynthesizer.h>
 
 class seController;
 
-class deSynthesizer;
 class deSynthesizerSourceSynthesizer;
 
 

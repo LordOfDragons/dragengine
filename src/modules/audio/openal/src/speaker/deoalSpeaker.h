@@ -28,9 +28,9 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioSpeaker.h>
+#include "deoalASpeaker.h"
 
 class deAudioOpenAL;
-class deoalASpeaker;
 class deoalSound;
 class deoalSynthesizerInstance;
 class deoalVideoPlayer;

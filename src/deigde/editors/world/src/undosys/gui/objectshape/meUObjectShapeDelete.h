@@ -28,8 +28,8 @@
 #include <dragengine/common/shape/decShapeList.h>
 
 #include <deigde/undo/igdeUndo.h>
+#include "meObject.h"
 
-class meObject;
 class meObjectShapeList;
 
 

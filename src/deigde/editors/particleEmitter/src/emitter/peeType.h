@@ -30,12 +30,12 @@
 
 #include <dragengine/resources/particle/deParticleEmitterType.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/src/resources/model/deModel.h>
+#include <dragengine/src/resources/skin/deSkin.h>
 
 class peeEmitter;
 class peeParameter;
 class deComponent;
-class deModel;
-class deSkin;
 class deEngine;
 
 

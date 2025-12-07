@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/collider/deCollider.h>
+#include "gdeObjectClass.h"
+#include "gdeOCComponent.h"
 
-class gdeOCComponent;
-class gdeObjectClass;
 
 
 

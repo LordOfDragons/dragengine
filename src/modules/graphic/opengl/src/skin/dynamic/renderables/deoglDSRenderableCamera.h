@@ -26,8 +26,8 @@
 #define _DEOGLDSRENDERABLECAMERA_H_
 
 #include "deoglDSRenderable.h"
+#include "deoglRDSRenderableCamera.h"
 
-class deoglRDSRenderableCamera;
 class deoglCamera;
 
 class deDSRenderableCamera;

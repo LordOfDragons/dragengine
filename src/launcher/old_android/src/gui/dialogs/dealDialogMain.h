@@ -26,10 +26,10 @@
 #define _DEALDIALOGMAIN_H_
 
 #include "../dealDialog.h"
+#include "dealWidgetButton.h"
 
 
 class dealWidgetTaskStatus;
-class dealWidgetButton;
 
 
 /**

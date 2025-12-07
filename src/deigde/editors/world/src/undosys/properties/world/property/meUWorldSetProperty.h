@@ -26,8 +26,8 @@
 #define _MEUWORLDSETPROPERTY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meWorld.h"
 
-class meWorld;
 
 
 

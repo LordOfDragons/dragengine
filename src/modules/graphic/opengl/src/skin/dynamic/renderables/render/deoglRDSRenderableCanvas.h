@@ -28,8 +28,8 @@
 #include <dragengine/deObject.h>
 
 #include "deoglRDSRenderable.h"
+#include "deoglRCanvasView.h"
 
-class deoglRCanvasView;
 class deDSRenderableCanvas;
 
 

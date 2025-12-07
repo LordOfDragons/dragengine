@@ -27,9 +27,9 @@
 #define _GDEUOCSKYCONTROLLERADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeSky.h"
+#include "gdeSkyController.h"
 
-class gdeSky;
-class gdeSkyController;
 
 
 /**

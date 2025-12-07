@@ -26,10 +26,10 @@
 #define _SEULINKREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLink.h"
+#include "seSource.h"
+#include "seSynthesizer.h"
 
-class seLink;
-class seSource;
-class seSynthesizer;
 class seControllerTarget;
 
 

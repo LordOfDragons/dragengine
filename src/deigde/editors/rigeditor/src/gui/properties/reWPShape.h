@@ -27,10 +27,10 @@
 
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "reRigShape.h"
+#include "reRig.h"
+#include "reWPShapeListener.h"
 
-class reRig;
-class reRigShape;
-class reWPShapeListener;
 class reWPPanelShape;
 class reWPPanelShapeSphere;
 class reWPPanelShapeBox;

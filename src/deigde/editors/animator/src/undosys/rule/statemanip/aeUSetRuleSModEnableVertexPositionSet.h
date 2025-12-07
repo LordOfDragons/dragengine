@@ -26,8 +26,8 @@
 #define _AEUSETRULESMODENABLEVERTEXPOSITIONSET_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleStateManipulator.h"
 
-class aeRuleStateManipulator;
 
 
 /**

@@ -26,8 +26,8 @@
 #define _CEWPTTREEITEM_H_
 
 #include <deigde/gui/model/igdeTreeItem.h>
+#include "ceWPTTreeItemModel.h"
 
-class ceWPTTreeItemModel;
 class igdeTreeList;
 class igdeMenuCascade;
 

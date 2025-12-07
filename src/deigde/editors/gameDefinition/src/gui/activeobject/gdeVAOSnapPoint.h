@@ -28,8 +28,8 @@
 #include "gdeVAOSubObject.h"
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
+#include "gdeOCSnapPoint.h"
 
-class gdeOCSnapPoint;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 

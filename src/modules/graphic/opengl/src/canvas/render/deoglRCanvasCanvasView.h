@@ -26,8 +26,8 @@
 #define _DEOGLRCANVASCANVASVIEW_H_
 
 #include "deoglRCanvas.h"
+#include "deoglRCanvasView.h"
 
-class deoglRCanvasView;
 
 
 /**

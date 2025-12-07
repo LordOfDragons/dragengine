@@ -26,8 +26,8 @@
 #define _SEUPROPERTYNODESHAPESETTHICKNESS_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "sePropertyNodeShape.h"
 
-class sePropertyNodeShape;
 
 
 

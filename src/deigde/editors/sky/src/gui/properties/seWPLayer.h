@@ -38,12 +38,12 @@
 #include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/event/igdeAction.h>
+#include "seSky.h"
+#include "seWPLayerListener.h"
 
-class seSky;
 class seLayer;
 class seBody;
 class seWindowProperties;
-class seWPLayerListener;
 
 
 

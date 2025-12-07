@@ -26,9 +26,9 @@
 #define _CEUCAMUSICSETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAMusic.h"
+#include "ceConversationTopic.h"
 
-class ceCAMusic;
-class ceConversationTopic;
 
 
 

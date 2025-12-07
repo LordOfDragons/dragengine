@@ -34,15 +34,15 @@
 #include <dragengine/threading/deBarrier.h>
 #include <dragengine/threading/deThread.h>
 #include <dragengine/threading/deMutex.h>
+#include "deoalAWorld.h"
+#include "deoalAMicrophone.h"
 
 class deAudioOpenAL;
-class deoalAMicrophone;
 class deoalATContext;
 class deoalATDebug;
 class deoalATDelayed;
 class deoalATLogger;
 class deoalATRayTracing;
-class deoalAWorld;
 class deoalCaches;
 class deoalCapabilities;
 class deoalConfiguration;

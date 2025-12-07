@@ -26,10 +26,10 @@
 #define _REUREMOVESHAPE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigShape.h"
+#include "reRigBone.h"
+#include "reRig.h"
 
-class reRig;
-class reRigShape;
-class reRigBone;
 class reRigShapeList;
 
 

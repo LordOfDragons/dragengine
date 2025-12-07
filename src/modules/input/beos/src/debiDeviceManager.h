@@ -26,11 +26,11 @@
 #define _DEBIDEVICEMANAGER_H_
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "debiDeviceMouse.h"
+#include "debiDeviceKeyboard.h"
 
 class deBeOSInput;
 class debiDevice;
-class debiDeviceMouse;
-class debiDeviceKeyboard;
 
 
 

@@ -28,9 +28,9 @@
 #include <dragengine/common/math/decMath.h>
 
 #include "deainpOverlayList.h"
+#include <dragengine/src/resources/canvas/deCanvasView.h>
 
 class deAndroidInput;
-class deCanvasView;
 
 
 /**

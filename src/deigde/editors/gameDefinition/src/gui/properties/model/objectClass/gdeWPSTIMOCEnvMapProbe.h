@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCENVMAPPROBE_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCEnvMapProbe.h"
 
-class gdeOCEnvMapProbe;
 
 
 /**

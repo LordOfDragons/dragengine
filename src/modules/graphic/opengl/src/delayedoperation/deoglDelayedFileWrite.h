@@ -26,8 +26,8 @@
 #define _DEOGLDELAYEDFILEWRITE_H_
 
 #include <dragengine/common/file/decPath.h>
+#include "decMemoryFile.h"
 
-class decMemoryFile;
 class deVirtualFileSystem;
 class decBaseFileWriter;
 

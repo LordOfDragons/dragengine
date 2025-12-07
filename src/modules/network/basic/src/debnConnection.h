@@ -30,16 +30,16 @@
 
 #include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/systems/modules/network/deBaseNetworkConnection.h>
+#include "debnSocket.h"
+#include <dragengine/src/resources/network/deNetworkMessage.h>
 
 class deConnection;
 class deNetworkBasic;
 class debnMessageManager;
-class debnSocket;
 class debnState;
 class debnStateLinkManager;
 class debnStateLinkList;
 class debnMessageAckList;
-class deNetworkMessage;
 class decBaseFileReader;
 
 

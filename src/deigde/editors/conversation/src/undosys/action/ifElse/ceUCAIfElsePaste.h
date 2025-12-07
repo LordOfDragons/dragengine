@@ -26,9 +26,9 @@
 #define _CEUCAIFELSEPASTE_H_
 
 #include "../ceUCActionPaste.h"
+#include "ceCAIfElse.h"
+#include "ceCAIfElseCase.h"
 
-class ceCAIfElseCase;
-class ceCAIfElse;
 
 
 

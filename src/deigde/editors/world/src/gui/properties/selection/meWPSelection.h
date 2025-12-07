@@ -27,10 +27,10 @@
 
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeWidget.h>
+#include "meWorld.h"
+#include "meWPSelectionListener.h"
 
-class meWPSelectionListener;
 class meWindowProperties;
-class meWorld;
 
 
 

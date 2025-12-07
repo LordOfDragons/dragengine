@@ -27,11 +27,11 @@
 
 #include "../task/deoglRenderTask.h"
 #include "../task/deoglComputeRenderTask.h"
+#include "deoglRPTBuildRTsDepth.h"
+#include "deoglRPTBuildRTsGeometry.h"
 
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
-class deoglRPTBuildRTsDepth;
-class deoglRPTBuildRTsGeometry;
 
 
 /**

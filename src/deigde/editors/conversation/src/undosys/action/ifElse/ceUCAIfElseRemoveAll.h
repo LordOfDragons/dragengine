@@ -28,10 +28,10 @@
 #include "../../../conversation/action/ceConversationActionList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAIfElse.h"
+#include "ceCAIfElseCase.h"
+#include "ceConversationTopic.h"
 
-class ceCAIfElseCase;
-class ceConversationTopic;
-class ceCAIfElse;
 
 
 

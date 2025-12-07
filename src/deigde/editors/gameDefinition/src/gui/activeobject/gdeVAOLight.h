@@ -29,8 +29,8 @@
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/light/deLight.h>
+#include "gdeOCLight.h"
 
-class gdeOCLight;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 

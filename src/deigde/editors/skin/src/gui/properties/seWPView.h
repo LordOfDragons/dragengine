@@ -35,10 +35,10 @@
 #include <deigde/gui/properties/igdeWPCamera.h>
 #include <deigde/gui/properties/igdeWPSky.h>
 #include <deigde/gui/properties/igdeWPWObject.h>
+#include "seSkin.h"
+#include "seWPViewListener.h"
 
-class seSkin;
 class seWindowProperties;
-class seWPViewListener;
 
 
 

@@ -28,9 +28,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meWorld.h"
 
 // predefinitions
-class meWorld;
 class meHeightTerrain;
 
 

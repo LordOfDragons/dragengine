@@ -27,9 +27,9 @@
 #define _SEUMOVECONTROLLERDOWN_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seController.h"
+#include "seSynthesizer.h"
 
-class seController;
-class seSynthesizer;
 
 
 

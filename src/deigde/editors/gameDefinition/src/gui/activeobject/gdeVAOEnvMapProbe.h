@@ -28,8 +28,8 @@
 #include "gdeVAOSubObject.h"
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/probe/deEnvMapProbe.h>
+#include "gdeOCEnvMapProbe.h"
 
-class gdeOCEnvMapProbe;
 class igdeWDebugDrawerShape;
 
 

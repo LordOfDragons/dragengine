@@ -29,13 +29,13 @@
 // includes
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/src/resources/propfield/dePropField.h>
 
 // predefinitions
 class mePropFieldType;
 class meWorld;
 
 class deEngine;
-class dePropField;
 
 
 

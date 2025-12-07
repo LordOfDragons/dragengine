@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/collider/deColliderConstraint.h>
+#include "reRigConstraint.h"
 
-class reRigConstraint;
 
 
 

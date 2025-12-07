@@ -29,8 +29,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decStringList.h>
+#include "seSourceChain.h"
 
-class seSourceChain;
 
 
 

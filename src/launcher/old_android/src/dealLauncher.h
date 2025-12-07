@@ -34,21 +34,21 @@
 #include "gui/dealDisplay.h"
 #include "common/string/decString.h"
 #include "common/string/unicode/decUnicodeArgumentList.h"
+#include "dealGameProfile.h"
+#include "dealGameData.h"
+#include "dealGame.h"
+#include "deLogger.h"
+#include "dealDialogMain.h"
 
 struct android_app;
 struct AInputEvent;
 
 class dealAssetUnpacker;
-class dealDialogMain;
-class dealGame;
-class dealGameProfile;
 class dealGPModuleList;
 
-class deLogger;
 class decBaseFileReader;
 class decBaseFileWriter;
 class decMemoryFile;
-class dealGameData;
 
 
 

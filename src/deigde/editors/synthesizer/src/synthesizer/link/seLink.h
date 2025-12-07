@@ -29,8 +29,8 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/curve/decCurveBezier.h>
+#include "seController.h"
 
-class seController;
 class seLinkMapping;
 class seSynthesizer;
 class deSynthesizerLink;

@@ -30,11 +30,11 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/src/resources/skin/deSkin.h>
 
 class seSkin;
 
 class deEngine;
-class deSkin;
 
 
 

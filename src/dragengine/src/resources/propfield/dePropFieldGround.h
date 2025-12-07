@@ -26,10 +26,10 @@
 #define _DEPROPFIELDGROUND_H_
 
 #include "../../dragengine_export.h"
+#include <dragengine/src/resources/terrain/heightmap/deHeightTerrain.h>
 
 
 class deComponent;
-class deHeightTerrain;
 
 
 /**

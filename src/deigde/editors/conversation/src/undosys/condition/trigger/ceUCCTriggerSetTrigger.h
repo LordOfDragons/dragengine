@@ -26,10 +26,10 @@
 #define _CEUCCTRIGGERSETTRIGGER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCConditionTrigger.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionTrigger;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 

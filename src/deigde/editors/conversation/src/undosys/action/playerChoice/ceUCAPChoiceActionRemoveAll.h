@@ -27,10 +27,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include "../../../conversation/action/ceConversationActionList.h"
+#include "ceCAPlayerChoiceOption.h"
+#include "ceCAPlayerChoice.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
 
 
 

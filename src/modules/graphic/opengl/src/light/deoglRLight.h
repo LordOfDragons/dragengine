@@ -36,19 +36,19 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/resources/light/deLight.h>
+#include "deoglRDynamicSkin.h"
+#include "deoglRCanvasView.h"
+#include "deoglRSkin.h"
 
 class deoglCollideList;
 class deoglLightShaderConfig;
 class deoglLightVolume;
 class deoglOcclusionTest;
 class deoglOptimizerLight;
-class deoglRCanvasView;
 class deoglRComponent;
-class deoglRDynamicSkin;
 class deoglRenderPlan;
 class deoglRenderPlanMasked;
 class deoglRenderThread;
-class deoglRSkin;
 class deoglRWorld;
 class deoglShadowCaster;
 class deoglSkinState;

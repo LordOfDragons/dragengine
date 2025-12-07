@@ -26,8 +26,8 @@
 #define _DEOGLOCCLUSIONMESH_H_
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicOcclusionMesh.h>
+#include "deoglROcclusionMesh.h"
 
-class deoglROcclusionMesh;
 
 class deOcclusionMesh;
 class deGraphicOpenGl;

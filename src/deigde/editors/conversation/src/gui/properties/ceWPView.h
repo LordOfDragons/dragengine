@@ -39,6 +39,8 @@
 #include <deigde/gui/properties/igdeWPSky.h>
 #include <deigde/gui/properties/igdeWPWObject.h>
 #include <deigde/gui/properties/igdeWPTriggerTable.h>
+#include "ceConversation.h"
+#include "ceWPViewListener.h"
 
 
 class ceProp;
@@ -52,8 +54,6 @@ class ceConversationFile;
 class ceConversationTopic;
 
 class saeGameDefinition;
-class ceWPViewListener;
-class ceConversation;
 
 
 

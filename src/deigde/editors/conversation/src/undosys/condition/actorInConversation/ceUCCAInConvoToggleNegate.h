@@ -26,10 +26,10 @@
 #define _CEUCCAINCONVOTOGGLENEGATE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCConditionActorInConversation.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionActorInConversation;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 

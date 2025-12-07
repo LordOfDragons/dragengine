@@ -26,9 +26,9 @@
 #define _REWPUNDOHISTORY_H_
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "reRig.h"
+#include "reWPUndoHistoryListener.h"
 
-class reRig;
-class reWPUndoHistoryListener;
 
 
 

@@ -26,8 +26,8 @@
 #define _GDEWPSTIMPARTICLEEMITTER_H_
 
 #include "../gdeWPSTreeItemModel.h"
+#include "gdeParticleEmitter.h"
 
-class gdeParticleEmitter;
 
 
 /**

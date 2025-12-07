@@ -27,8 +27,8 @@
 #define _AEURULEANIMDIFFTOGGLEENABLEROTATION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleAnimationDifference.h"
 
-class aeRuleAnimationDifference;
 
 
 

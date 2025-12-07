@@ -36,14 +36,13 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/properties/igdeWPSky.h>
 #include <deigde/gui/properties/igdeWPWObject.h>
+#include "reRig.h"
+#include "igdeWPWObject.h"
+#include "reWPViewListener.h"
 
-class igdeWPWObject;
-class reRig;
 class reRigTexture;
 class reWindowProperties;
-class reWPViewListener;
 class igdeGameDefinition;
-class igdeWPWObject;
 
 
 

@@ -28,12 +28,12 @@
 
 // includes
 #include "dragengine/common/math/decMath.h"
+#include "reRigPush.h"
+#include "reRigShape.h"
+#include "reRigBone.h"
+#include "reRigConstraint.h"
 
 // predefinitions
-class reRigBone;
-class reRigShape;
-class reRigConstraint;
-class reRigPush;
 
 
 

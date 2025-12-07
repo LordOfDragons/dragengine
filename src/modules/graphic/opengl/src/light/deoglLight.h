@@ -31,8 +31,8 @@
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicLight.h>
+#include "deoglRLight.h"
 
-class deoglRLight;
 class deoglSkinStateController;
 class deoglWorld;
 class deoglDynamicSkin;

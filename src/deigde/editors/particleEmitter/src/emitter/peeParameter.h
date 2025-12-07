@@ -27,9 +27,9 @@
 
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
+#include "peeController.h"
 
 class peeType;
-class peeController;
 class deParticleEmitterParameter;
 
 

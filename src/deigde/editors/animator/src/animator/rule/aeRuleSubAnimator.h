@@ -28,11 +28,11 @@
 #include "aeRule.h"
 
 #include <dragengine/common/collection/decObjectList.h>
+#include <dragengine/src/resources/animator/deAnimator.h>
 
 class aeController;
 class aeLoadSaveSystem;
 
-class deAnimator;
 class deAnimatorRuleSubAnimator;
 
 

@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCCAMERA_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCCamera.h"
 
-class gdeOCCamera;
 
 
 /**

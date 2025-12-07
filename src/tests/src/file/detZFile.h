@@ -2,12 +2,12 @@
 #define _DETZFILE_H_
 
 #include "../detCase.h"
+#include "decZFileWriter.h"
+#include "decMemoryFile.h"
+#include "decZFileReader.h"
+#include "decMemoryFileReader.h"
+#include "decMemoryFileWriter.h"
 
-class decZFileReader;
-class decMemoryFileReader;
-class decMemoryFileWriter;
-class decMemoryFile;
-class decZFileWriter;
 
 // class detZFile
 class detZFile : public detCase{

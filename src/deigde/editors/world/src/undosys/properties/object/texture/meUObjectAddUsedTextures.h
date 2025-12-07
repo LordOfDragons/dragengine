@@ -29,8 +29,8 @@
 #include "../../../../world/object/texture/meObjectTextureList.h"
 
 #include <dragengine/common/string/decStringList.h>
+#include "meObject.h"
 
-class meObject;
 
 
 

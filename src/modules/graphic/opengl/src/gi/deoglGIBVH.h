@@ -32,6 +32,9 @@
 #include "../tbo/deoglDynamicTBOBlock.h"
 
 #include <dragengine/common/math/decMath.h>
+#include "deoglDynamicTBOUInt32.h"
+#include "deoglDynamicTBOUInt16.h"
+#include "deoglDynamicTBOFloat32.h"
 
 class deoglGIBVHLocal;
 class deoglGIInstance;
@@ -47,9 +50,6 @@ class deoglRWorld;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
-class deoglDynamicTBOFloat32;
-class deoglDynamicTBOUInt32;
-class deoglDynamicTBOUInt16;
 
 
 /**

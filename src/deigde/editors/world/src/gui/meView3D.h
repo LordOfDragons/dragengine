@@ -33,11 +33,11 @@
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/font/deFont.h>
 #include <dragengine/resources/font/deFontSize.h>
+#include "meView3DListener.h"
+#include "meWorld.h"
 
-class meView3DListener;
 class meViewEditor;
 
-class meWorld;
 class meWindowMain;
 
 

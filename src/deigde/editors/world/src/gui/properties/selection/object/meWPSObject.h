@@ -44,14 +44,14 @@
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/undo/igdeUndo.h>
+#include "meWorld.h"
+#include "meWPSObjectListener.h"
 
 
 class meObject;
 class meObjectTexture;
 class meWindowProperties;
-class meWorld;
 class meWPSelection;
-class meWPSObjectListener;
 
 
 

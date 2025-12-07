@@ -29,10 +29,10 @@
 #include <deigde/gui/event/igdeMouseKeyListener.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 #include <deigde/undo/igdeUndo.h>
+#include "seSkin.h"
 
 
 class seWindowMain;
-class seSkin;
 
 
 /**

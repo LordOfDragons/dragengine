@@ -28,10 +28,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meObject.h"
+#include "meDecal.h"
 
 class meWorld;
-class meDecal;
-class meObject;
 
 
 

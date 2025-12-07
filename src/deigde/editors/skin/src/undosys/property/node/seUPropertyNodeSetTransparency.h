@@ -26,8 +26,8 @@
 #define _SEUPROPERTYNODESETTRANSPARENCY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "sePropertyNode.h"
 
-class sePropertyNode;
 
 
 

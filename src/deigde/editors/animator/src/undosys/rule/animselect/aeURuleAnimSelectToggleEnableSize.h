@@ -27,8 +27,8 @@
 #define _AEURULEANIMSELECTTOGGLEENABLESIZE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleAnimationSelect.h"
 
-class aeRuleAnimationSelect;
 
 
 

@@ -31,12 +31,12 @@
 
 #include <dragengine/common/string/decString.h>
 #include <dragengine/systems/modules/deModuleParameter.h>
+#include "deVirtualFileSystem.h"
+#include "deLogger.h"
+#include "dealVFSZipArchive.h"
 
 class deEngine;
 class deOSAndroid;
-class deLogger;
-class dealVFSZipArchive;
-class deVirtualFileSystem;
 struct android_app;
 
 

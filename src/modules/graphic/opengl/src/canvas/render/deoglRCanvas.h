@@ -30,10 +30,10 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/canvas/deCanvas.h>
+#include "deoglRenderTarget.h"
 
 class deoglRenderCanvasContext;
 class deoglRenderThread;
-class deoglRenderTarget;
 class deoglRenderPlanMasked;
 
 

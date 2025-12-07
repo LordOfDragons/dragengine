@@ -28,12 +28,12 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include "ceCAPlayerChoiceOption.h"
+#include <dragengine/src/resources/canvas/deCanvasView.h>
+#include "ceCAPlayerChoice.h"
 
-class deCanvasView;
 class cePlayerChoiceBox;
 class deGraphicContext;
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
 
 
 

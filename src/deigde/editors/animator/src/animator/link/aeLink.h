@@ -30,8 +30,8 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
+#include "aeController.h"
 
-class aeController;
 class aeAnimator;
 class deAnimatorLink;
 

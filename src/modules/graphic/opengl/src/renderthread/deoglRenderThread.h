@@ -44,6 +44,7 @@
 #include <dragengine/threading/deBarrier.h>
 #include <dragengine/threading/deSemaphore.h>
 #include <dragengine/threading/deThread.h>
+#include "deoglRCanvasView.h"
 
 class deGraphicOpenGl;
 class deoglCapabilities;
@@ -55,7 +56,6 @@ class deoglExtensions;
 class deoglGI;
 class deoglLightBoundaryMap;
 class deoglOcclusionQueryManager;
-class deoglRCanvasView;
 class deoglRRenderWindow;
 class deoglShadowMapper;
 class deoglTriangleSorter;

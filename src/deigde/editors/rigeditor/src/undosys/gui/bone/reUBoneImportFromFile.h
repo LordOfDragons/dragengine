@@ -28,9 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "reRig.h"
+#include "reRigBone.h"
 
-class reRig;
-class reRigBone;
 class reRigShapeList;
 class reRigConstraintList;
 

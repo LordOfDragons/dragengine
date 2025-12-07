@@ -28,10 +28,10 @@
 #include "../../../conversation/condition/ceCConditionLogic.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCConditionLogic.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionLogic;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 

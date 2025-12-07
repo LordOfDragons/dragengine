@@ -29,10 +29,10 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicParticleEmitterInstance.h>
 
 #include "../deoglBasics.h"
+#include "deoglRParticleEmitterInstance.h"
 
 class deoglParticleEmitter;
 class deoglParticleEmitterInstanceType;
-class deoglRParticleEmitterInstance;
 
 class deGraphicOpenGl;
 class deParticleEmitterInstance;

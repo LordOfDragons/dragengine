@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCPARTICLEEMITTER_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCParticleEmitter.h"
 
-class gdeOCParticleEmitter;
 
 
 

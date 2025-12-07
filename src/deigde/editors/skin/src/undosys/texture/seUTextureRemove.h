@@ -26,9 +26,9 @@
 #define _SEUTEXTUREREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSkin.h"
+#include "seTexture.h"
 
-class seSkin;
-class seTexture;
 
 
 

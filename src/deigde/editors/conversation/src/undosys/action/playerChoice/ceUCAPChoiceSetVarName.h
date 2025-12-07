@@ -26,9 +26,9 @@
 #define _CEUCAPCHOICESETVARNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAPlayerChoice.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAPlayerChoice;
 
 
 

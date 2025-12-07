@@ -31,11 +31,11 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/utils/decLayerMask.h>
+#include "deoalASkin.h"
+#include "deoalAModel.h"
 
 class deoalAComponentBone;
 class deoalAComponentTexture;
-class deoalAModel;
-class deoalASkin;
 class deoalAudioThread;
 class deoalAWorld;
 class deoalComponentOctree;

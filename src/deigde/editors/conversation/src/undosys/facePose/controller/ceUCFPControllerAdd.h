@@ -26,9 +26,9 @@
 #define _CEUCFPCONTROLLERADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceFacePose.h"
+#include "ceControllerValue.h"
 
-class ceFacePose;
-class ceControllerValue;
 
 
 

@@ -30,8 +30,8 @@
 #include <dragengine/common/math/decMath.h>
 
 #include <deigde/undo/igdeUndo.h>
+#include "sePropertyNodeGroup.h"
 
-class sePropertyNodeGroup;
 
 
 

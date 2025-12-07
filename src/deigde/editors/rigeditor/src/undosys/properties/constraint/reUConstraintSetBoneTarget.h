@@ -26,9 +26,9 @@
 #define _REUCONSTRAINTSETBONETARGET_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigConstraint.h"
+#include "reRigBone.h"
 
-class reRigBone;
-class reRigConstraint;
 
 
 

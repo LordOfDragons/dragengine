@@ -26,8 +26,8 @@
 #define _REUNDODATASHAPE_H_
 
 #include "dragengine/common/math/decMath.h"
+#include "reRigShape.h"
 
-class reRigShape;
 
 
 

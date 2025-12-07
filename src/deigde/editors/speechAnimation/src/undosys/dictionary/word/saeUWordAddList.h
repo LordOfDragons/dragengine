@@ -28,9 +28,9 @@
 #include "../../../sanimation/dictionary/saeWordList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "saeSAnimation.h"
 
 
-class saeSAnimation;
 
 
 

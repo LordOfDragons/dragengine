@@ -27,9 +27,9 @@
 #define _GDEUOCREMOVEENVMAPPROBE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCEnvMapProbe.h"
 
-class gdeOCEnvMapProbe;
-class gdeObjectClass;
 
 
 

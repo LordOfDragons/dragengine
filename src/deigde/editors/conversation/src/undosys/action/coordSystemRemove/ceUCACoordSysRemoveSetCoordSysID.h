@@ -26,9 +26,9 @@
 #define _CEUCACOORDSYSREMOVESETCOORDSYSID_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCACoordSystemRemove.h"
+#include "ceConversationTopic.h"
 
-class ceCACoordSystemRemove;
-class ceConversationTopic;
 
 
 

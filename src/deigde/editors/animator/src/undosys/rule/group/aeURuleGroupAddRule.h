@@ -27,9 +27,9 @@
 #define _AEURULEGROUPADDRULE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleGroup.h"
+#include "aeRule.h"
 
-class aeRule;
-class aeRuleGroup;
 
 
 

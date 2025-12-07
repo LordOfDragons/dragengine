@@ -29,9 +29,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleStateManipulator.h"
 
 // predefinitions
-class aeRuleStateManipulator;
 
 
 

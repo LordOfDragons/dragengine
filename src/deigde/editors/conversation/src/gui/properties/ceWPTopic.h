@@ -30,6 +30,8 @@
 #include <deigde/gui/igdeTreeList.h>
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
+#include "ceConversation.h"
+#include "ceWPTopicListener.h"
 
 class ceWPAComment;
 class ceWPACoordSystemRemove;
@@ -39,8 +41,6 @@ class ceWPAActorAdd;
 class ceWPCTrigger;
 class ceWPATrigger;
 class ceWindowProperties;
-class ceWPTopicListener;
-class ceConversation;
 class ceConversationFile;
 class ceConversationTopic;
 class ceConversationAction;

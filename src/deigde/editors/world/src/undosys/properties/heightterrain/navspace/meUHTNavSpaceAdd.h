@@ -26,9 +26,9 @@
 #define _MEUHTNAVSPACEADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHeightTerrainNavSpace.h"
+#include "meHeightTerrainSector.h"
 
-class meHeightTerrainSector;
-class meHeightTerrainNavSpace;
 
 
 

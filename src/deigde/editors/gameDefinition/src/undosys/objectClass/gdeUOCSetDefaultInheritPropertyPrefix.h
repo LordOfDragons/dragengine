@@ -27,9 +27,9 @@
 #define _GDEUOBJECTCLASSSETDEFAULTINHERITPROPERTYPREFIX_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
 class gdeOCSpeaker;
-class gdeObjectClass;
 
 
 

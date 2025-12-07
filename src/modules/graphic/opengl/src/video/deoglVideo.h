@@ -29,9 +29,9 @@
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicVideo.h>
 #include <dragengine/common/math/decMath.h>
+#include "deoglRVideo.h"
 
 class deGraphicOpenGl;
-class deoglRVideo;
 class deoglTexture;
 
 class deVideo;

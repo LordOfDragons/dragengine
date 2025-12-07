@@ -28,9 +28,9 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "igdeTriggerTarget.h"
+#include "igdeTriggerListener.h"
 
-class igdeTriggerTarget;
-class igdeTriggerListener;
 class igdeTriggerTargetList;
 
 

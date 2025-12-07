@@ -28,9 +28,9 @@
 #include "../action/ceUndoCActionList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationFile.h"
 
 class ceConversation;
-class ceConversationFile;
 class ceConversationTopic;
 class ceConversationActionList;
 

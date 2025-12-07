@@ -28,10 +28,10 @@
 #include <deigde/gui/igdeTextArea.h>
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "lpeLangPack.h"
+#include "lpeWPLangPackListener.h"
 
-class lpeLangPack;
 class lpeWindowProperties;
-class lpeWPLangPackListener;
 
 
 

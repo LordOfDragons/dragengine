@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCCOMPONENT_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCComponent.h"
 
-class gdeOCComponent;
 
 
 /**

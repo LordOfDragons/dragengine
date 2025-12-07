@@ -29,8 +29,8 @@
 #include "../../../gamedef/objectClass/speaker/gdeOCSpeaker.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 

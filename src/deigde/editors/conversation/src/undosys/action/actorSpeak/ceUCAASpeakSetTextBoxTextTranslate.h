@@ -28,9 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decString.h>
+#include "ceCAActorSpeak.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
 
 
 /**

@@ -28,9 +28,9 @@
 #include "../../../../conversation/strip/ceStripList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAActorSpeak.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
 
 
 

@@ -26,10 +26,10 @@
 #define _CEUCAWAITMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationAction.h"
+#include "ceCAWait.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceConversationAction;
-class ceCAWait;
 
 
 

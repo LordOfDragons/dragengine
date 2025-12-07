@@ -26,10 +26,10 @@
 #define _REUADDCONSTRAINT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRig.h"
+#include "reRigBone.h"
+#include "reRigConstraint.h"
 
-class reRig;
-class reRigBone;
-class reRigConstraint;
 
 
 

@@ -26,10 +26,10 @@
 #define _IGDEEDITORMODULE_H_
 
 #include <dragengine/common/string/decString.h>
+#include "igdeEditorWindow.h"
 
 class decStringList;
 class igdeEnvironment;
-class igdeEditorWindow;
 class igdeStepableTask;
 class deEngine;
 class deLogger;

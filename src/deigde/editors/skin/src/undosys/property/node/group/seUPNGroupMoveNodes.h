@@ -28,8 +28,8 @@
 #include "../../../../skin/property/node/sePropertyNodeList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "sePropertyNodeGroup.h"
 
-class sePropertyNodeGroup;
 
 
 

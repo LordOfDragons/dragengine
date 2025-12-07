@@ -26,9 +26,9 @@
 #define _CEUCAACTORADDSETACTOR_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAActorAdd.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorAdd;
-class ceConversationTopic;
 
 
 

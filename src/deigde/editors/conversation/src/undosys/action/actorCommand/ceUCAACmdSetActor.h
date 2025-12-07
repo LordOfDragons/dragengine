@@ -26,9 +26,9 @@
 #define _CEUCAACMDSETACTORID_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAActorCommand.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorCommand;
-class ceConversationTopic;
 
 
 

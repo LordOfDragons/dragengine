@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOBJECTCLASS_H_
 
 #include "../gdeWPSTreeItemModel.h"
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 class gdeOCBillboard;
 class gdeOCCamera;
 class gdeOCComponent;

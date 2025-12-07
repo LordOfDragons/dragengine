@@ -29,10 +29,10 @@
 #include <dragengine/common/math/decMath.h>
 
 #include "../deainpLayout.h"
+#include <dragengine/src/resources/canvas/deCanvasView.h>
 
 
 class deAndroidInput;
-class deCanvasView;
 
 
 /**

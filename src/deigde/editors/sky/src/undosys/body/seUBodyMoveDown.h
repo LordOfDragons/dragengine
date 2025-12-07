@@ -27,8 +27,8 @@
 #define _SEUBODYMOVEDOWN_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seBody.h"
 
-class seBody;
 
 
 /**

@@ -28,10 +28,10 @@
 
 // includes
 #include "feFontGlyphList.h"
+#include "feFontGlyph.h"
 
 // predefinitions
 class feFont;
-class feFontGlyph;
 
 
 

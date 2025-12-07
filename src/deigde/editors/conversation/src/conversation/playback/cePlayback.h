@@ -35,12 +35,12 @@
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
 #include <deigde/triggersystem/igdeTriggerTargetList.h>
+#include "ceTextBoxText.h"
+#include "ceConversationTopic.h"
 
 class ceConversation;
-class ceConversationTopic;
 class ceCameraShot;
 class cePlaybackActor;
-class ceTextBoxText;
 class cePlaybackCamera;
 
 

@@ -27,8 +27,8 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include "sePropertyNode.h"
 
-class sePropertyNode;
 
 
 

@@ -26,8 +26,8 @@
 #define _DEALWIDGETIMAGE_H_
 
 #include "dealWidget.h"
+#include "dealImage.h"
 
-class dealImage;
 
 
 /**

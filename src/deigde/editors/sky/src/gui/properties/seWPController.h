@@ -32,11 +32,11 @@
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "seWPControllerListener.h"
+#include "seSky.h"
 
-class seSky;
 class seController;
 class seWindowProperties;
-class seWPControllerListener;
 
 
 /**

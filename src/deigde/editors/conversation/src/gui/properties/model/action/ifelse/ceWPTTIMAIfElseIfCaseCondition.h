@@ -26,9 +26,9 @@
 #define _CEWPTTIMAIFELSEIFCASECONDITION_H_
 
 #include "../../condition/ceWPTTIMConditionContainer.h"
+#include "ceCAIfElseCase.h"
 
 class ceCAIfElse;
-class ceCAIfElseCase;
 class ceWPTTIMAIfElse;
 class ceWPTTIMAIfElseIfCase;
 

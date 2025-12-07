@@ -40,16 +40,16 @@
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSObjectClassListener.h"
 
 class gdeFilePattern;
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeProperty;
 class gdeOCComponentTexture;
 class gdeOCInherit;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSObjectClassListener;
 
 
 /**

@@ -33,12 +33,12 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCNavigationBlockerListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCNavigationBlocker;
 class gdeWindowProperties;
-class gdeWPSOCNavigationBlockerListener;
 
 
 

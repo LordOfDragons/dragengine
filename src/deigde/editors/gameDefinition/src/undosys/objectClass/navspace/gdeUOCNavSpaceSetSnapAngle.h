@@ -27,9 +27,9 @@
 #define _GDEUOCNAVSPACESETSNAPANGLE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCNavigationSpace.h"
 
-class gdeOCNavigationSpace;
-class gdeObjectClass;
 
 
 

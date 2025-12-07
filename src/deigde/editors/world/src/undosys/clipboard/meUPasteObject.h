@@ -31,9 +31,9 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decIntList.h>
+#include "meWorld.h"
 
 class meClipboardDataObject;
-class meWorld;
 
 
 

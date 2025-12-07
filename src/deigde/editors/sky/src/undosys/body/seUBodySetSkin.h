@@ -26,8 +26,8 @@
 #define _SEUBODYSETSKIN_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seBody.h"
 
-class seBody;
 
 
 /**

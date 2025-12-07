@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decStringSet.h>
+#include "gdeObjectClass.h"
 
 class gdeOCSpeaker;
-class gdeObjectClass;
 
 
 

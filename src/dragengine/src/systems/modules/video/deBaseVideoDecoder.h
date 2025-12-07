@@ -26,8 +26,8 @@
 #define _DEBASEVIDEODECODER_H_
 
 #include "../deBaseModule.h"
+#include "decBaseFileReader.h"
 
-class decBaseFileReader;
 
 
 /**

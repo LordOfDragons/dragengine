@@ -26,10 +26,10 @@
 #define _CEUCCACOMMANDSETCOMMAND_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCConditionActorCommand.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionActorCommand;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 

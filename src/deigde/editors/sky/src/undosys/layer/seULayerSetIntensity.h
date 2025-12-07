@@ -26,8 +26,8 @@
 #define _SEULAYERSETINTENSITY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLayer.h"
 
-class seLayer;
 
 
 /**

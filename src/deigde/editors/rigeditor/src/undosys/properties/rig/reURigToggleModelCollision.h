@@ -26,8 +26,8 @@
 #define _REURIGTOGGLEMODELCOLLISION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRig.h"
 
-class reRig;
 
 
 

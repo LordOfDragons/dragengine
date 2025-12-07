@@ -37,13 +37,13 @@
 #include <deigde/gui/event/igdeActionExternOpen.h>
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "projProject.h"
+#include "projWindowMainListener.h"
+#include "projPanelProfiles.h"
+#include "projPanelTestRun.h"
+#include "projPanelUndoHistory.h"
 
 class projIGDEModule;
-class projProject;
-class projPanelProfiles;
-class projPanelTestRun;
-class projPanelUndoHistory;
-class projWindowMainListener;
 class decUnicodeStringList;
 class projConfiguration;
 

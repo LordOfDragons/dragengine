@@ -30,12 +30,12 @@
 #include <dragengine/common/string/decString.h>
 
 #include <dragengine/deObject.h>
+#include <dragengine/src/resources/model/deModel.h>
+#include <dragengine/src/resources/skin/deSkin.h>
 
 // predefinitions
 class mePropField;
 
-class deSkin;
-class deModel;
 class deEngine;
 class dePropFieldType;
 class dePropFieldInstance;

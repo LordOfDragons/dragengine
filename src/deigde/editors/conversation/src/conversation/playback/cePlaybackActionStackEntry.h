@@ -26,10 +26,10 @@
 #define _CEPLAYBACKACTIONSTACKENTRY_H_
 
 #include "../action/ceConversationAction.h"
+#include "ceConversationCondition.h"
+#include "ceConversationTopic.h"
 
 class ceConversationActionList;
-class ceConversationTopic;
-class ceConversationCondition;
 
 
 

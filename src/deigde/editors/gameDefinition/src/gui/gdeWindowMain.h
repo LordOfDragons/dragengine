@@ -32,6 +32,10 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "gdeGameDefinition.h"
+#include "gdeWindowMainListener.h"
+#include "gdeWindowProperties.h"
+#include "gdeViewActiveObject.h"
 
 class gdeMACategory;
 class gdeMAParticleEmitter;
@@ -51,12 +55,8 @@ class gdeMAOCSpeaker;
 class gdeMAOCWorld;
 
 class gdeConfiguration;
-class gdeGameDefinition;
 class gdeIGDEModule;
 class gdeLoadSaveSystem;
-class gdeViewActiveObject;
-class gdeWindowMainListener;
-class gdeWindowProperties;
 
 class igdeStepableTask;
 class decStringList;

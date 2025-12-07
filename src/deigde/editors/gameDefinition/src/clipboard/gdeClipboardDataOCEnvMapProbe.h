@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCENVMAPPROBE_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCEnvMapProbe.h"
 
-class gdeOCEnvMapProbe;
 
 
 

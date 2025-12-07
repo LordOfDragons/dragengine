@@ -30,9 +30,9 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioMicrophone.h>
+#include "deoalAMicrophone.h"
 
 class deAudioOpenAL;
-class deoalAMicrophone;
 class deoalSpeaker;
 class deoalWorld;
 

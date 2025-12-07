@@ -28,9 +28,9 @@
 #include "../../skin/deoglSkinTexture.h"
 
 #include <dragengine/common/math/decMath.h>
+#include "deoglRSkin.h"
 
 class deoglRHTSector;
-class deoglRSkin;
 class deoglSkinShader;
 class deoglTexUnitsConfig;
 

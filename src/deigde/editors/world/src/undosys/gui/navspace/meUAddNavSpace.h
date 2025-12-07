@@ -27,9 +27,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/math/decMath.h>
+#include "meNavigationSpace.h"
+#include "meWorld.h"
 
-class meWorld;
-class meNavigationSpace;
 
 
 

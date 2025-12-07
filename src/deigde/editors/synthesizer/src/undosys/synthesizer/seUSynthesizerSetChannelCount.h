@@ -27,8 +27,8 @@
 #define _SEUSYNTHESIZERSETCHANNELCOUNT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSynthesizer.h"
 
-class seSynthesizer;
 
 
 

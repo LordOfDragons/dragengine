@@ -29,8 +29,8 @@
 #include "../../../gamedef/objectClass/forceField/gdeOCForceField.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 

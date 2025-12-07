@@ -27,9 +27,9 @@
 #define _GDEUOCFORCEFIELDSETFORCE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCForceField.h"
 
-class gdeOCForceField;
-class gdeObjectClass;
 
 
 

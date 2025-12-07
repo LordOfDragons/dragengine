@@ -27,9 +27,9 @@
 #define _GDEUGDSETDESCRIPTION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeGameDefinition.h"
 
 class gdeOCSpeaker;
-class gdeGameDefinition;
 
 
 

@@ -26,8 +26,8 @@
 #define _GDEWPSTIMSKY_H_
 
 #include "../gdeWPSTreeItemModel.h"
+#include "gdeSky.h"
 
-class gdeSky;
 
 
 /**

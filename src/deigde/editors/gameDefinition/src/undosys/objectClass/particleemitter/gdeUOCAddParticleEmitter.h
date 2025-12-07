@@ -27,9 +27,9 @@
 #define _GDEUOCADDPARTICLEEMITTER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCParticleEmitter.h"
 
-class gdeOCParticleEmitter;
-class gdeObjectClass;
 
 
 

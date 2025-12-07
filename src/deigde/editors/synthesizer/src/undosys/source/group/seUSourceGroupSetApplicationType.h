@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceGroup.h>
+#include "seSourceGroup.h"
 
-class seSourceGroup;
 
 
 

@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCSNAPPOINT_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCSnapPoint.h"
 
-class gdeOCSnapPoint;
 
 
 

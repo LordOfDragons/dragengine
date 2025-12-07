@@ -26,9 +26,9 @@
 #define _CEUNDOCACTION_H_
 
 #include <dragengine/deObject.h>
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceConversationAction;
-class ceConversationTopic;
 
 
 

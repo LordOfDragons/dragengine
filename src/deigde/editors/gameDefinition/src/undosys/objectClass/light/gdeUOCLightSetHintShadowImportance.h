@@ -27,9 +27,9 @@
 #define _GDEUOCLIGHTSETHINTSHADOWIMPORTANCE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCLight.h"
 
-class gdeOCLight;
-class gdeObjectClass;
 
 
 

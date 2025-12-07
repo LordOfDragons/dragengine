@@ -26,13 +26,13 @@
 #define _MEHEIGHTTERRAINPROPFIELD_H_
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/src/resources/propfield/dePropField.h>
 
 class meHeightTerrainSector;
 class meUpdateHeightTerrainPropField;
 class meHTVInstance;
 
 class deEngine;
-class dePropField;
 class dePropFieldType;
 class dePropFieldInstance;
 

@@ -40,13 +40,13 @@
 
 #include <dragengine/resources/synthesizer/source/deSynthesizerSourceVisitorIdentify.h>
 #include <dragengine/resources/synthesizer/effect/deSynthesizerEffectVisitorIdentify.h>
+#include "seWindowMainListener.h"
+#include "seSynthesizer.h"
 
 class seIGDEModule;
 class seSource;
 class seEffect;
-class seSynthesizer;
 class seViewSynthesizer;
-class seWindowMainListener;
 
 
 

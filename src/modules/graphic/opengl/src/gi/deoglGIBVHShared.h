@@ -29,6 +29,11 @@
 #include "../utils/bvh/deoglBVH.h"
 
 #include <dragengine/common/math/decMath.h>
+#include "deoglDynamicTBOFloat32.h"
+#include "deoglDynamicTBOUInt32.h"
+#include "deoglDynamicTBOFloat16.h"
+#include "deoglDynamicTBOShared.h"
+#include "deoglDynamicTBOUInt16.h"
 
 class deoglGIBVHSharedLocal;
 class deoglGIInstance;
@@ -44,11 +49,6 @@ class deoglRWorld;
 class deoglSkinState;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;
-class deoglDynamicTBOFloat32;
-class deoglDynamicTBOFloat16;
-class deoglDynamicTBOUInt32;
-class deoglDynamicTBOUInt16;
-class deoglDynamicTBOShared;
 
 
 /**

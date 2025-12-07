@@ -26,8 +26,8 @@
 #define _AEURULETRACKTOSETTRACKBONE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleTrackTo.h"
 
-class aeRuleTrackTo;
 
 
 

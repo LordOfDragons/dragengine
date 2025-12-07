@@ -28,9 +28,9 @@
 
 // includes
 #include "dragengine/common/math/decMath.h"
+#include "meDecal.h"
 
 // predefinitions
-class meDecal;
 class meObject;
 
 

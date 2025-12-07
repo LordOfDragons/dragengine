@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleLimit.h>
+#include "aeRuleLimit.h"
 
-class aeRuleLimit;
 
 
 

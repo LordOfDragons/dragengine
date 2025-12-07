@@ -26,8 +26,8 @@
 #define _SEUSOURCESYNTHCONTARGETMORE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSourceSynthesizer.h"
 
-class seSourceSynthesizer;
 
 
 

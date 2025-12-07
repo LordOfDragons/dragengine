@@ -26,9 +26,9 @@
 #define _DEOGLSHAPE_H_
 
 #include "../deoglBasics.h"
+#include "deoglSharedVBOBlock.h"
 
 class deoglRenderThread;
-class deoglSharedVBOBlock;
 class deoglVAO;
 class deoglRenderPlan;
 

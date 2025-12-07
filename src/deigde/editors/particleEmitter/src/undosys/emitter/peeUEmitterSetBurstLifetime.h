@@ -26,8 +26,8 @@
 #define _PEEUEMITTERSETBURSTLIFETIME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeEmitter.h"
 
-class peeEmitter;
 
 
 

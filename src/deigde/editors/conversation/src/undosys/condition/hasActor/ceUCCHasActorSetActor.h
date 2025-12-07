@@ -26,10 +26,10 @@
 #define _CEUCCHASACTORSETACTORID_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCConditionHasActor.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionHasActor;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 

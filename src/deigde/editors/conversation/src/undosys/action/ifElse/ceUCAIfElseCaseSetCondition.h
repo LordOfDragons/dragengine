@@ -26,11 +26,11 @@
 #define _CEUCAIFELSECASESETCONDITION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAIfElse.h"
+#include "ceConversationCondition.h"
+#include "ceCAIfElseCase.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAIfElse;
-class ceCAIfElseCase;
-class ceConversationCondition;
 
 
 

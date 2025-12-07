@@ -32,12 +32,12 @@
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "meWPSObjectShapeListener.h"
+#include "meWorld.h"
 
 class meObject;
 class meWindowProperties;
-class meWorld;
 class meWPSelection;
-class meWPSObjectShapeListener;
 
 class igdeGDProperty;
 

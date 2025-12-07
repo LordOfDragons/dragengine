@@ -29,9 +29,9 @@
 
 #include <dragengine/common/collection/decIntList.h>
 #include <dragengine/common/math/decMath.h>
+#include "deoglROcclusionMesh.h"
 
 class deoglRComponent;
-class deoglROcclusionMesh;
 class deoglSharedVBOBlock;
 class deoglRenderThread;
 class deoglVAO;

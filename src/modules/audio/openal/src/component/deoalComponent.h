@@ -28,8 +28,8 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioComponent.h>
+#include "deoalAComponent.h"
 
-class deoalAComponent;
 class deoalComponentDebug;
 class deoalComponentTexture;
 class deoalModel;

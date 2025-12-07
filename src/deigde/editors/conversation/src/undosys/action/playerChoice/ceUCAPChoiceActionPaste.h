@@ -26,9 +26,9 @@
 #define _CEUCAPCHOICEACTIONPASTE_H_
 
 #include "../ceUCActionPaste.h"
+#include "ceCAPlayerChoiceOption.h"
+#include "ceCAPlayerChoice.h"
 
-class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
 
 
 

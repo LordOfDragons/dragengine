@@ -27,33 +27,33 @@
 
 #include "../deResource.h"
 #include "../../common/math/decMath.h"
+#include <dragengine/src/resources/network/deNetworkState.h>
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include <dragengine/src/resources/collider/deCollider.h>
+#include <dragengine/src/resources/sound/deSpeaker.h>
+#include <dragengine/src/resources/component/deComponent.h>
+#include <dragengine/src/resources/terrain/heightmap/deHeightTerrain.h>
+#include <dragengine/src/resources/particle/deParticleEmitterInstance.h>
+#include <dragengine/src/resources/sensor/deLumimeter.h>
+#include <dragengine/src/resources/propfield/dePropField.h>
+#include <dragengine/src/resources/sensor/deSoundLevelMeter.h>
+#include <dragengine/src/resources/forcefield/deForceField.h>
+#include <dragengine/src/resources/smoke/deSmokeEmitter.h>
+#include <dragengine/src/resources/camera/deCamera.h>
+#include <dragengine/src/resources/light/deLight.h>
+#include <dragengine/src/resources/probe/deEnvMapProbe.h>
+#include <dragengine/src/resources/billboard/deBillboard.h>
+#include <dragengine/src/resources/navigation/blocker/deNavigationBlocker.h>
+#include <dragengine/src/resources/sensor/deTouchSensor.h>
+#include <dragengine/src/resources/navigation/space/deNavigationSpace.h>
+#include <dragengine/src/resources/navigation/navigator/deNavigator.h>
+#include <dragengine/src/resources/sound/deMicrophone.h>
+#include <dragengine/src/resources/sky/deSkyInstance.h>
 
 class decCollisionFilter;
 class deBaseScriptingCollider;
 class deWorldManager;
 
-class deBillboard;
-class deCamera;
-class deCollider;
-class deComponent;
-class deDebugDrawer;
-class deEnvMapProbe;
-class deForceField;
-class deHeightTerrain;
-class deLight;
-class deLumimeter;
-class deMicrophone;
-class deNavigationBlocker;
-class deNavigationSpace;
-class deNavigator;
-class deNetworkState;
-class deParticleEmitterInstance;
-class dePropField;
-class deSmokeEmitter;
-class deSpeaker;
-class deSoundLevelMeter;
-class deTouchSensor;
-class deSkyInstance;
 
 class deBaseGraphicWorld;
 class deBasePhysicsWorld;

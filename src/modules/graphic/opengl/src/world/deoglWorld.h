@@ -27,9 +27,9 @@
 
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicWorld.h>
+#include "deoglRWorld.h"
 
 class deoglHeightTerrain;
-class deoglRWorld;
 class deoglSharedVideoPlayerList;
 class deoglSkyInstance;
 class deoglComponent;

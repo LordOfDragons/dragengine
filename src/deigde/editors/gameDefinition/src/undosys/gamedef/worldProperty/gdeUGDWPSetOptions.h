@@ -30,9 +30,9 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
+#include "gdeProperty.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
-class gdeProperty;
 
 
 

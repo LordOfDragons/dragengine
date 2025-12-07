@@ -31,11 +31,11 @@
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "seWPControllerListener.h"
+#include "seSynthesizer.h"
 
-class seSynthesizer;
 class seController;
 class seViewSynthesizer;
-class seWPControllerListener;
 
 
 

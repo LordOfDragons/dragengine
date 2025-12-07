@@ -27,9 +27,9 @@
 
 #include "../ceWPTTIMAction.h"
 #include "../../../../../conversation/action/ceCAWait.h"
+#include "ceWPTTIMAWaitActions.h"
+#include "ceWPTTIMAWaitCondition.h"
 
-class ceWPTTIMAWaitCondition;
-class ceWPTTIMAWaitActions;
 
 
 /**

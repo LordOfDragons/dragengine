@@ -28,9 +28,9 @@
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/resources/video/deVideoPlayer.h>
 #include <dragengine/systems/modules/audio/deBaseAudioVideoPlayer.h>
+#include "deoalAVideoPlayer.h"
 
 class deAudioOpenAL;
-class deoalAVideoPlayer;
 class deoalSpeaker;
 
 class deVideoPlayer;

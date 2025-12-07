@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCNAVBLOCKER_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCNavigationBlocker.h"
 
-class gdeOCNavigationBlocker;
 
 
 

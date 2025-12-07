@@ -35,19 +35,19 @@
 #include "peeParameter.h"
 #include "peeControllerList.h"
 #include "peeTypeList.h"
+#include <dragengine/src/resources/world/deWorld.h>
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include <dragengine/src/resources/particle/deParticleEmitter.h>
+#include <dragengine/src/resources/particle/deParticleEmitterInstance.h>
 
 class peeEmitterListener;
 class peeLoadSaveSystem;
 
 class igdeWSky;
 
-class deParticleEmitter;
-class deParticleEmitterInstance;
 class deSkin;
 class deComponent;
-class deDebugDrawer;
 class igdeCamera;
-class deWorld;
 class deLogger;
 
 

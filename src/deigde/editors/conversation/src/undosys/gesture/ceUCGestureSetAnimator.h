@@ -26,8 +26,8 @@
 #define _CEUCGESTURESETANIMATOR_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceGesture.h"
 
-class ceGesture;
 
 
 

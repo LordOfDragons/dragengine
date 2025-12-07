@@ -27,10 +27,10 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include "ceCAPlayerChoiceOption.h"
+#include "ceCAPlayerChoice.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAPlayerChoiceOption;
-class ceCAPlayerChoice;
 
 
 

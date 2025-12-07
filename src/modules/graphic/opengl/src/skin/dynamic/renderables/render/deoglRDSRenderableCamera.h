@@ -28,8 +28,8 @@
 #include <dragengine/deObject.h>
 
 #include "deoglRDSRenderable.h"
+#include "deoglRCamera.h"
 
-class deoglRCamera;
 
 
 

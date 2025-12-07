@@ -29,14 +29,14 @@
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerFlow.h>
+#include "seWPEffectListener.h"
+#include "seSynthesizer.h"
 
 class seEffect;
 class seSource;
-class seSynthesizer;
 class seWPAPanelEffect;
 class seWPAPanelEffectStretch;
 class seViewSynthesizer;
-class seWPEffectListener;
 
 
 

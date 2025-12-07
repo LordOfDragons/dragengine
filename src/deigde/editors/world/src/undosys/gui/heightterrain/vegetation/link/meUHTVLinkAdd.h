@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVRLink.h"
+#include "meHTVegetationLayer.h"
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRLink;
 
 
 

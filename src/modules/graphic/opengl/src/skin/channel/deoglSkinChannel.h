@@ -31,6 +31,7 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include "decMemoryFile.h"
 
 class deoglArrayTexture;
 class deoglCombinedTexture;
@@ -54,7 +55,6 @@ class deSkinPropertyConstructed;
 class deSkinPropertyMapped;
 class deSkinTexture;
 class deVideo;
-class decMemoryFile;
 
 
 

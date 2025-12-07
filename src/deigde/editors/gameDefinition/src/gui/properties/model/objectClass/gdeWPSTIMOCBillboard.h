@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCBILLBOARD_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCBillboard.h"
 
-class gdeOCBillboard;
 
 
 /**

@@ -28,10 +28,10 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/properties/igdeWPCamera.h>
 #include <deigde/gui/properties/igdeWPSky.h>
+#include "gdeWPViewListener.h"
+#include "gdeGameDefinition.h"
 
 class gdeWindowProperties;
-class gdeWPViewListener;
-class gdeGameDefinition;
 
 
 

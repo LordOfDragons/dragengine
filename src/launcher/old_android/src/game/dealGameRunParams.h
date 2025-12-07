@@ -26,8 +26,8 @@
 #define _DEALGAMERUNPARAMS_H_
 
 #include "../common/string/decString.h"
+#include "dealGameProfile.h"
 
-class dealGameProfile;
 
 
 

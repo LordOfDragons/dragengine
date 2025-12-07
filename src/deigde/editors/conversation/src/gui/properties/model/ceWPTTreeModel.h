@@ -26,8 +26,8 @@
 #define _CEWPTTREEMODEL_H_
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "ceConversation.h"
 
-class ceConversation;
 class ceConversationAction;
 class ceConversationCondition;
 class ceWPTTIMAction;

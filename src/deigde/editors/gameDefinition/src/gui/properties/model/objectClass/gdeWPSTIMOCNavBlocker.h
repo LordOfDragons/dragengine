@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCNAVBLOCKER_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCNavigationBlocker.h"
 
-class gdeOCNavigationBlocker;
 
 
 /**

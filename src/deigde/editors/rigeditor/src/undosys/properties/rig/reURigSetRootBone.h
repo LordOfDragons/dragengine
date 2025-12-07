@@ -26,9 +26,9 @@
 #define _REURIGSETROOTBONE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRig.h"
+#include "reRigBone.h"
 
-class reRig;
-class reRigBone;
 
 
 

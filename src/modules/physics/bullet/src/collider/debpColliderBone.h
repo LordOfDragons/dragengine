@@ -30,15 +30,15 @@
 
 #include <dragengine/common/collection/decPointerOrderedSet.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include "debpBulletShape.h"
 
 class debpColliderConstraint;
-class debpBulletShape;
 class debpPhysicsBody;
 
 class btGhostObject;
 class btCollisionObject;
 
-class deDebugDrawer;
 class deDebugDrawerShape;
 class deRigBone;
 

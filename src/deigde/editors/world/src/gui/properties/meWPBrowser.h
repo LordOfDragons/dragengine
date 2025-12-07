@@ -35,9 +35,9 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerBox.h>
+#include "meWorld.h"
+#include "meWPBrowserListener.h"
 
-class meWorld;
-class meWPBrowserListener;
 class meWindowProperties;
 
 class igdeGDCategory;

@@ -26,10 +26,10 @@
 #define _CEUCAASPEAKEYESLAREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceStrip.h"
+#include "ceCAActorSpeak.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorSpeak;
-class ceConversationTopic;
-class ceStrip;
 
 
 

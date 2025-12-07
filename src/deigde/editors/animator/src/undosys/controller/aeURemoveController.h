@@ -29,9 +29,9 @@
 #include "../../animator/link/aeLinkList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeAnimator.h"
+#include "aeController.h"
 
-class aeController;
-class aeAnimator;
 
 
 

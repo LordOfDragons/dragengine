@@ -29,9 +29,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleForeignState.h"
 
 // predefinitions
-class aeRuleForeignState;
 
 
 

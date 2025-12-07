@@ -29,13 +29,13 @@
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "seWPSourceListener.h"
+#include "seSynthesizer.h"
 
 
 
-class seSynthesizer;
 class seSource;
 class seViewSynthesizer;
-class seWPSourceListener;
 class seWPAPanelSourceSound;
 class seWPAPanelSourceWave;
 class seWPAPanelSourceChain;

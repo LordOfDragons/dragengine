@@ -26,8 +26,8 @@
 #define _SEUPROPERTYNODETEXTSETPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "sePropertyNodeText.h"
 
-class sePropertyNodeText;
 
 
 

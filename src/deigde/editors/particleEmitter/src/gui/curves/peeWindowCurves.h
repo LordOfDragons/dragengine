@@ -31,11 +31,11 @@
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/gui/resources/igdeIcon.h>
 #include <deigde/undo/igdeUndo.h>
+#include "peeEmitter.h"
+#include "peeWindowCurvesListener.h"
 
-class peeEmitter;
 class peeParameter;
 class peeType;
-class peeWindowCurvesListener;
 class peeWindowMain;
 
 

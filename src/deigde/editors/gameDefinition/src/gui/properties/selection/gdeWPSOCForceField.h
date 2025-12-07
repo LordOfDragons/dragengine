@@ -34,11 +34,11 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeWPSOCForceFieldListener.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeWindowProperties;
-class gdeWPSOCForceFieldListener;
 
 
 

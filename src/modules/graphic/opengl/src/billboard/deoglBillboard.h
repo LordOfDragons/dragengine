@@ -29,9 +29,9 @@
 
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicBillboard.h>
+#include "deoglRBillboard.h"
 
 class deGraphicOpenGl;
-class deoglRBillboard;
 class deoglDynamicSkin;
 class deoglSkinStateController;
 class deoglWorld;

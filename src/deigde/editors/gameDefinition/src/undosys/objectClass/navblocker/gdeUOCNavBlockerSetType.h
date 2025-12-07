@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
+#include "gdeObjectClass.h"
+#include "gdeOCNavigationBlocker.h"
 
-class gdeOCNavigationBlocker;
-class gdeObjectClass;
 
 
 

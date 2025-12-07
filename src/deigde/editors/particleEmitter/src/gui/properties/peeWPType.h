@@ -35,12 +35,12 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "peeEmitter.h"
+#include "peeWPTypeListener.h"
 
-class peeEmitter;
 class peeType;
 class peeParameter;
 class peeWindowProperties;
-class peeWPTypeListener;
 
 
 

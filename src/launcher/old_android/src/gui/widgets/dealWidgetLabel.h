@@ -27,9 +27,9 @@
 
 #include "dealWidget.h"
 #include "../../common/string/decString.h"
+#include "dealFont.h"
 
 
-class dealFont;
 
 
 /**

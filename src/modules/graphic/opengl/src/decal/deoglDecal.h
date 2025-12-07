@@ -28,9 +28,9 @@
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicDecal.h>
+#include "deoglRDecal.h"
 
 class deoglDynamicSkin;
-class deoglRDecal;
 class deoglComponent;
 
 class deGraphicOpenGl;

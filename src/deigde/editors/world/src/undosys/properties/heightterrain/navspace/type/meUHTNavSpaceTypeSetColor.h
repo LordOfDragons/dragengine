@@ -28,8 +28,8 @@
 #include <dragengine/common/math/decMath.h>
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHeightTerrainNavSpaceType.h"
 
-class meHeightTerrainNavSpaceType;
 
 
 

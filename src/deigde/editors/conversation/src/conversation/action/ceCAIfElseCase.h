@@ -28,8 +28,8 @@
 #include <dragengine/deObject.h>
 
 #include "ceConversationActionList.h"
+#include "ceConversationCondition.h"
 
-class ceConversationCondition;
 
 
 /**

@@ -26,9 +26,9 @@
 #define _REUADDPUSH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigPush.h"
+#include "reRig.h"
 
-class reRig;
-class reRigPush;
 
 
 

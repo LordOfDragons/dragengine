@@ -55,12 +55,13 @@
 #include <dragengine/filesystem/deVirtualFileSystem.h>
 #include <dragengine/resources/rig/deRig.h>
 #include <dragengine/resources/skin/deSkin.h>
+#include "igdeGameProject.h"
+#include "igdeGameDefinition.h"
 
 
 class igdeEditorModuleManager;
 class igdeEnvironmentIGDE;
 class igdeGDPreviewManager;
-class igdeGameProject;
 class igdeLoadSaveSystem;
 class igdeTaskSyncGameDefinition;
 class igdeTemplateList;
@@ -70,7 +71,6 @@ class igdeUIHelper;
 
 class deException;
 class decTimer;
-class igdeGameDefinition;
 class igdeGameDefinitionList;
 class decUnicodeStringList;
 

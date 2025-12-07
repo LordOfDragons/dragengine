@@ -26,9 +26,9 @@
 #define _PEEUPARAMETERSETCONTROLLERSPREAD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeController.h"
+#include "peeType.h"
 
-class peeType;
-class peeController;
 class peeParameter;
 
 

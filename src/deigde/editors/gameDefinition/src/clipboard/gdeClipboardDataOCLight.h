@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCLIGHT_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCLight.h"
 
-class gdeOCLight;
 
 
 

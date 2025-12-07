@@ -27,9 +27,9 @@
 #define _GDEUOCSNAPPOINTTOGGLESNAPTOROTATION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeOCSnapPoint.h"
+#include "gdeObjectClass.h"
 
-class gdeOCSnapPoint;
-class gdeObjectClass;
 
 
 

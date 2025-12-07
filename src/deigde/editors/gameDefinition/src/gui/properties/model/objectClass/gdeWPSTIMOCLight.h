@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCLIGHT_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCLight.h"
 
-class gdeOCLight;
 
 
 /**

@@ -30,12 +30,12 @@
 #include <dragengine/deObject.h>
 
 #include <dragengine/common/string/decString.h>
+#include <dragengine/src/resources/image/deImage.h>
 
 // predefinitions
 class feFont;
 
 class deEngine;
-class deImage;
 
 
 

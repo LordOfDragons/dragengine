@@ -26,9 +26,9 @@
 #define _CEUCACOORDSYSADDSETCOORDSYSID_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCACoordSystemAdd.h"
+#include "ceConversationTopic.h"
 
-class ceCACoordSystemAdd;
-class ceConversationTopic;
 
 
 

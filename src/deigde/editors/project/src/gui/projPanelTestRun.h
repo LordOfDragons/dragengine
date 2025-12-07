@@ -39,9 +39,9 @@
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/threading/deMutex.h>
+#include "projProject.h"
+#include "projPanelTestRunListener.h"
 
-class projProject;
-class projPanelTestRunListener;
 class projTestRunner;
 class projWindowMain;
 

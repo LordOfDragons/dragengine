@@ -29,9 +29,9 @@
 
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/string/decStringList.h>
+#include "igdeGameDefinition.h"
 
 class igdeWindowMain;
-class igdeGameDefinition;
 
 
 

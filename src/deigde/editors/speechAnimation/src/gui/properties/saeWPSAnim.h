@@ -33,10 +33,10 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "saeSAnimation.h"
+#include "saeWPSAnimListener.h"
 
 class saeWindowProperties;
-class saeWPSAnimListener;
-class saeSAnimation;
 class saePhoneme;
 class saeWord;
 

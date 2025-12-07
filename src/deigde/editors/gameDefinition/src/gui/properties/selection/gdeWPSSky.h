@@ -36,13 +36,13 @@
 #include <deigde/gui/event/igdeActionContextMenu.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSSkyListener.h"
 
-class gdeGameDefinition;
 class gdeSky;
 class gdeSkyController;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSSkyListener;
 
 
 

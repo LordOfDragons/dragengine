@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCBILLBOARD_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCBillboard.h"
 
-class gdeOCBillboard;
 
 
 

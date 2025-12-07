@@ -27,8 +27,8 @@
 #define _SEUSETSOURCESOUNDMAXSPEED_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSourceSound.h"
 
-class seSourceSound;
 
 
 

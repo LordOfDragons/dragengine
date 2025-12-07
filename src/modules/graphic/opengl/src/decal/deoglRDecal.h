@@ -33,18 +33,18 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/common/collection/decPointerLinkedList.h>
+#include "deoglSharedSPBElement.h"
+#include "deoglRDynamicSkin.h"
+#include "deoglSharedVBOBlock.h"
+#include "deoglRSkin.h"
 
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
 class deoglRenderPlan;
 class deoglRComponent;
-class deoglRDynamicSkin;
 class deoglRenderThread;
-class deoglRSkin;
 class deoglSPBlockUBO;
 class deoglShaderProgram;
-class deoglSharedVBOBlock;
-class deoglSharedSPBElement;
 class deoglShaderParameterBlock;
 class deoglSkinShader;
 class deoglSkinState;

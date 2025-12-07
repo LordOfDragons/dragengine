@@ -26,9 +26,9 @@
 #define _CEUCAGAMECMDSETCOMMAND_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAGameCommand.h"
+#include "ceConversationTopic.h"
 
-class ceCAGameCommand;
-class ceConversationTopic;
 
 
 

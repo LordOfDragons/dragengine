@@ -30,8 +30,8 @@
 #include <dragengine/common/string/unicode/decUnicodeString.h>
 
 #include "ceConversationActionList.h"
+#include "ceConversationCondition.h"
 
-class ceConversationCondition;
 
 
 /**

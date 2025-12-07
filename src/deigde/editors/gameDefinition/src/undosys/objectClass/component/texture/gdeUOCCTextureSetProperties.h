@@ -29,10 +29,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decStringDictionary.h>
+#include "gdeOCComponentTexture.h"
+#include "gdeObjectClass.h"
+#include "gdeOCComponent.h"
 
-class gdeOCComponent;
-class gdeOCComponentTexture;
-class gdeObjectClass;
 
 
 

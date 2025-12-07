@@ -29,9 +29,9 @@
 // includes
 #include "dragengine/common/shape/decShapeVisitor.h"
 #include "dragengine/common/math/decMath.h"
+#include "reRigShape.h"
 
 // predefintions
-class reRigShape;
 class deEngine;
 
 

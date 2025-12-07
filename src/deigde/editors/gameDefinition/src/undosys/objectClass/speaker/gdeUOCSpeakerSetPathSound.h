@@ -27,9 +27,9 @@
 #define _GDEUOCSPEAKERSETPATHSOUND_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeOCSpeaker.h"
+#include "gdeObjectClass.h"
 
-class gdeOCSpeaker;
-class gdeObjectClass;
 
 
 

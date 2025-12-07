@@ -37,9 +37,9 @@
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "projPanelProfilesListener.h"
+#include "projProject.h"
 
-class projProject;
-class projPanelProfilesListener;
 class projProfile;
 class projWindowMain;
 

@@ -27,8 +27,8 @@
 #define _AEURULEGROUPTOGGLEENABLEROTATION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleGroup.h"
 
-class aeRuleGroup;
 
 
 

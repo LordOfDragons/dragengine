@@ -26,9 +26,9 @@
 #define _CEUCAACTORREMOVESETACTORID_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAActorRemove.h"
+#include "ceConversationTopic.h"
 
-class ceCAActorRemove;
-class ceConversationTopic;
 
 
 

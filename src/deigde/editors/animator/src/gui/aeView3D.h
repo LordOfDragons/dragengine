@@ -31,10 +31,10 @@
 #include <deigde/gui/event/igdeMouseKeyListener.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
 #include <deigde/undo/igdeUndo.h>
+#include "aeAnimator.h"
 
 
 class aeWindowMain;
-class aeAnimator;
 
 
 

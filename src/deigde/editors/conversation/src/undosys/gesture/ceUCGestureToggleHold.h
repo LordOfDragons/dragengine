@@ -26,8 +26,8 @@
 #define _CEUCGESTURETOGGLEHOLD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceGesture.h"
 
-class ceGesture;
 
 
 

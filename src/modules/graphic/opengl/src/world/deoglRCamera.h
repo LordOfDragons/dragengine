@@ -29,11 +29,11 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/curve/decCurveBezier.h>
+#include "deoglRWorld.h"
 
 class deoglREffect;
 class deoglRenderPlan;
 class deoglRenderThread;
-class deoglRWorld;
 class deoglTexture;
 class deoglVR;
 

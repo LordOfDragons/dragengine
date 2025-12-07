@@ -27,9 +27,9 @@
 #define _GDEUOCNAVBLOCKERSETLAYER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCNavigationBlocker.h"
 
-class gdeOCNavigationBlocker;
-class gdeObjectClass;
 
 
 

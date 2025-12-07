@@ -27,9 +27,9 @@
 
 #include "../meBaseUndoMove.h"
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "meWorld.h"
 
 class meObjectList;
-class meWorld;
 
 
 

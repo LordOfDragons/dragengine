@@ -30,10 +30,10 @@
 #include <dragengine/common/string/decString.h>
 
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/src/resources/skin/deSkin.h>
 
 // predefinitions
 class deEngine;
-class deSkin;
 class reRig;
 
 

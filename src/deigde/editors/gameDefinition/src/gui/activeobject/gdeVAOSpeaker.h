@@ -28,8 +28,8 @@
 #include "gdeVAOSubObject.h"
 
 #include <dragengine/resources/debug/deDebugDrawer.h>
+#include "gdeOCSpeaker.h"
 
-class gdeOCSpeaker;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 

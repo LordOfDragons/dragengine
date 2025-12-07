@@ -31,8 +31,8 @@
 #include "../../../synthesizer/effect/seEffectList.h"
 #include "../../../synthesizer/link/seLinkList.h"
 #include "../../../synthesizer/controller/seControllerList.h"
+#include "seSource.h"
 
-class seSource;
 
 
 

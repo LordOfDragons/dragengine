@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCFORCEFIELD_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCForceField.h"
 
-class gdeOCForceField;
 
 
 /**

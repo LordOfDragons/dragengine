@@ -28,13 +28,13 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringDictionary.h>
+#include <dragengine/src/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/src/resources/skin/deSkin.h>
 
 class meObject;
 
 class igdeEnvironment;
 
-class deDynamicSkin;
-class deSkin;
 
 
 

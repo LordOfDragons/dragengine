@@ -32,6 +32,11 @@
 #include <deigde/editableentity/igdeEditableEntity.h>
 
 #include <dragengine/common/collection/decObjectSet.h>
+#include <dragengine/src/resources/world/deWorld.h>
+#include <dragengine/src/resources/sound/deMicrophone.h>
+#include <dragengine/src/resources/synthesizer/deSynthesizer.h>
+#include <dragengine/src/resources/sound/deSpeaker.h>
+#include <dragengine/src/resources/synthesizer/deSynthesizerInstance.h>
 
 class seEffect;
 class seLoadSaveSystem;
@@ -40,11 +45,6 @@ class seSynthesizerNotifier;
 
 class igdeEnvironment;
 
-class deWorld;
-class deSynthesizer;
-class deSynthesizerInstance;
-class deSpeaker;
-class deMicrophone;
 
 
 

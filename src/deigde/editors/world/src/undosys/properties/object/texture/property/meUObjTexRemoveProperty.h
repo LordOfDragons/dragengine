@@ -26,8 +26,8 @@
 #define _MEUOBJTEXREMOVEPROPERTY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meObjectTexture.h"
 
-class meObjectTexture;
 
 
 

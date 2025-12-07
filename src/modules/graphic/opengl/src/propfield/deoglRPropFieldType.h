@@ -31,12 +31,12 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/deObject.h>
+#include "deoglRModel.h"
+#include "deoglRSkin.h"
 
 class deoglPFClusterGenerator;
 class deoglPropFieldCluster;
-class deoglRModel;
 class deoglRPropField;
-class deoglRSkin;
 class deoglSkinShader;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;

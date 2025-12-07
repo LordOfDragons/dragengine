@@ -30,10 +30,10 @@
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/composed/igdeEditPoint.h>
+#include "feFont.h"
+#include "feWPFontListener.h"
 
-class feFont;
 class feWindowProperties;
-class feWPFontListener;
 
 
 

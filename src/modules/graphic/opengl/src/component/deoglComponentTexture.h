@@ -26,10 +26,10 @@
 #define _DEOGLCOMPONENTCOMPONENT_H_
 
 #include "../skin/dynamic/deoglDynamicSkinListener.h"
+#include "deoglRComponentTexture.h"
 
 class deoglComponent;
 class deoglDynamicSkin;
-class deoglRComponentTexture;
 class deoglSkin;
 class deoglSkinStateController;
 class deComponentTexture;

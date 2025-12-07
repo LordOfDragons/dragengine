@@ -29,10 +29,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeFilePattern.h"
+#include "gdeProperty.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
-class gdeProperty;
-class gdeFilePattern;
 
 
 

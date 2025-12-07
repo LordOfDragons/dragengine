@@ -33,11 +33,11 @@
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/resources/network/deNetworkMessage.h>
 #include <dragengine/systems/modules/network/deBaseNetworkModule.h>
+#include <dragengine/src/resources/network/deNetworkMessage.h>
 
 class debnSocket;
 class debnServer;
 class debnConnection;
-class deNetworkMessage;
 
 /*
 

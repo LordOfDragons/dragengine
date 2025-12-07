@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCNAVSPACE_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCNavigationSpace.h"
 
-class gdeOCNavigationSpace;
 
 
 /**

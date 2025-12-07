@@ -30,14 +30,14 @@
 #include <dragengine/common/utils/decCollisionFilter.h>
 #include <dragengine/common/collection/decObjectOrderedSet.h>
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
+#include <dragengine/src/resources/collider/deCollider.h>
+#include <dragengine/src/resources/sensor/deTouchSensor.h>
+#include <dragengine/src/resources/world/deWorld.h>
 
 class deScriptingDragonScript;
 
-class deCollider;
 class deColliderVolume;
 class decShapeList;
-class deTouchSensor;
-class deWorld;
 
 class dsValue;
 class dsRealObject;

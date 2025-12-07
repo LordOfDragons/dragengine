@@ -27,8 +27,8 @@
 #define _SEUSOURCEWAVESETMAXFREQUENCY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSourceWave.h"
 
-class seSourceWave;
 
 
 /**

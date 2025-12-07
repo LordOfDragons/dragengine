@@ -26,8 +26,8 @@
 #define _DEOGLRCANVASVIDEOPLAYER_H_
 
 #include "deoglRCanvas.h"
+#include "deoglRVideoPlayer.h"
 
-class deoglRVideoPlayer;
 
 
 /**

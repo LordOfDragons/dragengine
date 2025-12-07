@@ -26,8 +26,8 @@
 #define _MEUOBJECTREMOVEPROPERTY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meObject.h"
 
-class meObject;
 
 
 

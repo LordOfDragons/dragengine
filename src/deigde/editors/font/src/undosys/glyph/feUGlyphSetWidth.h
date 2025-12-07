@@ -26,8 +26,8 @@
 #define _FEUGLYPHSETWIDTH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "feFontGlyph.h"
 
-class feFontGlyph;
 
 
 

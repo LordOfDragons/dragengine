@@ -26,9 +26,9 @@
 #define _MEWPUNDOHISTORY_H_
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "aeAnimator.h"
+#include "aeWPUndoHistoryListener.h"
 
-class aeAnimator;
-class aeWPUndoHistoryListener;
 
 
 

@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCSPEAKER_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCSpeaker.h"
 
-class gdeOCSpeaker;
 
 
 

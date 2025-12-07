@@ -27,9 +27,9 @@
 #define _GDEUOCBILLBOARDTOGGLESIZEFIXEDTOSCREEN_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCBillboard.h"
 
-class gdeOCBillboard;
-class gdeObjectClass;
 
 
 

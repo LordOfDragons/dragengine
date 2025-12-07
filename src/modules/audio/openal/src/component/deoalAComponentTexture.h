@@ -26,9 +26,9 @@
 #define _DEOALACOMPONENTTEXTURE_H_
 
 #include <dragengine/deObject.h>
+#include "deoalASkin.h"
 
 class deoalAComponent;
-class deoalASkin;
 class deoalSkinTexture;
 
 

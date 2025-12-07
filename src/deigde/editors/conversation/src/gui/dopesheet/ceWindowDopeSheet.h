@@ -40,12 +40,12 @@
 #include <dragengine/resources/canvas/deCanvasView.h>
 #include <dragengine/resources/sound/deSpeaker.h>
 #include <dragengine/resources/sound/deSound.h>
+#include "ceConversation.h"
+#include "ceWindowDopeSheetListener.h"
 
 
-class ceWindowDopeSheetListener;
 class ceViewDopeSheet;
 class ceWindowMain;
-class ceConversation;
 class ceCameraShot;
 class ceConversationFile;
 class ceConversationTopic;

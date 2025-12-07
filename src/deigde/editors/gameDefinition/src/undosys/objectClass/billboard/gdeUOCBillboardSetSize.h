@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "gdeObjectClass.h"
+#include "gdeOCBillboard.h"
 
-class gdeOCBillboard;
-class gdeObjectClass;
 
 
 

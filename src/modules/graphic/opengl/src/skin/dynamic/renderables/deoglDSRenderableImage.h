@@ -26,10 +26,10 @@
 #define _DEOGLDSRENDERABLEIMAGE_H_
 
 #include "deoglDSRenderable.h"
+#include "deoglRDSRenderableImage.h"
 
 class deoglImage;
 class deDSRenderableImage;
-class deoglRDSRenderableImage;
 
 
 

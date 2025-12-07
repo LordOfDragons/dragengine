@@ -31,16 +31,16 @@
 #include <dragengine/deObject.h>
 #include "../shape/reRigShapeList.h"
 #include "../constraint/reRigConstraintList.h"
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include <dragengine/src/resources/collider/deColliderVolume.h>
 
 class reRig;
 class reRigShape;
 class reRigConstraint;
 class deCollider;
-class deColliderVolume;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 class deEngine;
-class deDebugDrawer;
 
 
 

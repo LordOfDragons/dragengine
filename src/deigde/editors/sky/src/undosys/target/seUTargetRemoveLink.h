@@ -28,9 +28,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/sky/deSkyLayer.h>
+#include "seLink.h"
+#include "seLayer.h"
 
-class seLayer;
-class seLink;
 
 
 /**

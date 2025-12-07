@@ -29,11 +29,11 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/src/resources/model/deModel.h>
+#include <dragengine/src/resources/skin/deSkin.h>
 
 class meHeightTerrainPFLayer;
 
-class deSkin;
-class deModel;
 class deEngine;
 
 

@@ -28,9 +28,9 @@
 #include <png.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "decBaseFileReader.h"
 
 class decString;
-class decBaseFileReader;
 class deVideoApng;
 
 

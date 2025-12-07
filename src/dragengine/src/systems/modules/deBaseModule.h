@@ -26,8 +26,8 @@
 #define _DEBASEMODULE_H_
 
 #include "../../common/string/decString.h"
+#include "deVirtualFileSystem.h"
 
-class deVirtualFileSystem;
 class deEngine;
 class deOS;
 class deModuleParameter;

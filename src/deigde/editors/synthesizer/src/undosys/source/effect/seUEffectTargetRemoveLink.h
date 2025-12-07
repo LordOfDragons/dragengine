@@ -26,9 +26,9 @@
 #define _SEUEFFECTTARGETREMOVELINK_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLink.h"
+#include "seEffect.h"
 
-class seEffect;
-class seLink;
 class seControllerTarget;
 
 

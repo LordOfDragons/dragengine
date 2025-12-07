@@ -28,9 +28,9 @@
 #include <dragengine/common/shape/decShapeList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decPointerList.h>
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
 
 class deNavigationSpace;
-class deDebugDrawer;
 class deDebugDrawerShape;
 class deDebugDrawerShapeFace;
 class deOcclusionMesh;

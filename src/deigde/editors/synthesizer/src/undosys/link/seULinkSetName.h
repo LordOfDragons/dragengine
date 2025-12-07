@@ -26,8 +26,8 @@
 #define _SEULINKSETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLink.h"
 
-class seLink;
 
 
 

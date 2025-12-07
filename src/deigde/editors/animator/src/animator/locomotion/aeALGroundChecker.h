@@ -28,9 +28,9 @@
 
 // includes
 #include <dragengine/systems/modules/scripting/deBaseScriptingCollider.h>
+#include <dragengine/src/resources/collider/deCollisionInfo.h>
 
 // predefinitions
-class deCollisionInfo;
 
 
 

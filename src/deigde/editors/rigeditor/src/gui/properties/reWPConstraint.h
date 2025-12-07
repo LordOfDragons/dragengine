@@ -30,11 +30,11 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "reRig.h"
+#include "reWPConstraintListener.h"
+#include "reRigConstraint.h"
 
 class reWindowProperties;
-class reRig;
-class reRigConstraint;
-class reWPConstraintListener;
 
 
 

@@ -34,15 +34,15 @@
 
 #include <dragengine/common/collection/decObjectList.h>
 #include <dragengine/common/math/decMath.h>
+#include "deoglRPTSkyLightFindContent.h"
+#include "deoglRPTSkyLightBuildRT.h"
+#include "deoglRPTSkyLightGIFindContent.h"
+#include "deoglRPTSkyLightGIUpdateRT.h"
 
 
 class deoglRenderThread;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
-class deoglRPTSkyLightFindContent;
-class deoglRPTSkyLightBuildRT;
-class deoglRPTSkyLightGIFindContent;
-class deoglRPTSkyLightGIUpdateRT;
 class deoglRenderPlan;
 class deoglOcclusionTest;
 

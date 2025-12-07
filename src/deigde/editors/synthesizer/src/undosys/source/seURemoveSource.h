@@ -27,9 +27,9 @@
 #define _SEUREMOVESOURCE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSource.h"
+#include "seSynthesizer.h"
 
-class seSource;
-class seSynthesizer;
 
 
 

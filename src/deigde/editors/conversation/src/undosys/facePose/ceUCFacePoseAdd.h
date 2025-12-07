@@ -26,9 +26,9 @@
 #define _CEUCFACEPOSEADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceFacePose.h"
+#include "ceConversation.h"
 
-class ceConversation;
-class ceFacePose;
 
 
 

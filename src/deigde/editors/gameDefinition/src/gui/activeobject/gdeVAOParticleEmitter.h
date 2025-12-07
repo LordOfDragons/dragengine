@@ -30,8 +30,8 @@
 #include <dragengine/resources/debug/deDebugDrawer.h>
 #include <dragengine/resources/particle/deParticleEmitter.h>
 #include <dragengine/resources/particle/deParticleEmitterInstance.h>
+#include "gdeOCParticleEmitter.h"
 
-class gdeOCParticleEmitter;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 

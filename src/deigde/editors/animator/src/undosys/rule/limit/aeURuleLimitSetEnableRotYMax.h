@@ -26,8 +26,8 @@
 #define _AEURULELIMITSETENABLEROTYMAX_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleLimit.h"
 
-class aeRuleLimit;
 
 
 

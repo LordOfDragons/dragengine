@@ -26,9 +26,9 @@
 #define _MEUHTNAVSPACEFACEREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHeightTerrainNavSpaceFace.h"
+#include "meHeightTerrainNavSpaceType.h"
 
-class meHeightTerrainNavSpaceType;
-class meHeightTerrainNavSpaceFace;
 
 class decObjectOrderedSet;
 

@@ -30,12 +30,12 @@
 #include <deigde/gui/event/igdeMouseKeyListener.h>
 
 #include <dragengine/resources/canvas/deCanvasPaint.h>
+#include "ceConversation.h"
+#include "ceViewConversationListener.h"
 
 
-class ceViewConversationListener;
 class ceCanvasRuleOfThirdsAid;
 class ceWindowMain;
-class ceConversation;
 class decBoundary;
 
 

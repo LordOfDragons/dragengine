@@ -30,11 +30,11 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/decString.h>
+#include "meHeightTerrainTexture.h"
+#include "meWorld.h"
 
 // predefinitions
-class meWorld;
 class meHeightTerrainSector;
-class meHeightTerrainTexture;
 
 
 

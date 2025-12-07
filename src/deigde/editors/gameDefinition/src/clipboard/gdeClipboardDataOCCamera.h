@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCCAMERA_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCCamera.h"
 
-class gdeOCCamera;
 
 
 

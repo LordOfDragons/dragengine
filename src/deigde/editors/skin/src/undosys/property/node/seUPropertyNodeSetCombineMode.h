@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNode.h>
+#include "sePropertyNode.h"
 
-class sePropertyNode;
 
 
 

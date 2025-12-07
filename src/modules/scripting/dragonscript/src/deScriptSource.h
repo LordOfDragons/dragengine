@@ -29,10 +29,10 @@
 // includes
 #include "dragengine/common/file/decPath.h"
 #include <libdscript/dsScriptSource.h>
+#include "decBaseFileReader.h"
 
 // predefinitions
 class deVirtualFileSystem;
-class decBaseFileReader;
 class decPath;
 
 

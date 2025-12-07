@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/curve/decCurveBezier.h>
+#include "seLink.h"
 
-class seLink;
 
 
 /**

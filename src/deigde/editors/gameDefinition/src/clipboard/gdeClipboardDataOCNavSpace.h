@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCNAVSPACE_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCNavigationSpace.h"
 
-class gdeOCNavigationSpace;
 
 
 

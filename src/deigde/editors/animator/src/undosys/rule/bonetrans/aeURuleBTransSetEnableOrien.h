@@ -26,8 +26,8 @@
 #define _AEURULEBTRANSSETENABLEORIEN_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleBoneTransformator.h"
 
-class aeRuleBoneTransformator;
 
 
 

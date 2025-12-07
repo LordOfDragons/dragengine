@@ -27,8 +27,8 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/sky/deSkyLayer.h>
+#include "deoglRSkin.h"
 
-class deoglRSkin;
 class deoglRSkyControllerTarget;
 
 

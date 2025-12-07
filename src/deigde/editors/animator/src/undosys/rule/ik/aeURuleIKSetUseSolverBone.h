@@ -29,9 +29,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleInverseKinematic.h"
 
 // predefinitions
-class aeRuleInverseKinematic;
 
 
 

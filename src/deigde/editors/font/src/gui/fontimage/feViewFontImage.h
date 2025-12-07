@@ -28,11 +28,11 @@
 #include <deigde/gui/igdeScrollBar.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/layout/igdeContainerBorder.h>
+#include "feFont.h"
+#include "feViewFontImageListener.h"
+#include "feViewFIImage.h"
 
 class feWindowMain;
-class feViewFIImage;
-class feViewFontImageListener;
-class feFont;
 
 
 

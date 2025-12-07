@@ -26,8 +26,8 @@
 #define _MEUDECALREMOVEPROPERTY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meDecal.h"
 
-class meDecal;
 
 
 

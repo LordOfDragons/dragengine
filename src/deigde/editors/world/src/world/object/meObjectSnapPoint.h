@@ -32,13 +32,13 @@
 #include <dragengine/common/string/decString.h>
 
 #include <deigde/gui/wrapper/debugdrawer/igdeWDebugDrawerShape.h>
+#include <dragengine/src/resources/collider/deColliderVolume.h>
 
 class meWorld;
 class meColliderOwner;
 class igdeGDCSnapPoint;
 class igdeWDebugDrawerShape;
 
-class deColliderVolume;
 
 
 

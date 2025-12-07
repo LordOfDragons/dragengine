@@ -27,8 +27,8 @@
 #define _SEUSOURCECHAINPATHSOUNDADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSourceChain.h"
 
-class seSourceChain;
 
 
 

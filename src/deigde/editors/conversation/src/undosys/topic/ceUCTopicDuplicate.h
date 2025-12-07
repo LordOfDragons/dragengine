@@ -26,9 +26,9 @@
 #define _CEUCTOPICDUPLICATE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationFile.h"
+#include "ceConversationTopic.h"
 
-class ceConversationFile;
-class ceConversationTopic;
 
 
 

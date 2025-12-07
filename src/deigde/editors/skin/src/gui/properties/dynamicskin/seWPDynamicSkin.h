@@ -34,11 +34,11 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "seSkin.h"
+#include "seWPDynamicSkinListener.h"
 
-class seSkin;
 class seDynamicSkinRenderable;
 class seWindowProperties;
-class seWPDynamicSkinListener;
 
 
 

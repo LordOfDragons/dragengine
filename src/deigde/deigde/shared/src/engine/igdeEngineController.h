@@ -26,11 +26,11 @@
 #define _IGDEENGINECONTROLLER_H_
 
 #include <dragengine/systems/deModuleSystem.h>
+#include <dragengine/src/resources/rendering/deRenderWindow.h>
 
 class deEngine;
 class deLoadableModule;
 class igdeMainWindow;
-class deRenderWindow;
 class igdeGameProject;
 class deInternalModule;
 class igdeWidget;

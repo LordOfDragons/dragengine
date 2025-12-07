@@ -26,9 +26,9 @@
 #define _DEOALSKIN_H_
 
 #include <dragengine/systems/modules/audio/deBaseAudioSkin.h>
+#include "deoalASkin.h"
 
 class deAudioOpenAL;
-class deoalASkin;
 
 class deSkin;
 

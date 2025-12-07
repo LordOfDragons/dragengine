@@ -27,9 +27,9 @@
 
 #include <deigde/gui/igdeViewRenderWindow.h>
 #include <deigde/gui/event/igdeMouseCameraListener.h>
+#include "seSky.h"
 
 class seWindowMain;
-class seSky;
 
 
 

@@ -27,8 +27,8 @@
 #define _AEUSETRULEBLENDFACTOR_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRule.h"
 
-class aeRule;
 
 
 

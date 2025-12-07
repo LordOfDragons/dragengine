@@ -34,11 +34,11 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 #include "../../../undosys/category/gdeUCategoryBase.h"
+#include "gdeGameDefinition.h"
+#include "gdeWPSCategoryListener.h"
 
 class gdeWindowProperties;
-class gdeWPSCategoryListener;
 class gdeCategory;
-class gdeGameDefinition;
 
 
 

@@ -26,9 +26,9 @@
 #define _SAEUWORDADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "saeSAnimation.h"
+#include "saeWord.h"
 
-class saeWord;
-class saeSAnimation;
 
 
 

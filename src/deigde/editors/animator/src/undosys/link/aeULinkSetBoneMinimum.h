@@ -26,8 +26,8 @@
 #define _AEULINKSETBONEMINIMUM_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeLink.h"
 
-class aeLink;
 
 
 

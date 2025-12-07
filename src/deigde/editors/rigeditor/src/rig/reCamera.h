@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/gui/igdeCamera.h>
+#include "reRigBone.h"
 
 // predefinitions
 class reRig;
-class reRigBone;
 
 
 

@@ -26,8 +26,8 @@
 #define _PEEUTYPESETPHYSICSSIZE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeType.h"
 
-class peeType;
 
 
 

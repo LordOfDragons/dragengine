@@ -29,8 +29,8 @@
 #include "../../skin/property/sePropertyList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "seTexture.h"
 
-class seTexture;
 
 
 

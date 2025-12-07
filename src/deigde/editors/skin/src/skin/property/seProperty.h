@@ -34,11 +34,11 @@
 #include <dragengine/resources/image/deImage.h>
 #include <dragengine/resources/video/deVideo.h>
 #include <dragengine/resources/skin/property/deSkinPropertyMapped.h>
+#include "sePropertyNodeGroup.h"
 
 class seTexture;
 
 class deEngine;
-class sePropertyNodeGroup;
 class deSkinPropertyNodeGroup;
 
 class igdeTexturePropertyList;

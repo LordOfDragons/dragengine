@@ -26,9 +26,9 @@
 #define _CEUCTARGETADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversation.h"
+#include "ceTarget.h"
 
-class ceConversation;
-class ceTarget;
 
 
 

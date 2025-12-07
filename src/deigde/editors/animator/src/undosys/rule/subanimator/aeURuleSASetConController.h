@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleSubAnimator.h"
+#include "aeController.h"
 
 // predefinitions
-class aeRuleSubAnimator;
-class aeController;
 
 
 

@@ -28,11 +28,11 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVegetationLayer.h"
+#include "meWorld.h"
 
 // predefinitions
-class meWorld;
 class meHeightTerrain;
-class meHTVegetationLayer;
 
 
 

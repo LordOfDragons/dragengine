@@ -26,8 +26,8 @@
 #define _GDEWPSTIMCATEGORY_H_
 
 #include "../gdeWPSTreeItemModel.h"
+#include "gdeCategory.h"
 
-class gdeCategory;
 
 
 /**

@@ -27,9 +27,9 @@
 #define _GDEUOBJECTCLASSSETDESCRIPTION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
 class gdeOCSpeaker;
-class gdeObjectClass;
 
 
 

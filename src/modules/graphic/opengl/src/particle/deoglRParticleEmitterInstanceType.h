@@ -29,10 +29,10 @@
 #include "../shaders/paramblock/deoglSPBlockUBO.h"
 
 #include <dragengine/deObject.h>
+#include "deoglRSkin.h"
+#include "deoglRDynamicSkin.h"
 
-class deoglRDynamicSkin;
 class deoglRParticleEmitterInstance;
-class deoglRSkin;
 class deoglSkinShader;
 class deoglSkinTexture;
 class deoglTexUnitsConfig;

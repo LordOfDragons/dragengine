@@ -27,8 +27,8 @@
 #define _AEURULEANIMDIFFTOGGLEENABLEVERTEXPOSITIONSET_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleAnimationDifference.h"
 
-class aeRuleAnimationDifference;
 
 
 

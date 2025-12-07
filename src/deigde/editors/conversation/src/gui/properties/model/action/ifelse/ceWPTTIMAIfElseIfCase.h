@@ -26,12 +26,12 @@
 #define _CEWPTTIMAIFELSEIFCASE_H_
 
 #include "../../ceWPTTreeItemModel.h"
+#include "ceWPTTIMAIfElseIfCaseActions.h"
+#include "ceWPTTIMAIfElseIfCaseCondition.h"
 
 class ceCAIfElse;
 class ceWPTTIMAIfElse;
 class ceWPTTIMAIfElseIfCase;
-class ceWPTTIMAIfElseIfCaseCondition;
-class ceWPTTIMAIfElseIfCaseActions;
 
 
 /**

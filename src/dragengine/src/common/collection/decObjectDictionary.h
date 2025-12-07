@@ -26,9 +26,9 @@
 #define _DECOBJECTDICTIONARY_H_
 
 #include "../string/decString.h"
+#include "deObject.h"
 
 class decObjectList;
-class deObject;
 
 
 /**

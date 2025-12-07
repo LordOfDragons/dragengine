@@ -41,30 +41,30 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decStringList.h>
 #include <dragengine/common/string/decStringSet.h>
+#include <dragengine/src/resources/world/deWorld.h>
+#include "gdeOCBillboard.h"
+#include "gdeOCNavigationBlocker.h"
+#include "gdeOCSnapPoint.h"
+#include "gdeOCWorld.h"
+#include "gdeOCNavigationSpace.h"
+#include "gdeOCSpeaker.h"
+#include "gdeOCEnvMapProbe.h"
+#include "gdeOCLight.h"
+#include "gdeOCParticleEmitter.h"
+#include "deVirtualFileSystem.h"
+#include "gdeOCCamera.h"
+#include "gdeOCComponent.h"
+#include "gdeOCForceField.h"
 
 class gdeGameDefinitionListener;
 class gdeLoadSaveSystem;
 class gdeOCInherit;
-class gdeOCBillboard;
-class gdeOCCamera;
-class gdeOCComponent;
 class gdeOCComponentTexture;
-class gdeOCEnvMapProbe;
-class gdeOCLight;
-class gdeOCNavigationBlocker;
-class gdeOCNavigationSpace;
-class gdeOCParticleEmitter;
-class gdeOCForceField;
-class gdeOCSnapPoint;
-class gdeOCSpeaker;
-class gdeOCWorld;
 class gdeSkyController;
 
 class igdeWSky;
 class igdeCamera;
 
-class deWorld;
-class deVirtualFileSystem;
 
 
 

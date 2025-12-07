@@ -28,10 +28,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "reRig.h"
+#include "reRigBone.h"
 
 class decObjectOrderedSet;
-class reRig;
-class reRigBone;
 
 
 

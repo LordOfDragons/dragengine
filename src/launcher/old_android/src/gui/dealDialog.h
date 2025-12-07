@@ -27,9 +27,9 @@
 
 #include "../deObject.h"
 #include "../common/string/decString.h"
+#include "dealWidgetLayoutFlow.h"
 
 class dealDisplay;
-class dealWidgetLayoutFlow;
 
 
 /**

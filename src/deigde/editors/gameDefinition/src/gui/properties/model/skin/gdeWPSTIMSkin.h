@@ -26,8 +26,8 @@
 #define _GDEWPSTIMSKIN_H_
 
 #include "../gdeWPSTreeItemModel.h"
+#include "gdeSkin.h"
 
-class gdeSkin;
 
 
 /**

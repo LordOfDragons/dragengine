@@ -26,10 +26,10 @@
 #define _DEALBASEXML_H_
 
 #include "common/string/decString.h"
+#include "deLogger.h"
 
 class decXmlWriter;
 class decXmlElementTag;
-class deLogger;
 
 
 

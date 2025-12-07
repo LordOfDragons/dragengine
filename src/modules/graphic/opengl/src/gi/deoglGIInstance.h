@@ -32,6 +32,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
+#include "deoglDynamicTBOUInt32.h"
+#include "deoglDynamicTBOFloat16.h"
 
 class deoglGIInstances;
 class deoglRComponent;
@@ -39,8 +41,6 @@ class deoglRDecal;
 class deoglGIBVHLocal;
 class deoglGIBVHDynamic;
 class deoglTexUnitsConfig;
-class deoglDynamicTBOFloat16;
-class deoglDynamicTBOUInt32;
 class decLayerMask;
 
 

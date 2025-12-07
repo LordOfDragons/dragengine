@@ -29,9 +29,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/light/deLight.h>
+#include "gdeObjectClass.h"
+#include "gdeOCLight.h"
 
-class gdeOCLight;
-class gdeObjectClass;
 
 
 

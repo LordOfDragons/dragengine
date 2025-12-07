@@ -33,18 +33,17 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "meWindowMainListener.h"
+#include "meView3D.h"
+#include "meWindowChangelog.h"
+#include "meWorld.h"
+#include "meWindowProperties.h"
+#include "meWindowVegetation.h"
 
 class meConfiguration;
 class meIGDEModule;
 class meLoadSaveSystem;
 class meSaveSupport;
-class meView3D;
-class meView3D;
-class meWindowChangelog;
-class meWindowMainListener;
-class meWindowProperties;
-class meWindowVegetation;
-class meWorld;
 
 class igdeEngineController;
 class igdeGameDefinition;

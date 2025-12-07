@@ -27,8 +27,8 @@
 #define _SEUEFFECTSTRETCHSETMAXPITCH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seEffectStretch.h"
 
-class seEffectStretch;
 
 
 /**

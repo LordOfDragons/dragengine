@@ -28,9 +28,9 @@
 #include <dragengine/common/utils/decTimer.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsWorld.h>
+#include <dragengine/src/resources/collider/deCollisionInfo.h>
 
 class deWorld;
-class deCollisionInfo;
 
 class dePhysicsBullet;
 class debpHeightTerrain;

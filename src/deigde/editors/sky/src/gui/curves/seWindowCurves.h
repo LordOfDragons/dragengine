@@ -29,11 +29,11 @@
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
 #include <deigde/undo/igdeUndo.h>
+#include "seWindowCurvesListener.h"
+#include "seSky.h"
 
 class seWindowMain;
-class seSky;
 class seLink;
-class seWindowCurvesListener;
 
 
 /**

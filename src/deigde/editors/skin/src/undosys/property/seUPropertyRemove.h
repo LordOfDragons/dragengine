@@ -26,9 +26,9 @@
 #define _SEUPROPERTYREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seTexture.h"
+#include "seProperty.h"
 
-class seTexture;
-class seProperty;
 
 
 

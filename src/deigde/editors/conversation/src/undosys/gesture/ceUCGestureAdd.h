@@ -26,9 +26,9 @@
 #define _CEUCGESTUREADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversation.h"
+#include "ceGesture.h"
 
-class ceConversation;
-class ceGesture;
 
 
 

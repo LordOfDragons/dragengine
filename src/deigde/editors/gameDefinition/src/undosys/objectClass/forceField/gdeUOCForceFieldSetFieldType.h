@@ -28,9 +28,9 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/forcefield/deForceField.h>
+#include "gdeObjectClass.h"
+#include "gdeOCForceField.h"
 
-class gdeOCForceField;
-class gdeObjectClass;
 
 
 

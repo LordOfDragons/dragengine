@@ -27,9 +27,9 @@
 #define _GDEUPARTICLEEMITTERSETCATEGORY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeParticleEmitter.h"
 
 class gdeOCSpeaker;
-class gdeParticleEmitter;
 
 
 

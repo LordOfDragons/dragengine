@@ -27,8 +27,8 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decStringDictionary.h>
+#include "meObjectTexture.h"
 
-class meObjectTexture;
 
 
 

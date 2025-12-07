@@ -27,8 +27,8 @@
 #define _AEURULESUBANIMTOGGLEENABLEPOSITION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleSubAnimator.h"
 
-class aeRuleSubAnimator;
 
 
 

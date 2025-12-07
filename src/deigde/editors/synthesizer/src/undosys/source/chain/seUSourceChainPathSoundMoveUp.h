@@ -27,8 +27,8 @@
 #define _SEUSOURCECHAINPATHSOUNDMOVEUP_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSourceChain.h"
 
-class seSourceChain;
 
 
 

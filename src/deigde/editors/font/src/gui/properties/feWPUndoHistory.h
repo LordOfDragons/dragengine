@@ -26,9 +26,9 @@
 #define _FEWPUNDOHISTORY_H_
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "feWPUndoHistoryListener.h"
+#include "feFont.h"
 
-class feFont;
-class feWPUndoHistoryListener;
 
 
 

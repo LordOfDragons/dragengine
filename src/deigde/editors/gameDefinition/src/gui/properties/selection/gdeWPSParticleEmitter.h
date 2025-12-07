@@ -32,12 +32,12 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSParticleEmitterListener.h"
 
-class gdeGameDefinition;
 class gdeParticleEmitter;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSParticleEmitterListener;
 
 
 

@@ -29,9 +29,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleStateSnapshot.h"
 
 // predefinitions
-class aeRuleStateSnapshot;
 
 
 

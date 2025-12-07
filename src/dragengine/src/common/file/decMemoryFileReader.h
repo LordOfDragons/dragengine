@@ -26,8 +26,8 @@
 #define _DECMEMORYFILEREADER_H_
 
 #include "decBaseFileReader.h"
+#include "decMemoryFile.h"
 
-class decMemoryFile;
 
 
 /**

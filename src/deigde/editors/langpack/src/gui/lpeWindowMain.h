@@ -33,13 +33,13 @@
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "lpeWindowMainListener.h"
+#include "lpeWindowProperties.h"
+#include "lpeLangPack.h"
+#include "lpeViewLangPack.h"
 
 class lpeLangPackEntry;
-class lpeWindowMainListener;
-class lpeWindowProperties;
-class lpeViewLangPack;
 class lpeConfiguration;
-class lpeLangPack;
 class lpeLoadSaveSystem;
 class lpeIGDEModule;
 

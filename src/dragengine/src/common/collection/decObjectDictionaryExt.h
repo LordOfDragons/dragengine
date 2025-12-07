@@ -26,8 +26,8 @@
 #define _DECOBJECTDICTIONARYEXT_H_
 
 #include "../../dragengine_export.h"
+#include "deObject.h"
 
-class deObject;
 class decObjectList;
 class decPointerList;
 

@@ -34,9 +34,9 @@
 #include <deigde/gui/dialog/igdeDialog.h>
 
 #include <dragengine/common/file/decPath.h>
+#include "igdeGameProject.h"
 
 
-class igdeGameProject;
 class igdeWindowMain;
 class igdeTemplate;
 

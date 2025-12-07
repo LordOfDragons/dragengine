@@ -27,8 +27,8 @@
 
 #include "../meBaseUndoMove.h"
 #include <dragengine/common/collection/decIntList.h>
+#include "meObject.h"
 
-class meObject;
 class meObjectShapeList;
 
 

@@ -30,13 +30,13 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decPointerOrderedSet.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsTouchSensor.h>
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
 
 class debpCollider;
 class deTouchSensor;
 class debpWorld;
 class dePhysicsBullet;
 class debpGhostObject;
-class deDebugDrawer;
 class deDebugDrawerShape;
 
 

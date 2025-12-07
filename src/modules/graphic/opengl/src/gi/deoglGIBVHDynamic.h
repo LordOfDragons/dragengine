@@ -29,10 +29,10 @@
 #include "../tbo/deoglDynamicTBOBlock.h"
 
 #include <dragengine/common/math/decMath.h>
+#include "deoglDynamicTBOFloat32.h"
 
 class deoglBVHNode;
 class deoglGIBVHLocal;
-class deoglDynamicTBOFloat32;
 
 struct oglModelPosition;
 struct oglModelVertex;

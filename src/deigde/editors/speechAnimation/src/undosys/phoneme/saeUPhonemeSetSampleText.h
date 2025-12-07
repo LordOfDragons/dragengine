@@ -26,8 +26,8 @@
 #define _SAEUPHONEMESETSAMPLETEXT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "saePhoneme.h"
 
-class saePhoneme;
 
 
 

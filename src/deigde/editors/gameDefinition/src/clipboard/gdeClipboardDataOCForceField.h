@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCFORCEFIELD_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCForceField.h"
 
-class gdeOCForceField;
 
 
 

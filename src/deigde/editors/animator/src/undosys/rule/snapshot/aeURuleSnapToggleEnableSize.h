@@ -27,8 +27,8 @@
 #define _AEURULESNAPTOGGLEENABLESIZE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleStateSnapshot.h"
 
-class aeRuleStateSnapshot;
 
 
 

@@ -27,8 +27,8 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicCanvas.h>
+#include "deoglRCanvas.h"
 
-class deoglRCanvas;
 class deCanvas;
 class deGraphicOpenGl;
 

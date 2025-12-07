@@ -32,15 +32,15 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "peeViewEmitter.h"
+#include "peeEmitter.h"
+#include "peeWindowCurves.h"
+#include "peeWindowProperties.h"
+#include "peeWindowMainListener.h"
 
 
-class peeWindowMainListener;
 class peeConfiguration;
 class peeLoadSaveSystem;
-class peeViewEmitter;
-class peeWindowProperties;
-class peeWindowCurves;
-class peeEmitter;
 
 
 /**

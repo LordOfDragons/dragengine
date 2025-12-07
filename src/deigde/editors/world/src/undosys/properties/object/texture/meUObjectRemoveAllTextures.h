@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include "../../../../world/object/texture/meObjectTextureList.h"
+#include "meObject.h"
 
-class meObject;
 
 
 

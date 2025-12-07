@@ -26,9 +26,9 @@
 #define _PEEUCONTROLLERREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeEmitter.h"
+#include "peeController.h"
 
-class peeController;
-class peeEmitter;
 
 
 

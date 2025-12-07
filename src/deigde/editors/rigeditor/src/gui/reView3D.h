@@ -31,9 +31,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "reRig.h"
 
 class reWindowMain;
-class reRig;
 class reCamera;
 class deColliderVolume;
 class deBaseScriptingCollider;

@@ -27,12 +27,12 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include <dragengine/src/resources/collider/deColliderVolume.h>
 
 class reRig;
 class igdeWDebugDrawerShape;
 class deCollider;
-class deColliderVolume;
-class deDebugDrawer;
 class deEngine;
 
 

@@ -28,8 +28,8 @@
 #include "deResource.h"
 #include "../common/string/decString.h"
 #include "../common/utils/decDateTime.h"
+#include "deVirtualFileSystem.h"
 
-class deVirtualFileSystem;
 class deFileResourceManager;
 
 

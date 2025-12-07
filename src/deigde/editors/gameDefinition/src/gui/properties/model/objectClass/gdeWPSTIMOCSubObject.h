@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCSUBOBJECT_H_
 
 #include "../gdeWPSTreeItemModel.h"
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 /**

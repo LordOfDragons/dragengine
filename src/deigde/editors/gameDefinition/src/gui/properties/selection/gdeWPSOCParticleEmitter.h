@@ -34,11 +34,11 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCParticleEmitterListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeWindowProperties;
-class gdeWPSOCParticleEmitterListener;
 
 
 

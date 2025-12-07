@@ -28,8 +28,8 @@
 #include "../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
+#include "deoglRVideo.h"
 
-class deoglRVideo;
 class deoglRenderThread;
 class deoglTexture;
 

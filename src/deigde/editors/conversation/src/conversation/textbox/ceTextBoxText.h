@@ -28,8 +28,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include <dragengine/src/resources/canvas/deCanvasView.h>
 
-class deCanvasView;
 class ceTextBox;
 class deGraphicContext;
 

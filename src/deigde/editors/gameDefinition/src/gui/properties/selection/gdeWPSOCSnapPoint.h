@@ -31,12 +31,12 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCSnapPointListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCSnapPoint;
 class gdeWindowProperties;
-class gdeWPSOCSnapPointListener;
 
 
 

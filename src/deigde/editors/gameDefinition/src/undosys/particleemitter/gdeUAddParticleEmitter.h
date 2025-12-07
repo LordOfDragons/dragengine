@@ -27,9 +27,9 @@
 #define _GDEUADDPARTICLEEMITTER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeParticleEmitter.h"
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
-class gdeParticleEmitter;
 
 
 

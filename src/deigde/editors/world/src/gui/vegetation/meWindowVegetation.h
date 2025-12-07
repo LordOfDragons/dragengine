@@ -26,14 +26,14 @@
 #define _MEWINDOWVEGETATION_H_
 
 #include <deigde/gui/nodeview/igdeNVBoard.h>
+#include "meWindowVegetationListener.h"
+#include "meHTVegetationLayer.h"
+#include "meWorld.h"
 
 class meWindowMain;
-class meWindowVegetationListener;
 class meHTVRule;
 class meWVNode;
 
-class meHTVegetationLayer;
-class meWorld;
 
 
 

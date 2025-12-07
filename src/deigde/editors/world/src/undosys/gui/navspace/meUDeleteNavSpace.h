@@ -26,9 +26,9 @@
 #define _MEUDELETENAVSPACE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meWorld.h"
 
 class meUndoDataNavSpace;
-class meWorld;
 
 
 

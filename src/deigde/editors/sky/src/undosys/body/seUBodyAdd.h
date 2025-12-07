@@ -26,9 +26,9 @@
 #define _SEUBODYADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seBody.h"
+#include "seLayer.h"
 
-class seBody;
-class seLayer;
 
 
 /**

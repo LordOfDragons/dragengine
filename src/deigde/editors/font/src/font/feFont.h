@@ -31,16 +31,16 @@
 
 #include "glyph/feFontGlyphList.h"
 #include "glyph/feFontGlyphSelection.h"
+#include <dragengine/src/resources/font/deFont.h>
+#include "feFontImage.h"
 
 class igdeGameDefinition;
 class igdeEnvironment;
 class feFontNotifier;
 class feUndoSystem;
-class feFontImage;
 class feFontGlyph;
 
 class deEngine;
-class deFont;
 class deLogger;
 
 

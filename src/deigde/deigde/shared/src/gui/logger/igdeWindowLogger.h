@@ -27,10 +27,10 @@
 
 #include "../igdeWindow.h"
 #include "../igdeTextArea.h"
+#include "igdeWindowLoggerListener.h"
+#include "igdeLoggerHistory.h"
 
-class igdeLoggerHistory;
 class igdeLoggerHistoryEntry;
-class igdeWindowLoggerListener;
 
 
 

@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/resources/particle/deParticleEmitterType.h>
+#include "peeType.h"
 
-class peeType;
 
 
 

@@ -31,14 +31,14 @@
 
 #include "particleemitter/igdeGDParticleEmitterManager.h"
 #include "property/igdeGDPropertyList.h"
+#include <dragengine/src/resources/model/deModel.h>
+#include <dragengine/src/resources/skin/deSkin.h>
 
 class igdeGDSkinManager;
 class igdeGDClassManager;
 class igdeGDSkyManager;
 class igdeEnvironment;
 
-class deModel;
-class deSkin;
 class deVirtualFileSystem;
 
 

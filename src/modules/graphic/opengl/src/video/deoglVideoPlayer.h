@@ -28,10 +28,10 @@
 #include <dragengine/common/collection/decPointerSet.h>
 #include <dragengine/resources/video/deVideoDecoder.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicVideoPlayer.h>
+#include "deoglRVideoPlayer.h"
 
 class deoglVideo;
 class deoglVideoDecodeThread;
-class deoglRVideoPlayer;
 
 class deVideoPlayer;
 class deGraphicOpenGl;

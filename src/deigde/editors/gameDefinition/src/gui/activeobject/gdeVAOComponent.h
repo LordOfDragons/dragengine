@@ -30,8 +30,8 @@
 #include <dragengine/resources/component/deComponent.h>
 #include <dragengine/resources/collider/deCollider.h>
 #include <dragengine/resources/animator/deAnimatorInstance.h>
+#include "gdeOCComponent.h"
 
-class gdeOCComponent;
 class gdeOCComponentTexture;
 
 class deComponentTexture;

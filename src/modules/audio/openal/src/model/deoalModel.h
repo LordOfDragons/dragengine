@@ -27,9 +27,9 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/audio/deBaseAudioModel.h>
+#include "deoalAModel.h"
 
 class deAudioOpenAL;
-class deoalAModel;
 
 class deModel;
 

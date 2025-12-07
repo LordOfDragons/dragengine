@@ -28,8 +28,8 @@
 #include "../action/ceUndoCActionList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceFacePose.h"
 
-class ceFacePose;
 class ceConversationActionList;
 class ceConversationTopic;
 

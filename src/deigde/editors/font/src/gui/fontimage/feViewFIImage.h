@@ -29,9 +29,9 @@
 
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasImage.h>
+#include "feFont.h"
 
 class feWindowMain;
-class feFont;
 
 
 

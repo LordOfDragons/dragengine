@@ -26,8 +26,8 @@
 #define _DEOGLENVMAPPROBE_H_
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicEnvMapProbe.h>
+#include "deoglREnvMapProbe.h"
 
-class deoglREnvMapProbe;
 
 class deGraphicOpenGl;
 class deEnvMapProbe;

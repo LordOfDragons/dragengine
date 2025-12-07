@@ -27,9 +27,9 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/src/resources/animator/deAnimator.h>
 
 class igdeEnvironment;
-class deAnimator;
 
 
 

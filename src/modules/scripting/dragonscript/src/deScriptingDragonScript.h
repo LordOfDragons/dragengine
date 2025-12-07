@@ -34,6 +34,7 @@
 #include "dedsVRPlaceholder.h"
 #include "dedsEngineException.h"
 #include "parameters/dedsParameterList.h"
+#include <dragengine/src/resources/collider/deCollisionInfo.h>
 
 
 class deClassPhysicsSystem;
@@ -222,7 +223,6 @@ class deClassService;
 class deClassServiceListener;
 class deClassServiceObject;
 
-class deCollisionInfo;
 class dedsColliderListenerClosest;
 class dedsColliderListenerAdaptor;
 

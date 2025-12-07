@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAPROPERTY_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeProperty.h"
 
-class gdeProperty;
 
 
 

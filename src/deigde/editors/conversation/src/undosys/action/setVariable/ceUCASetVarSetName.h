@@ -26,9 +26,9 @@
 #define _CEUCASETVARSETNAME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCASetVariable.h"
+#include "ceConversationTopic.h"
 
-class ceCASetVariable;
-class ceConversationTopic;
 
 
 

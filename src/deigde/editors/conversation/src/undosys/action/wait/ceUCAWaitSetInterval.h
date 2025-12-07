@@ -26,9 +26,9 @@
 #define _CEUCAWAITSETINTERVAL_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAWait.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAWait;
 
 
 

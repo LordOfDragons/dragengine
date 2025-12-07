@@ -28,10 +28,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/curve/decCurveBezier.h>
+#include "meHTVegetationLayer.h"
+#include "meHTVRuleCurve.h"
 
 
-class meHTVegetationLayer;
-class meHTVRuleCurve;
 
 
 

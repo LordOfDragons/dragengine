@@ -26,8 +26,8 @@
 #define _DEBASESOUNDDECODER_H_
 
 #include "../deBaseModule.h"
+#include "decBaseFileReader.h"
 
-class decBaseFileReader;
 
 
 /**

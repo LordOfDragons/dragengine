@@ -28,11 +28,11 @@
 #include "debpCollisionObject.h"
 
 #include <dragengine/common/math/decMath.h>
+#include "debpBulletShape.h"
 
 class debpMotionState;
 class debpColliderConstraint;
 class debpCollisionWorld;
-class debpBulletShape;
 class btRigidBody;
 
 

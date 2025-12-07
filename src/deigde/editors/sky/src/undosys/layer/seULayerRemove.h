@@ -26,9 +26,9 @@
 #define _SEULAYERREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSky.h"
+#include "seLayer.h"
 
-class seLayer;
-class seSky;
 
 
 /**

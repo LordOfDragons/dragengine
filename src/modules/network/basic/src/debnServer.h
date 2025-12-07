@@ -26,11 +26,11 @@
 #define _DEBNSERVER_H_
 
 #include <dragengine/systems/modules/network/deBaseNetworkServer.h>
+#include "debnSocket.h"
 
 class deServer;
 class debnAddress;
 class deNetworkBasic;
-class debnSocket;
 class decBaseFileReader;
 
 

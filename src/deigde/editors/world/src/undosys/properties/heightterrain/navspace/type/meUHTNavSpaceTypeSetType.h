@@ -26,8 +26,8 @@
 #define _MEUHTNAVSPACETYPESETTYPE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHeightTerrainNavSpaceType.h"
 
-class meHeightTerrainNavSpaceType;
 
 
 

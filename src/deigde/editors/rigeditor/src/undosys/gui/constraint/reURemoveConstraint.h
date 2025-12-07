@@ -26,10 +26,10 @@
 #define _REUREMOVECONSTRAINT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigConstraint.h"
+#include "reRigBone.h"
+#include "reRig.h"
 
-class reRig;
-class reRigConstraint;
-class reRigBone;
 class reRigConstraintList;
 
 

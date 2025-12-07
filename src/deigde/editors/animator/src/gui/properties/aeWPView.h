@@ -38,11 +38,11 @@
 #include <deigde/gui/properties/igdeWPCamera.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "aeAnimator.h"
+#include "aeWPViewListener.h"
 
 class aeWindowProperties;
 class aeGameDefinition;
-class aeWPViewListener;
-class aeAnimator;
 class aeAttachment;
 
 

@@ -29,10 +29,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeAnimator.h"
+#include "aeController.h"
 
 // predefinitions
-class aeController;
-class aeAnimator;
 
 
 

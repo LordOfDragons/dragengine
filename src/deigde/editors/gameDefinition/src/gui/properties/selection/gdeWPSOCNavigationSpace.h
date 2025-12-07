@@ -33,12 +33,12 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCNavigationSpaceListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCNavigationSpace;
 class gdeWindowProperties;
-class gdeWPSOCNavigationSpaceListener;
 
 
 

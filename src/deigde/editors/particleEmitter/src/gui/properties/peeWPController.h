@@ -32,11 +32,11 @@
 #include <deigde/gui/composed/igdeEditSliderText.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "peeEmitter.h"
+#include "peeWPControllerListener.h"
 
-class peeEmitter;
 class peeController;
 class peeWindowProperties;
-class peeWPControllerListener;
 
 
 /**

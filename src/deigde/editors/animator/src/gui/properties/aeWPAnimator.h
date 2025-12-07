@@ -30,11 +30,11 @@
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "aeAnimator.h"
+#include "aeWPAnimatorListener.h"
 
 
-class aeAnimator;
 class aeWindowProperties;
-class aeWPAnimatorListener;
 
 
 

@@ -30,10 +30,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meDecal.h"
+#include "meWorld.h"
 
 // predefinitions
-class meWorld;
-class meDecal;
 
 
 

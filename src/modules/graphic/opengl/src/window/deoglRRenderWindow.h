@@ -51,10 +51,10 @@ class NSView;
 #elif defined OS_UNIX_X11
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include "deoglRCanvasView.h"
 #endif
 
 class deoglRenderThread;
-class deoglRCanvasView;
 
 
 /**

@@ -26,13 +26,13 @@
 #define _SEVIEWSYNTHESIZER_H_
 
 #include <deigde/gui/layout/igdeContainerBorder.h>
+#include "seWPSynthesizer.h"
+#include "seWPSource.h"
+#include "seSynthesizer.h"
+#include "seWPController.h"
+#include "seWPLink.h"
 
-class seWPSource;
-class seWPLink;
-class seWPController;
-class seWPSynthesizer;
 class seWindowMain;
-class seSynthesizer;
 
 
 

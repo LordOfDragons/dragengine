@@ -30,9 +30,9 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meHeightTerrainTexture.h"
 
 // predefinitions
-class meHeightTerrainTexture;
 
 
 

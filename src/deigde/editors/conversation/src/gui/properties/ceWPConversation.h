@@ -34,10 +34,10 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "ceConversation.h"
+#include "ceWPConversationListener.h"
 
 class ceWindowProperties;
-class ceWPConversationListener;
-class ceConversation;
 class ceGesture;
 class ceFacePose;
 class ceCameraShot;

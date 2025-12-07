@@ -26,8 +26,8 @@
 #define _REUSETBONEMASS_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "reRigBone.h"
 
-class reRigBone;
 
 
 

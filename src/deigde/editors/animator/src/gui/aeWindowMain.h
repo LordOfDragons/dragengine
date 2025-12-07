@@ -40,17 +40,17 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleVisitorIdentify.h>
+#include "aeAnimator.h"
+#include "aeWindowProperties.h"
+#include "aeView3D.h"
+#include "aeWindowMainListener.h"
 
 
 class aeRule;
 class decStringList;
 class aeConfiguration;
-class aeView3D;
-class aeAnimator;
-class aeWindowProperties;
 class deCmdLineArgs;
 class aeLoadSaveSystem;
-class aeWindowMainListener;
 class aeIGDEModule;
 class igdeGameDefinition;
 class igdeEnvironment;

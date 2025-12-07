@@ -28,8 +28,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleForeignState.h>
+#include "aeRuleForeignState.h"
 
-class aeRuleForeignState;
 
 
 

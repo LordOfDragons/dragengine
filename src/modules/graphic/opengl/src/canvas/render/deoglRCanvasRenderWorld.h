@@ -26,9 +26,9 @@
 #define _DEOGLRCANVASRENDERWORLD_H_
 
 #include "deoglRCanvas.h"
+#include "deoglRCamera.h"
 
 class deoglRWorld;
-class deoglRCamera;
 
 
 /**

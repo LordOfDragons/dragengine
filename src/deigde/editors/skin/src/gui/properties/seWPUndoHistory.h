@@ -26,9 +26,9 @@
 #define _SEWPUNDOHISTORY_H_
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "seSkin.h"
+#include "seWPUndoHistoryListener.h"
 
-class seSkin;
-class seWPUndoHistoryListener;
 
 
 

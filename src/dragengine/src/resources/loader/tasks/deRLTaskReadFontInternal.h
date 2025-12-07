@@ -27,9 +27,9 @@
 
 #include "deResourceLoaderTask.h"
 #include "../../font/deFont.h"
+#include <dragengine/src/resources/loader/tasks/deRLTaskReadFontInternal2.h>
 
 class deRLTaskReadFont;
-class deRLTaskReadFontInternal2;
 
 
 /**

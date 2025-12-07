@@ -27,9 +27,9 @@
 
 #include "../ceWPTTIMAction.h"
 #include "../../../../../conversation/action/ceCAIfElse.h"
+#include "ceWPTTIMAIfElseElse.h"
 
 class ceWPTTIMAIfElseIfCase;
-class ceWPTTIMAIfElseElse;
 
 
 /**

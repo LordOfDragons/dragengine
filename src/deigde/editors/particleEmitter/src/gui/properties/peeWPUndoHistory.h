@@ -26,9 +26,9 @@
 #define _PEEWPUNDOHISTORY_H_
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "peeEmitter.h"
+#include "peeWPUndoHistoryListener.h"
 
-class peeEmitter;
-class peeWPUndoHistoryListener;
 
 
 

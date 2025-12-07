@@ -26,8 +26,8 @@
 #define _AEUSETRULEFSTASCALEVERTEXPOSITIONSET_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleForeignState.h"
 
-class aeRuleForeignState;
 
 
 /**

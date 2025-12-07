@@ -31,9 +31,9 @@
 #include <deigde/gui/igdeListBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/event/igdeAction.h>
+#include "meWPAddListener.h"
+#include "meWorld.h"
 
-class meWorld;
-class meWPAddListener;
 class meWindowProperties;
 
 

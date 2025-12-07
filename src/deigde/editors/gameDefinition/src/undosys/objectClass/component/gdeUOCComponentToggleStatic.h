@@ -27,9 +27,9 @@
 #define _GDEUOCCOMPONENTTOGGLESTATIC_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCComponent.h"
 
-class gdeOCComponent;
-class gdeObjectClass;
 
 
 

@@ -26,13 +26,13 @@
 #define _CEWPTTIMAPLAYERCHOICEOPTION_H_
 
 #include "../../ceWPTTreeItemModel.h"
+#include "ceCAPlayerChoiceOption.h"
+#include "ceWPTTIMAPlayerChoiceOptionActions.h"
+#include "ceWPTTIMAPlayerChoiceOptionCondition.h"
 
 class ceCAPlayerChoice;
-class ceCAPlayerChoiceOption;
 class ceWPTTIMAPlayerChoice;
 class ceWPTTIMAPlayerChoiceOption;
-class ceWPTTIMAPlayerChoiceOptionCondition;
-class ceWPTTIMAPlayerChoiceOptionActions;
 
 
 /**

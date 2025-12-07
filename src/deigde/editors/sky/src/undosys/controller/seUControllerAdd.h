@@ -26,9 +26,9 @@
 #define _SEUCONTROLLERADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seController.h"
+#include "seSky.h"
 
-class seController;
-class seSky;
 
 
 

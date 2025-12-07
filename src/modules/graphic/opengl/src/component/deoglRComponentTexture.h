@@ -30,13 +30,13 @@
 
 #include "../skin/deoglSkinTexture.h"
 #include "../skin/pipeline/deoglSkinTexturePipelines.h"
+#include "deoglRSkin.h"
+#include "deoglSharedSPBElement.h"
+#include "deoglRDynamicSkin.h"
 
 class deoglRComponent;
-class deoglRDynamicSkin;
-class deoglRSkin;
 class deoglShaderParameterBlock;
 class deoglShaderProgram;
-class deoglSharedSPBElement;
 class deoglSharedSPBRTIGroup;
 class deoglSharedVideoPlayerList;
 class deoglSkinShader;

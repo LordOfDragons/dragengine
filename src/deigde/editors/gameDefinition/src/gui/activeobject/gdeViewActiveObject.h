@@ -36,12 +36,12 @@
 #include <dragengine/resources/particle/deParticleEmitterInstance.h>
 #include <dragengine/resources/skin/deSkin.h>
 #include <dragengine/resources/sky/deSkyInstance.h>
+#include "gdeObjectClass.h"
+#include "gdeGameDefinition.h"
 
 class gdeWindowMain;
 class gdeViewActiveObjectListener;
 
-class gdeGameDefinition;
-class gdeObjectClass;
 class gdeOCBillboard;
 class gdeOCComponent;
 class gdeOCComponentTexture;

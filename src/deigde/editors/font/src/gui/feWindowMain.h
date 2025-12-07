@@ -32,13 +32,13 @@
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeFont.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "feFont.h"
+#include "feWindowMainListener.h"
+#include "feWindowProperties.h"
+#include "feViewFontImage.h"
 
-class feWindowMainListener;
 class feConfiguration;
-class feViewFontImage;
-class feFont;
 class feClipboard;
-class feWindowProperties;
 class feLoadSaveSystem;
 
 

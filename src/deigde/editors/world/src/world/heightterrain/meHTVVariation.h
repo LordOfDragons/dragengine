@@ -31,13 +31,13 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/deObject.h>
+#include <dragengine/src/resources/model/deModel.h>
+#include <dragengine/src/resources/skin/deSkin.h>
 
 // predefinitions
 class meHTVegetationLayer;
 
 class deEngine;
-class deSkin;
-class deModel;
 
 
 

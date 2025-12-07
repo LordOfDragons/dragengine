@@ -26,9 +26,9 @@
 #define _PROJPANELUNDOHISTORY_H_
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "projPanelUndoHistoryListener.h"
+#include "projProject.h"
 
-class projProject;
-class projPanelUndoHistoryListener;
 class projWindowMain;
 
 

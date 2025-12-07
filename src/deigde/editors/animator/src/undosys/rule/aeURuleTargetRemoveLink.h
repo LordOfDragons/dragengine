@@ -28,10 +28,10 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeLink.h"
+#include "aeRule.h"
 
 // predefinitions
-class aeRule;
-class aeLink;
 class aeControllerTarget;
 
 

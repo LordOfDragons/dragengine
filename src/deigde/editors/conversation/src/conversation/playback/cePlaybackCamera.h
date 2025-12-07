@@ -27,9 +27,9 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/curve/decCurveBezier.h>
+#include "ceTarget.h"
 
 class cePlayback;
-class ceTarget;
 class ceConversationActor;
 class igdeCamera;
 

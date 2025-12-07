@@ -28,8 +28,8 @@
 #include "gdeVAOSubObject.h"
 #include <dragengine/resources/billboard/deBillboard.h>
 #include <dragengine/resources/collider/deCollider.h>
+#include "gdeOCBillboard.h"
 
-class gdeOCBillboard;
 
 
 

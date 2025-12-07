@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleTrackTo.h>
+#include "aeRuleTrackTo.h"
 
-class aeRuleTrackTo;
 
 
 

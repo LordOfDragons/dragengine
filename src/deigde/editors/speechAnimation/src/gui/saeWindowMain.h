@@ -32,13 +32,13 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "saeSAnimation.h"
+#include "saeWindowMainListener.h"
+#include "saeWindowProperties.h"
+#include "saeViewSAnimation.h"
 
 class decStringList;
-class saeWindowMainListener;
-class saeViewSAnimation;
 class saeConfiguration;
-class saeSAnimation;
-class saeWindowProperties;
 class saeLoadSaveSystem;
 class saeIGDEModule;
 class igdeStepableTask;

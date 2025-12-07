@@ -29,14 +29,14 @@
 #include "config/dealConfiguration.h"
 #include "filesystem/deVirtualFileSystem.h"
 #include "common/string/decString.h"
+#include "dealFont.h"
+#include "dealWidget.h"
+#include "dealDialog.h"
+#include "dealShader.h"
+#include "dealGuiTheme.h"
+#include "dealWidgetLayout.h"
 
 class dealLauncher;
-class dealFont;
-class dealWidget;
-class dealWidgetLayout;
-class dealShader;
-class dealDialog;
-class dealGuiTheme;
 
 
 /**

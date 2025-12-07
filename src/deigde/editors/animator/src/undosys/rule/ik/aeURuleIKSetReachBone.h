@@ -26,8 +26,8 @@
 #define _AEURULEIKSETREACHBONE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "aeRuleInverseKinematic.h"
 
-class aeRuleInverseKinematic;
 
 
 

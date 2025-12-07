@@ -29,9 +29,9 @@
 #include <GLES2/gl2.h>
 
 #include "../deObject.h"
+#include "dealImage.h"
 
 class dealDisplay;
-class dealImage;
 class decXmlElementTag;
 
 

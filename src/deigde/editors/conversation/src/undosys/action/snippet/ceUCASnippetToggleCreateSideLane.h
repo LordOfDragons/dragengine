@@ -26,9 +26,9 @@
 #define _CEUCASNIPPETTOGGLECREATESIDELANE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCASnippet.h"
+#include "ceConversationTopic.h"
 
-class ceCASnippet;
-class ceConversationTopic;
 
 
 /**

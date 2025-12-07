@@ -29,12 +29,12 @@
 #include "../tbo/deoglDynamicTBOBlock.h"
 
 #include <dragengine/common/math/decMath.h>
+#include "deoglDynamicTBOFloat32.h"
+#include "deoglDynamicTBOUInt16.h"
+#include "deoglDynamicTBOFloat16.h"
 
 class deoglModelFace;
 class deoglRenderThread;
-class deoglDynamicTBOFloat32;
-class deoglDynamicTBOUInt16;
-class deoglDynamicTBOFloat16;
 
 struct oglModelPosition;
 struct oglModelVertex;

@@ -26,9 +26,9 @@
 #define _MEATTACHEDDECAL_H_
 
 #include <dragengine/resources/decal/deDecal.h>
+#include "meObject.h"
 
 class meDecal;
-class meObject;
 
 class deEngine;
 class deSkin;

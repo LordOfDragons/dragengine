@@ -28,10 +28,10 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/properties/igdeWPCamera.h>
 #include <deigde/gui/properties/igdeWPWObject.h>
+#include "seSky.h"
+#include "seWPViewListener.h"
 
-class seSky;
 class seWindowProperties;
-class seWPViewListener;
 
 
 

@@ -27,13 +27,13 @@
 
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
+#include "deoglEnvironmentMap.h"
 
 class decShape;
 class decShapeList;
 class deoglRenderThread;
 class deoglRWorld;
 class deoglWorldOctree;
-class deoglEnvironmentMap;
 
 
 /**

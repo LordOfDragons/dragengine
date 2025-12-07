@@ -28,9 +28,9 @@
 #include "../../texture/pixelbuffer/deoglPixelBuffer.h"
 
 #include <dragengine/deObject.h>
+#include "deoglRCanvasView.h"
 
 class deoglRRenderWindow;
-class deoglRCanvasView;
 class deoglRenderThread;
 
 

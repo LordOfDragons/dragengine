@@ -33,18 +33,18 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "seSkin.h"
+#include "seViewSkin.h"
+#include "seWindowMainListener.h"
+#include "seWindowProperties.h"
+#include "seViewConstructed.h"
 
 class seConfiguration;
 class seEngineController;
 class seIGDEModule;
 class seLoadSaveSystem;
-class seSkin;
 class seTexture;
 class seMapped;
-class seViewConstructed;
-class seViewSkin;
-class seWindowMainListener;
-class seWindowProperties;
 class igdeStepableTask;
 
 class decStringList;

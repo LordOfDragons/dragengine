@@ -27,9 +27,9 @@
 
 #include "deoglDSRenderable.h"
 #include "../../../canvas/deoglCanvasViewListener.h"
+#include "deoglRDSRenderableCanvas.h"
 
 class deoglCanvasView;
-class deoglRDSRenderableCanvas;
 
 class deDSRenderableCanvas;
 

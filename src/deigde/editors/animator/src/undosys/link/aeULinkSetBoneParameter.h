@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/deAnimatorLink.h>
+#include "aeLink.h"
 
-class aeLink;
 
 
 

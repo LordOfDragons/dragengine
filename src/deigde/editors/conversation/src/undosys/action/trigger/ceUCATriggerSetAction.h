@@ -28,8 +28,8 @@
 #include "../../../conversation/action/ceCATrigger.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
 
 
 

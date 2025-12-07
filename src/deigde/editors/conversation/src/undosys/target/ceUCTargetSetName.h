@@ -29,8 +29,8 @@
 #include "../../conversation/camerashot/ceCameraShotList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceTarget.h"
 
-class ceTarget;
 class ceConversationActionList;
 class ceConversationTopic;
 

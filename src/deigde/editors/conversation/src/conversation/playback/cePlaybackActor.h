@@ -28,8 +28,8 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include "ceTextBoxText.h"
 
-class ceTextBoxText;
 class ceTextBox;
 
 

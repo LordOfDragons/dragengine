@@ -26,8 +26,8 @@
 #define _DEOGLEFFECT_H_
 
 #include <dragengine/systems/modules/graphic/deBaseGraphicEffect.h>
+#include "deoglREffect.h"
 
-class deoglREffect;
 
 class deEffect;
 class deGraphicOpenGl;

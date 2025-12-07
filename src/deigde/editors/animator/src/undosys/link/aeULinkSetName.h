@@ -28,9 +28,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "aeLink.h"
 
 // predefinitions
-class aeLink;
 
 
 

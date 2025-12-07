@@ -38,11 +38,11 @@
 #include <deigde/gui/composed/igdeEditVector2.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "meWPSDecalListener.h"
+#include "meWorld.h"
 
 class meWPSelection;
-class meWPSDecalListener;
 class meDecal;
-class meWorld;
 
 
 

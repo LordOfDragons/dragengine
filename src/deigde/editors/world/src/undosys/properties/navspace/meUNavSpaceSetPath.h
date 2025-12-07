@@ -26,8 +26,8 @@
 #define _MEUNAVSPACESETPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "meNavigationSpace.h"
 
-class meNavigationSpace;
 
 
 

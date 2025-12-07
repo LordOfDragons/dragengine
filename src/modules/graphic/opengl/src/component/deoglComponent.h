@@ -29,11 +29,11 @@
 
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/graphic/deBaseGraphicComponent.h>
+#include "deoglRComponent.h"
 
 class deoglDynamicSkin;
 class deoglComponentLOD;
 class deoglComponentTexture;
-class deoglRComponent;
 class deoglSkinStateController;
 class deoglWorld;
 

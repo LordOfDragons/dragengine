@@ -33,13 +33,13 @@
 #include <deigde/gui/resources/igdeIcon.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "reRig.h"
+#include "reWindowProperties.h"
+#include "reWindowMainListener.h"
+#include "reView3D.h"
 
-class reWindowMainListener;
 class reConfiguration;
-class reView3D;
-class reRig;
 class reClipboard;
-class reWindowProperties;
 class reEngineController;
 class reLoadSaveSystem;
 class reIGDEModule;

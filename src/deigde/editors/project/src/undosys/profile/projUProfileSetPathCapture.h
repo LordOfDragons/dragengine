@@ -27,8 +27,8 @@
 #define _PROJUPROFILESETPATHCAPTURE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "projProfile.h"
 
-class projProfile;
 
 
 

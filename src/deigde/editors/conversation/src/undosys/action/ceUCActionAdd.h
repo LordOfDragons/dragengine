@@ -26,9 +26,9 @@
 #define _CEUCACTIONADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceConversationAction;
 
 
 

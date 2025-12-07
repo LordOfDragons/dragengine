@@ -26,10 +26,10 @@
 #define _CEUCAWAITSETCONDITION_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationCondition.h"
+#include "ceCAWait.h"
+#include "ceConversationTopic.h"
 
-class ceConversationTopic;
-class ceCAWait;
-class ceConversationCondition;
 
 
 

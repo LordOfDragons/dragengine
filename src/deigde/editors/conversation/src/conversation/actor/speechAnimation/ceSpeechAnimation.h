@@ -31,10 +31,10 @@
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringSet.h>
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include <dragengine/src/resources/animator/deAnimator.h>
+#include <dragengine/src/resources/animator/deAnimatorInstance.h>
 
 class deEngine;
-class deAnimator;
-class deAnimatorInstance;
 
 
 

@@ -28,8 +28,8 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/string/unicode/decUnicodeString.h>
+#include "lpeLangPack.h"
 
-class lpeLangPack;
 
 
 

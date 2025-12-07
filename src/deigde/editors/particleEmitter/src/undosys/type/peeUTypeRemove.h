@@ -26,9 +26,9 @@
 #define _PEEUTYPEREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeEmitter.h"
+#include "peeType.h"
 
-class peeType;
-class peeEmitter;
 
 
 

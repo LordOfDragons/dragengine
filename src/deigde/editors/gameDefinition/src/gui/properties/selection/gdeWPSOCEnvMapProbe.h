@@ -32,12 +32,12 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCEnvMapProbeListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCEnvMapProbe;
 class gdeWindowProperties;
-class gdeWPSOCEnvMapProbeListener;
 
 
 

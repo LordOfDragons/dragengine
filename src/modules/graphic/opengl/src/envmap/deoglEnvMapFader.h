@@ -26,8 +26,8 @@
 #define _DEOGLENVMAPFADER_H_
 
 #include "../deoglBasics.h"
+#include "deoglEnvironmentMap.h"
 
-class deoglEnvironmentMap;
 
 
 /**

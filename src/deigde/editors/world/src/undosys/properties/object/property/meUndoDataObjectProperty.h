@@ -28,8 +28,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/string/decString.h>
 #include <dragengine/common/string/decStringDictionary.h>
+#include "meObject.h"
 
-class meObject;
 
 
 

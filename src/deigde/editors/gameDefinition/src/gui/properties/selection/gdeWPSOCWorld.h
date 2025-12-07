@@ -33,11 +33,11 @@
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCWorldListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeWindowProperties;
-class gdeWPSOCWorldListener;
 
 
 /**

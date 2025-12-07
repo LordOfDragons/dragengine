@@ -27,10 +27,10 @@
 
 #include "dealWidgetLayoutFlow.h"
 #include "../../common/string/decString.h"
+#include "dealWidgetBorderImage.h"
 
 class dealWidgetLabel;
 class dealWidgetImage;
-class dealWidgetBorderImage;
 class dealImage;
 
 

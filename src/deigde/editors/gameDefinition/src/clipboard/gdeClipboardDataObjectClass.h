@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOBJECTCLASS_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 

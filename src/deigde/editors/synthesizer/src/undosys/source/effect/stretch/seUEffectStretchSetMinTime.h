@@ -27,8 +27,8 @@
 #define _SEUEFFECTSTRETCHSETMINTIME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seEffectStretch.h"
 
-class seEffectStretch;
 
 
 /**

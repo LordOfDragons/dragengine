@@ -29,8 +29,8 @@
 #include "deoglSkinStateConstructedNode.h"
 
 #include <dragengine/resources/skin/property/node/deSkinPropertyNodeShape.h>
+#include "deoglSharedVBOBlock.h"
 
-class deoglSharedVBOBlock;
 
 
 /**

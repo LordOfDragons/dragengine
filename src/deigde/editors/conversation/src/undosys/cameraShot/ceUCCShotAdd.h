@@ -26,9 +26,9 @@
 #define _CEUCCSHOTADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCameraShot.h"
+#include "ceConversation.h"
 
-class ceConversation;
-class ceCameraShot;
 
 
 

@@ -32,10 +32,10 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/particle/deParticleEmitterType.h>
+#include "deoglRSkin.h"
 
 class deoglLightShaderConfig;
 class deoglRParticleEmitter;
-class deoglRSkin;
 class deoglTexture;
 
 

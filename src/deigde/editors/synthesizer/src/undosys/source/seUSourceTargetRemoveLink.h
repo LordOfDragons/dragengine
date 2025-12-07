@@ -26,9 +26,9 @@
 #define _SEUSOURCETARGETREMOVELINK_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLink.h"
+#include "seSource.h"
 
-class seSource;
-class seLink;
 class seControllerTarget;
 
 

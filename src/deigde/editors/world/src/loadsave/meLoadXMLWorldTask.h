@@ -29,6 +29,7 @@
 #include <deigde/utils/igdeBaseXML.h>
 
 #include <dragengine/common/xmlparser/decXmlDocument.h>
+#include "decBaseFileReader.h"
 
 class meDecal;
 class meLoadSaveSystem;
@@ -37,7 +38,6 @@ class meObject;
 class meObjectTexture;
 class meWorld;
 
-class decBaseFileReader;
 class decXmlElementTag;
 
 

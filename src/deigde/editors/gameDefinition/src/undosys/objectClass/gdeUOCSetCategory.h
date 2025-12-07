@@ -27,8 +27,8 @@
 #define _GDEUOBJECTCLASSSETCATEGORY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 

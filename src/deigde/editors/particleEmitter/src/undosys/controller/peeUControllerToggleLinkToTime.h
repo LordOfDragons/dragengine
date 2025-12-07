@@ -26,8 +26,8 @@
 #define _PEEUCONTROLLERTOGGLELINKTOTIME_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeController.h"
 
-class peeController;
 
 
 

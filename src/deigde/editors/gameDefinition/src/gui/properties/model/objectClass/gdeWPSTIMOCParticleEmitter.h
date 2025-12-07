@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCPARTICLEEMITTER_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCParticleEmitter.h"
 
-class gdeOCParticleEmitter;
 
 
 /**

@@ -28,9 +28,9 @@
 #include "../particle/deParticleEmitterType.h"
 #include "../../common/math/decMath.h"
 #include "../../deObject.h"
+#include <dragengine/src/resources/collider/deCollider.h>
+#include <dragengine/src/resources/terrain/heightmap/deHeightTerrain.h>
 
-class deCollider;
-class deHeightTerrain;
 class deHeightTerrainSector;
 
 

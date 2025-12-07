@@ -26,8 +26,8 @@
 #define _CEUCAWAITPASTE_H_
 
 #include "../ceUCActionPaste.h"
+#include "ceCAWait.h"
 
-class ceCAWait;
 
 
 

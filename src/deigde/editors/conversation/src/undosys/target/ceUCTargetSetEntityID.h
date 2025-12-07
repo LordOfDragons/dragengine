@@ -26,8 +26,8 @@
 #define _CEUCTARGETSETENTITYID_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceTarget.h"
 
-class ceTarget;
 
 
 

@@ -34,11 +34,11 @@
 #include <dragengine/resources/canvas/deCanvasImage.h>
 #include <dragengine/resources/canvas/deCanvasPaint.h>
 #include <dragengine/resources/canvas/deCanvasView.h>
+#include "seSkin.h"
 
 class seProperty;
 class sePropertyNode;
 class sePropertyNodeGroup;
-class seSkin;
 class seViewConstructedViewListener;
 class seWindowMain;
 class sePropertyNodeList;

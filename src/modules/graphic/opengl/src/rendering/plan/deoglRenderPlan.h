@@ -37,6 +37,7 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/common/string/decString.h>
+#include "deoglRPTFindContent.h"
 
 #define OGL_RENDER_GAMMA		2.2f
 #define OGL_RENDER_INVGAMMA		(1.0f / 2.2f)
@@ -57,7 +58,6 @@ class deoglTexture;
 class deoglRWorld;
 class deoglRSkyInstance;
 class deoglRSkyInstanceLayer;
-class deoglRPTFindContent;
 
 
 

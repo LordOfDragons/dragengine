@@ -26,9 +26,9 @@
 #define _SEULINKSETCONTROLLER_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seController.h"
+#include "seLink.h"
 
-class seLink;
-class seController;
 
 
 /**

@@ -29,12 +29,12 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSOCCameraListener.h"
 
-class gdeGameDefinition;
 class gdeObjectClass;
 class gdeOCCamera;
 class gdeWindowProperties;
-class gdeWPSOCCameraListener;
 
 
 

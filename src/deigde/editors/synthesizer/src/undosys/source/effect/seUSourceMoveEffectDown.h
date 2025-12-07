@@ -27,9 +27,9 @@
 #define _SEUSOURCEMOVEEFFECTDOWN_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSource.h"
+#include "seEffect.h"
 
-class seEffect;
-class seSource;
 
 
 

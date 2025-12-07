@@ -32,6 +32,14 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
+#include <dragengine/src/resources/world/deWorld.h>
+#include <dragengine/src/resources/light/deLight.h>
+#include <dragengine/src/resources/animator/deAnimatorInstance.h>
+#include <dragengine/src/resources/rig/deRig.h>
+#include <dragengine/src/resources/collider/deColliderComponent.h>
+#include "reRigBone.h"
+#include <dragengine/src/resources/animator/deAnimator.h>
+#include <dragengine/src/resources/component/deComponent.h>
 
 class reRigConstraintDof;
 class igdeGameDefinition;
@@ -39,7 +47,6 @@ class igdeEnvironment;
 class igdeWSky;
 class reCamera;
 class reRigPush;
-class reRigBone;
 class reRigShape;
 class reRigConstraint;
 class reSelectionBones;
@@ -50,13 +57,6 @@ class reRigNotifier;
 class reRigTexture;
 
 class deEngine;
-class deWorld;
-class deLight;
-class deRig;
-class deColliderComponent;
-class deComponent;
-class deAnimator;
-class deAnimatorInstance;
 class deAnimatorRuleAnimation;
 class deAnimatorRuleStateManipulator;
 class deCollider;

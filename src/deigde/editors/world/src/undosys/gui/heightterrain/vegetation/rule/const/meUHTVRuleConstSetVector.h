@@ -30,10 +30,10 @@
 #include <deigde/undo/igdeUndo.h>
 
 #include <dragengine/common/math/decMath.h>
+#include "meHTVRuleConstant.h"
+#include "meHTVegetationLayer.h"
 
 // predefinitions
-class meHTVegetationLayer;
-class meHTVRuleConstant;
 
 
 

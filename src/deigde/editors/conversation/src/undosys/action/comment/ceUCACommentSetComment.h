@@ -26,9 +26,9 @@
 #define _CEUCACOMMENTSETCOMMENT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCAComment.h"
+#include "ceConversationTopic.h"
 
-class ceCAComment;
-class ceConversationTopic;
 
 
 

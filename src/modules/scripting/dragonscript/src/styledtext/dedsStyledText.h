@@ -28,9 +28,9 @@
 
 // includes
 #include <dragengine/deObject.h>
+#include "dedsStyledTextNode.h"
 
 // predefinitions
-class dedsStyledTextNode;
 
 
 

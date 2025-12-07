@@ -28,6 +28,7 @@
 #include "common/string/decString.h"
 #include "common/utils/decPRNG.h"
 #include "filesystem/deVirtualFileSystem.h"
+#include "deLogger.h"
 
 class deAISystem;
 class deAnimationManager;
@@ -60,7 +61,6 @@ class deImageManager;
 class deInputSystem;
 class deLanguagePackManager;
 class deLightManager;
-class deLogger;
 class deLumimeterManager;
 class deMicrophoneManager;
 class deModelManager;

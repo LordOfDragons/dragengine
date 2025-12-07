@@ -27,10 +27,10 @@
 
 #include <dragengine/common/collection/decPointerLinkedList.h>
 #include <dragengine/systems/modules/audio/deBaseAudioWorld.h>
+#include "deoalAWorld.h"
 
 class deWorld;
 class deAudioOpenAL;
-class deoalAWorld;
 class deoalComponent;
 class deoalSpeaker;
 class deoalMicrophone;

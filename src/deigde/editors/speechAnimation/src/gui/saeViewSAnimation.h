@@ -30,9 +30,9 @@
 
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/font/deFont.h>
+#include "saeSAnimation.h"
 
 class saeWindowMain;
-class saeSAnimation;
 
 
 

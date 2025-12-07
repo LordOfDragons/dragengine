@@ -27,8 +27,8 @@
 
 #include <deigde/undo/igdeUndo.h>
 #include <dragengine/resources/animator/rule/deAnimatorRuleBoneTransformator.h>
+#include "aeRuleBoneTransformator.h"
 
-class aeRuleBoneTransformator;
 
 
 

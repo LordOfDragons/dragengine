@@ -26,8 +26,8 @@
 #define _PEEUTYPESETMODELSKINPATH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "peeType.h"
 
-class peeType;
 
 
 

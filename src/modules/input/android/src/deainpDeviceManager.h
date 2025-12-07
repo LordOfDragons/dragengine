@@ -26,11 +26,11 @@
 #define _DEAINPDEVICEMANAGER_H_
 
 #include <dragengine/common/collection/decObjectOrderedSet.h>
+#include "deainpDeviceKeyboard.h"
+#include "deainpDeviceMouse.h"
 
 class deAndroidInput;
 class deainpDevice;
-class deainpDeviceMouse;
-class deainpDeviceKeyboard;
 
 
 

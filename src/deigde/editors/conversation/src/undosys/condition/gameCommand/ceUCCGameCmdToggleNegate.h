@@ -26,10 +26,10 @@
 #define _CEUCCGAMECMDTOGGLENEGATE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCConditionGameCommand.h"
+#include "ceConversationAction.h"
+#include "ceConversationTopic.h"
 
-class ceCConditionGameCommand;
-class ceConversationAction;
-class ceConversationTopic;
 
 
 

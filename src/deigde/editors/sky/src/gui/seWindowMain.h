@@ -32,14 +32,14 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "seWindowCurves.h"
+#include "seWindowMainListener.h"
+#include "seWindowProperties.h"
+#include "seViewSky.h"
+#include "seSky.h"
 
 class decStringList;
-class seWindowMainListener;
-class seViewSky;
 class seConfiguration;
-class seSky;
-class seWindowProperties;
-class seWindowCurves;
 class seEngineController;
 class seLoadSaveSystem;
 class seIGDEModule;

@@ -26,9 +26,9 @@
 #define _SEULINKADD_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seLink.h"
+#include "seSky.h"
 
-class seLink;
-class seSky;
 
 
 /**

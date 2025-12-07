@@ -28,12 +28,12 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/utils/decLayerMask.h>
+#include "deoalASpeaker.h"
+#include "deoalASoundLevelMeter.h"
+#include "deoalAComponent.h"
+#include "deoalAMicrophone.h"
 
 class deoalAudioThread;
-class deoalAComponent;
-class deoalAMicrophone;
-class deoalASpeaker;
-class deoalASoundLevelMeter;
 class deoalWorldOctree;
 class deoalWorldOctreeVisitor;
 

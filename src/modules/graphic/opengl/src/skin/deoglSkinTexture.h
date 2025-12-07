@@ -31,12 +31,12 @@
 #include "shader/deoglSkinShader.h"
 
 #include <dragengine/common/math/decMath.h>
+#include "deoglSharedSPBElement.h"
 
 class deoglRenderThread;
 class deoglRSkin;
 class deoglSPBlockUBO;
 class deoglSkinShaderConfig;
-class deoglSharedSPBElement;
 class deoglShaderParameterBlock;
 
 class deSkinTexture;

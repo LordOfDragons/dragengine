@@ -26,9 +26,9 @@
 #define _MEWPUNDOHISTORY_H_
 
 #include <deigde/gui/properties/igdeWPUndoHistory.h>
+#include "meWorld.h"
+#include "meWPUndoHistoryListener.h"
 
-class meWorld;
-class meWPUndoHistoryListener;
 
 
 

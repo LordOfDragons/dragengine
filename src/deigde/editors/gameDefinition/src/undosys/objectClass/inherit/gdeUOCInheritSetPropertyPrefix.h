@@ -27,9 +27,9 @@
 #define _GDEUOCINHERITSETPROPERTYPREFIX_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
+#include "gdeOCInherit.h"
 
-class gdeOCInherit;
-class gdeObjectClass;
 
 
 

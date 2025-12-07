@@ -32,11 +32,11 @@
 #include <deigde/gui/igdeCheckBox.h>
 #include <deigde/gui/event/igdeAction.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPGameDefinitionListener.h"
 
-class gdeGameDefinition;
 class gdeWindowProperties;
 class gdeWindowMain;
-class gdeWPGameDefinitionListener;
 class gdeWPPropertyList;
 class gdeProperty;
 

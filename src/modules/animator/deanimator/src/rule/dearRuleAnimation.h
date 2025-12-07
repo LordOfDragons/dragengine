@@ -28,8 +28,8 @@
 #include "dearRule.h"
 #include "../dearMapAnimationBones.h"
 #include "../dearMapAnimationVPS.h"
+#include "dearAnimationMove.h"
 
-class dearAnimationMove;
 class deAnimatorRuleAnimation;
 
 

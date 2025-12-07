@@ -27,8 +27,8 @@
 #define _SEUSOURCETOGGLEENABLED_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seSource.h"
 
-class seSource;
 
 
 

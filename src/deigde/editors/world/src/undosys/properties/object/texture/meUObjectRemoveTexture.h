@@ -28,11 +28,11 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meObject.h"
+#include "meObjectTexture.h"
 
 // predefinitions
 class meWorld;
-class meObject;
-class meObjectTexture;
 
 
 

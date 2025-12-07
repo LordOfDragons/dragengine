@@ -29,11 +29,11 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/properties/igdeWPSky.h>
 #include <deigde/gui/properties/igdeWPCamera.h>
+#include "saeSAnimation.h"
+#include "saeWPViewListener.h"
 
 class saeWindowProperties;
 class saeGameDefinition;
-class saeWPViewListener;
-class saeSAnimation;
 
 
 

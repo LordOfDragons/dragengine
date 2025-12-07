@@ -26,8 +26,8 @@
 #define _DECMEMORYFILEWRITER_H_
 
 #include "decBaseFileWriter.h"
+#include "decMemoryFile.h"
 
-class decMemoryFile;
 
 
 /**

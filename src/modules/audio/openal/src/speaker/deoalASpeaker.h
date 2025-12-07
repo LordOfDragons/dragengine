@@ -33,12 +33,12 @@
 #include <dragengine/common/utils/decLayerMask.h>
 #include <dragengine/resources/sound/deSoundDecoder.h>
 #include <dragengine/resources/sound/deSpeaker.h>
+#include "deoalASynthesizerInstance.h"
+#include "deoalASound.h"
+#include "deoalAVideoPlayer.h"
 
 class deoalAudioThread;
 class deoalAMicrophone;
-class deoalASound;
-class deoalASynthesizerInstance;
-class deoalAVideoPlayer;
 class deoalSource;
 class deoalAWorld;
 class deoalWorldOctree;

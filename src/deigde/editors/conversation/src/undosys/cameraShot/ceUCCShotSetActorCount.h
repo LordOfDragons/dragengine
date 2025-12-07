@@ -26,8 +26,8 @@
 #define _CEUCCSHOTSETACTORCOUNT_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceCameraShot.h"
 
-class ceCameraShot;
 
 
 

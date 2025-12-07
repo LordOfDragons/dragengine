@@ -33,16 +33,16 @@
 #include <deigde/gui/event/igdeActionUndo.h>
 #include <deigde/gui/event/igdeActionRedo.h>
 #include <deigde/gui/resources/igdeIcon.h>
+#include "ceConversation.h"
+#include "ceWindowDopeSheet.h"
+#include "ceWindowProperties.h"
+#include "ceWindowMainListener.h"
+#include "ceViewConversation.h"
 
 
 class decStringList;
 class decStringSet;
-class ceWindowMainListener;
-class ceViewConversation;
 class ceConfiguration;
-class ceConversation;
-class ceWindowProperties;
-class ceWindowDopeSheet;
 class ceLoadSaveSystem;
 class ceIGDEModule;
 class igdeStepableTask;

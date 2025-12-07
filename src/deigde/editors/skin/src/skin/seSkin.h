@@ -35,6 +35,11 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/collection/decObjectSet.h>
 #include <dragengine/resources/light/deLight.h>
+#include <dragengine/src/resources/world/deWorld.h>
+#include <dragengine/src/resources/animator/deAnimatorInstance.h>
+#include <dragengine/src/resources/skin/deSkin.h>
+#include <dragengine/src/resources/animator/deAnimator.h>
+#include <dragengine/src/resources/component/deComponent.h>
 
 class seDynamicSkin;
 class seDynamicSkinRenderable;
@@ -45,16 +50,11 @@ class seSkinListener;
 class igdeWSky;
 class igdeCamera;
 
-class deAnimator;
-class deAnimatorInstance;
 class deAnimatorRuleAnimation;
 class deAnimatorRuleStateManipulator;
-class deComponent;
 class deDebugDrawer;
 class deLogger;
 class deParticleEmitter;
-class deSkin;
-class deWorld;
 
 
 

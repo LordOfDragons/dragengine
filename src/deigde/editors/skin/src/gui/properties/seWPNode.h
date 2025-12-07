@@ -40,12 +40,12 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 
 #include "../../skin/property/node/sePropertyNode.h"
+#include "seSkin.h"
+#include "seWPNodeListener.h"
 
-class seSkin;
 class seTexture;
 class seProperty;
 class seWindowProperties;
-class seWPNodeListener;
 class igdeTreeItem;
 
 

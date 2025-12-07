@@ -26,8 +26,8 @@
 #define _DERLTASKREADFONT_H_
 
 #include "deResourceLoaderTask.h"
+#include <dragengine/src/resources/loader/tasks/deRLTaskReadFontInternal.h>
 
-class deRLTaskReadFontInternal;
 class deFont;
 
 

@@ -31,11 +31,11 @@
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "reRig.h"
+#include "reWPBoneListener.h"
+#include "reRigBone.h"
 
-class reRig;
-class reRigBone;
 class reWindowProperties;
-class reWPBoneListener;
 
 
 

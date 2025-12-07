@@ -26,8 +26,8 @@
 #define _GDECLIPBOARDDATAOCCOMPONENT_H_
 
 #include <deigde/clipboard/igdeClipboardData.h>
+#include "gdeOCComponent.h"
 
-class gdeOCComponent;
 
 
 

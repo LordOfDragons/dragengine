@@ -29,8 +29,8 @@
 #include "../../../gamedef/objectClass/billboard/gdeOCBillboard.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeObjectClass.h"
 
-class gdeObjectClass;
 
 
 

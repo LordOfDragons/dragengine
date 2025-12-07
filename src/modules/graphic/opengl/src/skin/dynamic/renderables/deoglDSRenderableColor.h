@@ -28,9 +28,9 @@
 #include "deoglDSRenderable.h"
 
 #include <dragengine/common/math/decMath.h>
+#include "deoglRDSRenderableColor.h"
 
 class deDSRenderableColor;
-class deoglRDSRenderableColor;
 
 
 

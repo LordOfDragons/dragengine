@@ -28,9 +28,9 @@
 
 // includes
 #include "dedsStyledTextNode.h"
+#include <dragengine/src/resources/image/deImage.h>
 
 // predefinitions
-class deImage;
 
 
 

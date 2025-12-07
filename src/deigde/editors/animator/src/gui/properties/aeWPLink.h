@@ -34,11 +34,11 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "aeAnimator.h"
+#include "aeWPLinkListener.h"
 
-class aeAnimator;
 class aeLink;
 class aeWindowProperties;
-class aeWPLinkListener;
 class aeEditLinkMapping;
 
 

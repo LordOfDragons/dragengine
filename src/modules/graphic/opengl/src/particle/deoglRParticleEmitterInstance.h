@@ -32,10 +32,10 @@
 
 #include "../deoglBasics.h"
 #include "../world/deoglWorldComputeElement.h"
+#include "deoglRParticleEmitter.h"
+#include "deoglEnvironmentMap.h"
 
 class deoglRenderThread;
-class deoglEnvironmentMap;
-class deoglRParticleEmitter;
 class deoglRParticleEmitterInstanceType;
 class deoglVAO;
 class deoglRWorld;

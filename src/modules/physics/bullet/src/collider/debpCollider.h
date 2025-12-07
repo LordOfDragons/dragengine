@@ -29,6 +29,7 @@
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/systems/modules/physics/deBasePhysicsCollider.h>
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
 
 class debpColliderAttachment;
 class debpColliderCollisionTest;
@@ -41,7 +42,6 @@ class debpWorld;
 
 class deCollider;
 class deColliderCollisionTest;
-class deDebugDrawer;
 class deDebugDrawerShape;
 class dePhysicsBullet;
 

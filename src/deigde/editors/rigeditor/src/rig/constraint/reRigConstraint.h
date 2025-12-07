@@ -28,14 +28,14 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/resources/collider/deColliderConstraint.h>
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include "reRigBone.h"
+#include <dragengine/src/resources/collider/deColliderVolume.h>
 
-class deDebugDrawer;
 class reRig;
-class reRigBone;
 class deRigConstraint;
 class reRigConstraintDof;
 class deCollider;
-class deColliderVolume;
 class igdeWDebugDrawerShape;
 class igdeWCoordSysArrows;
 class igdeWAngleRange;

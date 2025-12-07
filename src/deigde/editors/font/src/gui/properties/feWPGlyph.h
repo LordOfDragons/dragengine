@@ -29,11 +29,11 @@
 #include <deigde/gui/igdeButton.h>
 #include <deigde/gui/igdeComboBox.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "feFont.h"
+#include "feWPGlyphListener.h"
+#include "feFontGlyph.h"
 
-class feFont;
-class feFontGlyph;
 class feWindowProperties;
-class feWPGlyphListener;
 
 
 

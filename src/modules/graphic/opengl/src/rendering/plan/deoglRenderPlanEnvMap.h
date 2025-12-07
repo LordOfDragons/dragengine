@@ -26,8 +26,8 @@
 #define _DEOGLRENDERPLANENVMAP_H_
 
 #include <dragengine/common/math/decMath.h>
+#include "deoglEnvironmentMap.h"
 
-class deoglEnvironmentMap;
 
 
 

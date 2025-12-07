@@ -29,11 +29,11 @@
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/math/decConvexVolumeList.h>
 #include <dragengine/resources/navigation/space/deNavigationSpace.h>
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
 
 class dedaiLayer;
 class dedaiHeightTerrainNavSpace;
 class dedaiNavSpace;
-class deDebugDrawer;
 class deDebugDrawerShape;
 class dedaiWorld;
 class dedaiSpaceMesh;

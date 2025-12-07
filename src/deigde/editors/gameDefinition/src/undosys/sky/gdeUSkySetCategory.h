@@ -27,8 +27,8 @@
 #define _GDEUSKYSETCATEGORY_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "gdeSky.h"
 
-class gdeSky;
 
 
 

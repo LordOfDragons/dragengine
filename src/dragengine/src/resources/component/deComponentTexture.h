@@ -26,10 +26,10 @@
 #define _DECOMPONENTTEXTURE_H_
 
 #include "../../common/math/decMath.h"
+#include <dragengine/src/resources/skin/dynamic/deDynamicSkin.h>
+#include <dragengine/src/resources/skin/deSkin.h>
 
-class deSkin;
 class deImage;
-class deDynamicSkin;
 
 
 /**

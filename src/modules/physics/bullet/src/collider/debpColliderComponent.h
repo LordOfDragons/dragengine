@@ -29,10 +29,10 @@
 #include "../shape/debpShapeList.h"
 #include "../debpCollisionObject.h"
 #include "../forcefield/debpForceFieldFluctuation.h"
+#include "debpBulletShape.h"
 
 class btGhostObject;
 class btCollisionObject;
-class debpBulletShape;
 class debpColliderBone;
 class debpColliderBones;
 class debpComponent;

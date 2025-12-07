@@ -29,9 +29,9 @@
 #include <dragengine/common/curve/decCurveBezier.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include "seController.h"
 
 class seSky;
-class seController;
 
 
 

@@ -28,9 +28,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meObjectTexture.h"
 
 // predefinitions
-class meObjectTexture;
 class meObjectTextureList;
 
 

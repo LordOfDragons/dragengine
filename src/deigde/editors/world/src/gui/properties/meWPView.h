@@ -37,10 +37,10 @@
 #include <deigde/gui/properties/igdeWPWObject.h>
 #include <deigde/gui/properties/igdeWPCamera.h>
 #include <deigde/gui/properties/igdeWPTriggerTable.h>
+#include "meWPViewListener.h"
+#include "meWorld.h"
 
 class meWindowProperties;
-class meWPViewListener;
-class meWorld;
 class meCamera;
 
 

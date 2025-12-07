@@ -26,8 +26,8 @@
 #define _CEWPTTIMAWAITCONDITION_H_
 
 #include "../../condition/ceWPTTIMConditionContainer.h"
+#include "ceCAWait.h"
 
-class ceCAWait;
 class ceWPTTIMAWait;
 
 

@@ -26,8 +26,8 @@
 #define _GDEWPSTIMOCSPEAKER_H_
 
 #include "gdeWPSTIMOCSubObject.h"
+#include "gdeOCSpeaker.h"
 
-class gdeOCSpeaker;
 
 
 /**

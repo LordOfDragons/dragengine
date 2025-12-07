@@ -26,8 +26,8 @@
 #define _GDEWPSTREEMODEL_H_
 
 #include <deigde/gui/igdeTreeList.h>
+#include "gdeGameDefinition.h"
 
-class gdeGameDefinition;
 class gdeWPSTIMCategories;
 class gdeWPSTIMObjectClasses;
 class gdeWPSTIMParticleEmitters;

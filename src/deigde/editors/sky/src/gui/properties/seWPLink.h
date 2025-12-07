@@ -32,13 +32,13 @@
 #include <deigde/gui/layout/igdeContainerScroll.h>
 #include <deigde/gui/curveedit/igdeViewCurveBezier.h>
 #include <deigde/gui/event/igdeAction.h>
+#include "igdeViewCurveBezier.h"
+#include "seSky.h"
+#include "seWPLinkListener.h"
 
-class seSky;
 class seLink;
 class seWindowProperties;
-class seWPLinkListener;
 
-class igdeViewCurveBezier;
 
 
 /**

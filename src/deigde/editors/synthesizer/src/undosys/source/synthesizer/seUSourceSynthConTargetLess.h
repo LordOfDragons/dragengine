@@ -26,9 +26,9 @@
 #define _SEUSOURCESYNTHCONTARGETLESS_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seController.h"
+#include "seSourceSynthesizer.h"
 
-class seSourceSynthesizer;
-class seController;
 
 
 

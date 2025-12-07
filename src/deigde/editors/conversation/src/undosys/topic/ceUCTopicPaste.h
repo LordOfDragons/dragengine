@@ -28,8 +28,8 @@
 #include "../../conversation/topic/ceConversationTopicList.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversationFile.h"
 
-class ceConversationFile;
 class ceConversationTopic;
 
 

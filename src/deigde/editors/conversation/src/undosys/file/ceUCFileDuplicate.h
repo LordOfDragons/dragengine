@@ -26,9 +26,9 @@
 #define _CEUCFILEDUPLICATE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "ceConversation.h"
+#include "ceConversationFile.h"
 
-class ceConversation;
-class ceConversationFile;
 
 
 

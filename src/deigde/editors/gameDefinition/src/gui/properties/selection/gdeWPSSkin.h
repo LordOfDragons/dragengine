@@ -33,12 +33,12 @@
 #include <deigde/gui/igdeTextField.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSSkinListener.h"
 
-class gdeGameDefinition;
 class gdeSkin;
 class gdeCategoryList;
 class gdeWindowProperties;
-class gdeWPSSkinListener;
 
 
 

@@ -28,9 +28,9 @@
 #include <dragengine/systems/modules/graphic/deBaseGraphicDynamicSkin.h>
 #include <dragengine/common/collection/decPointerList.h>
 #include <dragengine/common/collection/decPointerSet.h>
+#include "deoglRDynamicSkin.h"
 
 class deoglDSRenderable;
-class deoglRDynamicSkin;
 class deoglDynamicSkinListener;
 
 class deGraphicOpenGl;

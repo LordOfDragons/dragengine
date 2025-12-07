@@ -27,6 +27,7 @@
 
 #include <dragengine/systems/modules/ai/deBaseAINavigator.h>
 #include <dragengine/common/math/decMath.h>
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
 
 class deDEAIModule;
 class dedaiCostTable;
@@ -34,7 +35,6 @@ class dedaiLayer;
 class dedaiPathFinderNavMesh;
 class dedaiWorld;
 
-class deDebugDrawer;
 class deDebugDrawerShape;
 class deNavigator;
 class deNavigatorType;

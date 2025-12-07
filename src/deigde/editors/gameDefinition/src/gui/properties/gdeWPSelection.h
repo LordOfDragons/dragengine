@@ -31,11 +31,11 @@
 #include <deigde/gui/igdeSwitcher.h>
 #include <deigde/gui/igdeWidget.h>
 #include <deigde/gui/layout/igdeContainerSplitted.h>
+#include "gdeGameDefinition.h"
+#include "gdeWPSelectionListener.h"
 
-class gdeWPSelectionListener;
 class gdeWPSObjectClass;
 class gdeWindowProperties;
-class gdeGameDefinition;
 
 class gdeWPSTreeModel;
 

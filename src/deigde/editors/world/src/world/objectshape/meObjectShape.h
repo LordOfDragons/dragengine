@@ -31,6 +31,8 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include <dragengine/src/resources/debug/deDebugDrawer.h>
+#include <dragengine/src/resources/collider/deColliderVolume.h>
 
 
 class meObject;
@@ -39,8 +41,6 @@ class meWorld;
 class igdeWDebugDrawerShape;
 class igdeEnvironment;
 
-class deColliderVolume;
-class deDebugDrawer;
 class deEngine;
 class decShape;
 

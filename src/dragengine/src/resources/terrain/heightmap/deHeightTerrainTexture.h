@@ -26,9 +26,9 @@
 #define _DEHEIGHTTERRAINTEXTURE_H_
 
 #include "../../../common/math/decMath.h"
+#include <dragengine/src/resources/image/deImage.h>
+#include <dragengine/src/resources/skin/deSkin.h>
 
-class deSkin;
-class deImage;
 
 
 /**

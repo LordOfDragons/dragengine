@@ -27,8 +27,8 @@
 #define _SEUEFFECTSETSTRENGTH_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "seEffect.h"
 
-class seEffect;
 
 
 

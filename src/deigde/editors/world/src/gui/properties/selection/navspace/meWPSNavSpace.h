@@ -32,10 +32,10 @@
 #include <deigde/gui/composed/igdeEditVector.h>
 #include <deigde/gui/composed/igdeEditPath.h>
 #include <deigde/gui/layout/igdeContainerScroll.h>
+#include "meWorld.h"
+#include "meWPSNavSpaceListener.h"
 
-class meWPSNavSpaceListener;
 class meWPSelection;
-class meWorld;
 class meNavigationSpace;
 
 

@@ -27,11 +27,11 @@
 
 #include <deigde/gui/layout/igdeContainerBorder.h>
 #include <deigde/gui/igdeIconListBox.h>
+#include "meWindowChangelogListener.h"
+#include "meWorld.h"
 
 class meWindowMain;
-class meWindowChangelogListener;
 class meWCEntry;
-class meWorld;
 
 
 

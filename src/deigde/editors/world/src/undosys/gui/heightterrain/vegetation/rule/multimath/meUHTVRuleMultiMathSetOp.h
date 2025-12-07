@@ -28,9 +28,9 @@
 #include "../../../../../../world/heightterrain/rules/meHTVRuleMultiMath.h"
 
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVRuleMultiMath.h"
+#include "meHTVegetationLayer.h"
 
-class meHTVegetationLayer;
-class meHTVRuleMultiMath;
 
 
 

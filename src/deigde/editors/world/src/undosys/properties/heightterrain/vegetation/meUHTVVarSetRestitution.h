@@ -28,9 +28,9 @@
 
 // includes
 #include <deigde/undo/igdeUndo.h>
+#include "meHTVVariation.h"
 
 // predefinitions
-class meHTVVariation;
 
 
 

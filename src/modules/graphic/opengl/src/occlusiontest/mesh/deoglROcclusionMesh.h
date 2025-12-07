@@ -31,10 +31,10 @@
 #include <dragengine/deObject.h>
 #include <dragengine/common/math/decMath.h>
 #include <dragengine/common/string/decString.h>
+#include "deoglSharedVBOBlock.h"
 
 class deOcclusionMesh;
 class deoglRenderThread;
-class deoglSharedVBOBlock;
 class deoglSharedSPBListUBO;
 class deoglBVH;
 class deoglRayTraceField;

@@ -26,9 +26,9 @@
 #define _SAEUPHONEMEREMOVE_H_
 
 #include <deigde/undo/igdeUndo.h>
+#include "saeSAnimation.h"
+#include "saePhoneme.h"
 
-class saePhoneme;
-class saeSAnimation;
 
 
 
