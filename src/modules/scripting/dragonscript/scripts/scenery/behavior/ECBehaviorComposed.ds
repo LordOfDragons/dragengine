@@ -121,8 +121,8 @@ class ECBehaviorComposed extends DefaultECBehavior
 	 */
 	class ECPChildren extends ElementClassProperty
 		var ElementClassList pElementClassList
-		var Array pAllowedElementClasses //<! Array of ElementClass
-		var Array pChildren //<! Array of ChildElement
+		var Array pAllowedElementClasses //!<  Array of ElementClass
+		var Array pChildren //!<  Array of ChildElement
 		var PreloadCounter pCounter
 		var bool pHasPreloaded
 		

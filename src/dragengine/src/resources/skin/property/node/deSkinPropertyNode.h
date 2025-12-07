@@ -68,21 +68,21 @@ public:
 	
 	/** \brief Mapped. */
 	enum eMapped{
-		emPositionX, //<!Position X-Component
-		emPositionY, //<!Position Y-Component
-		emPositionZ, //<!Position Z-Component
-		emSizeX, //<!Size X-Component
-		emSizeY, //<!Size Y-Component
-		emSizeZ, //<!Size Z-Component
-		emRotation, //<!Rotation
-		emShear, //<!Shear
-		emBrightness, //<!Brightness
-		emContrast, //<!Constrast
-		emGamma, //<!Gamma
-		emColorizeRed, //<!Colorize red component
-		emColorizeGreen, //<!Colorize green component
-		emColorizeBlue, //<!Colorize blue component
-		emTransparency //<!Transparency
+		emPositionX, //!< Position X-Component
+		emPositionY, //!< Position Y-Component
+		emPositionZ, //!< Position Z-Component
+		emSizeX, //!< Size X-Component
+		emSizeY, //!< Size Y-Component
+		emSizeZ, //!< Size Z-Component
+		emRotation, //!< Rotation
+		emShear, //!< Shear
+		emBrightness, //!< Brightness
+		emContrast, //!< Constrast
+		emGamma, //!< Gamma
+		emColorizeRed, //!< Colorize red component
+		emColorizeGreen, //!< Colorize green component
+		emColorizeBlue, //!< Colorize blue component
+		emTransparency //!< Transparency
 	};
 	
 	static const int MappedCount = emTransparency + 1;

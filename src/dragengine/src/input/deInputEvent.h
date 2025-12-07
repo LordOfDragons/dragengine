@@ -259,8 +259,8 @@ public:
 	 * \version 1.6
 	 */
 	enum eSources{
-		esInput, //<!Originates from Input System
-		esVR //<!Originates from VR System
+		esInput, //!< Originates from Input System
+		esVR //!< Originates from VR System
 	};
 	
 	/**

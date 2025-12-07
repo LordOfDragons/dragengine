@@ -37,10 +37,10 @@ class DE_DLL_EXPORT deSkinPropertyNodeText : public deSkinPropertyNode{
 public:
 	/** \brief Mapped. */
 	enum eTextMapped{
-		etmFontSize, //<!Font size
-		etmColorRed, //<!Color red component
-		etmColorGreen, //<!Color green component
-		etmColorBlue //<!Color blue component
+		etmFontSize, //!< Font size
+		etmColorRed, //!< Color red component
+		etmColorGreen, //!< Color green component
+		etmColorBlue //!< Color blue component
 	};
 	
 	static const int TextMappedCount = etmColorBlue + 1;

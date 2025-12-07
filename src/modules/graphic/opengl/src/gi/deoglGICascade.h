@@ -44,21 +44,21 @@ public:
 		epfSmoothUpdate = 0x1,
 		epfDisabled = 0x2,
 		epfNearGeometry = 0x4,
-		epfValid = 0x8, //<!Probe has been updated at least once
-		epfRayCacheValid = 0x10, //<!Ray-Tracing ray cache is valid
+		epfValid = 0x8, //!< Probe has been updated at least once
+		epfRayCacheValid = 0x10, //!< Ray-Tracing ray cache is valid
 		epfInsideView = 0x20,
 		epfDynamicDisable = 0x40
 	};
 	
 	/** Probe parameters. */
 	struct sProbe{
-		decPoint3 coord; //<!Grid coordinates
+		decPoint3 coord; //!< Grid coordinates
 		decPoint3 shiftedCoord;
 		decVector position;
 		decVector offset;
 		decVector minExtend;
 		decVector maxExtend;
-		uint16_t index; //<!Grid index
+		uint16_t index; //!< Grid index
 		uint8_t flags;
 		uint8_t countOffsetMoved;
 	};

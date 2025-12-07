@@ -41,10 +41,10 @@ public:
 	
 	
 	enum eTextMapped{
-		etmFontSize = MappedCount, //<!Font size
-		etmColorRed, //<!Color red component
-		etmColorGreen, //<!Color green component
-		etmColorBlue //<!Color blue component
+		etmFontSize = MappedCount, //!< Font size
+		etmColorRed, //!< Color red component
+		etmColorGreen, //!< Color green component
+		etmColorBlue //!< Color blue component
 	};
 	
 	static const int TextMappedCount = etmColorBlue + 1;

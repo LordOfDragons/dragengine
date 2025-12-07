@@ -281,39 +281,39 @@ public:
 		// OpenGL
 		struct sGraphicApiConnectionOpenGl{
 			#ifdef OS_BEOS
-			void *dummy; //<!avoid empty struct
+			void *dummy; //!< avoid empty struct
 			
 			#elif defined OS_ANDROID
-			void *display; //<!Android: EGLDisplay
-			void *config; //<!Android: EGLConfig
-			void *context; //<!Android: EGLContext
+			void *display; //!< Android: EGLDisplay
+			void *config; //!< Android: EGLConfig
+			void *context; //!< Android: EGLContext
 			
 			#elif defined OS_WEBWASM
-			void *dummy; //<!avoid empty struct
+			void *dummy; //!< avoid empty struct
 			
 			#elif defined OS_UNIX_X11
-			void *display; //<!X11: Display*
-			uint32_t visualid; //<!X11: uint32_t
-			void *glxFBConfig; //<!GLXFBConfig
-			unsigned long glxDrawable; //<!GLXDrawable
-			void *glxContext; //<!GLXContext
+			void *display; //!< X11: Display*
+			uint32_t visualid; //!< X11: uint32_t
+			void *glxFBConfig; //!< GLXFBConfig
+			unsigned long glxDrawable; //!< GLXDrawable
+			void *glxContext; //!< GLXContext
 			
 			#elif defined OS_W32
 			void *hDC; // Windows: HDC
 			void *hGLRC; // Windows: HGLRC
 			
 			#else
-			void *dummy; //<!avoid empty struct
+			void *dummy; //!< avoid empty struct
 			#endif
 		} opengl;
 		
 		// Vulkan
 		struct sGraphicApiConnectionVulkan{
-			void *instance; //<!Vulkan: VkInstance
-			void *physicalDevice; //<!Vulkan: VkPhysicalDevice
-			void *device; //<!Vulkan: VkDevice
-			uint32_t queueFamilyIndex; //<!Vulkan: uint32_t
-			uint32_t queueIndex; //<!Vulkan: uint32_t
+			void *instance; //!< Vulkan: VkInstance
+			void *physicalDevice; //!< Vulkan: VkPhysicalDevice
+			void *device; //!< Vulkan: VkDevice
+			uint32_t queueFamilyIndex; //!< Vulkan: uint32_t
+			uint32_t queueIndex; //!< Vulkan: uint32_t
 		} vulkan;
 	};
 	

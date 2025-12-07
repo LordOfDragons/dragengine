@@ -259,7 +259,7 @@ public:
 		
 		efeCheekPuffRight,
 		efeCheekPuffLeft,
-		efeCheekSuck, //<!Simplified expression of efeCheekSuckRight and efeCheekSuckLeft
+		efeCheekSuck, //!< Simplified expression of efeCheekSuckRight and efeCheekSuckLeft
 		
 		efeMouthApeShape,
 		efeMouthUpperRight,
@@ -275,7 +275,7 @@ public:
 		efeMouthLowerOverturn,
 		efeMouthLowerInside,
 		efeMouthLowerOverlay,
-		efeMouthPout, //<!Simplified expression of efeMouthPoutRight and efeMouthPoutLeft
+		efeMouthPout, //!< Simplified expression of efeMouthPoutRight and efeMouthPoutLeft
 		efeMouthSmileRight,
 		efeMouthSmileLeft,
 		efeMouthSadRight,
@@ -311,8 +311,8 @@ public:
 		
 		efeCheekUpRight,
 		efeCheekUpLeft,
-		efeCheekSuckRight, //<!Detail expression of efeCheekSuck
-		efeCheekSuckLeft, //<!Detail expression of efeCheekSuck
+		efeCheekSuckRight, //!< Detail expression of efeCheekSuck
+		efeCheekSuckLeft, //!< Detail expression of efeCheekSuck
 		
 		efeChinUpperUp,
 		efeChinLowerUp,
@@ -321,8 +321,8 @@ public:
 		efeMouthDimpleLeft,
 		efeMouthPressRight,
 		efeMouthPressLeft,
-		efeMouthPoutRight, //<!Detail expression of efeCMouthPout
-		efeMouthPoutLeft, //<!Detail expression of efeCMouthPout
+		efeMouthPoutRight, //!< Detail expression of efeCMouthPout
+		efeMouthPoutLeft, //!< Detail expression of efeCMouthPout
 		efeMouthStretchRight,
 		efeMouthStretchLeft,
 		efeMouthRight,

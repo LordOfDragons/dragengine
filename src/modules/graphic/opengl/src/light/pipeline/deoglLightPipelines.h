@@ -44,18 +44,18 @@ public:
 	
 	/** Type. */
 	enum eTypes{
-		etNoShadow, //<!No shadow casting.
-		etAmbient, //<!Ambient light only.
-		etSolid1, //<!Single solid no transparent shadow.
-		etSolid1Transp1, //<!Single solid and transparent shadow.
-		etSolid2, //<!Double solid no transparent shadow.
-		etSolid2Transp1, //<!Double solid and single transparent shadow.
-		etSolid2Transp2, //<!Double solid and transparent shadow.
-		etLumSolid1, //<!Luminance only single solid (unused).
-		etLumSolid2, //<!Luminance only double solid (unused).
-		etGIRayNoShadow, //<!GI rays no shadow casting.
-		etGIRaySolid1, //<!GI rays single solid shadow.
-		etGIRaySolid2 //<!GI rays double solid shadow.
+		etNoShadow, //!< No shadow casting.
+		etAmbient, //!< Ambient light only.
+		etSolid1, //!< Single solid no transparent shadow.
+		etSolid1Transp1, //!< Single solid and transparent shadow.
+		etSolid2, //!< Double solid no transparent shadow.
+		etSolid2Transp1, //!< Double solid and single transparent shadow.
+		etSolid2Transp2, //!< Double solid and transparent shadow.
+		etLumSolid1, //!< Luminance only single solid (unused).
+		etLumSolid2, //!< Luminance only double solid (unused).
+		etGIRayNoShadow, //!< GI rays no shadow casting.
+		etGIRaySolid1, //!< GI rays single solid shadow.
+		etGIRaySolid2 //!< GI rays double solid shadow.
 	};
 	
 	static const deoglDebugNamesEnum DebugNamesTypes;

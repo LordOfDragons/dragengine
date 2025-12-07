@@ -44,15 +44,15 @@ public:
 	
 	/** \brief Mapped. */
 	enum eShapeMapped{
-		esmFillColorRed, //<!Fill color red component
-		esmFillColorGreen, //<!Fill color green component
-		esmFillColorBlue, //<!Fill color blue component
-		esmFillColorAlpha, //<!Fill color alpha component
-		esmLineColorRed, //<!Line color red component
-		esmLineColorGreen, //<!Line color green component
-		esmLineColorBlue, //<!Line color blue component
-		esmLineColorAlpha, //<!Line color alpha component
-		esmThickness //<!Thickness
+		esmFillColorRed, //!< Fill color red component
+		esmFillColorGreen, //!< Fill color green component
+		esmFillColorBlue, //!< Fill color blue component
+		esmFillColorAlpha, //!< Fill color alpha component
+		esmLineColorRed, //!< Line color red component
+		esmLineColorGreen, //!< Line color green component
+		esmLineColorBlue, //!< Line color blue component
+		esmLineColorAlpha, //!< Line color alpha component
+		esmThickness //!< Thickness
 	};
 	
 	static const int ShapeMappedCount = esmThickness + 1;

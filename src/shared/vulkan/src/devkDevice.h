@@ -63,8 +63,8 @@ public:
 	
 	/** Extension. */
 	enum eExtension{
-		extKHRMaintenance3, //<!VK_KHR_MAINTENANCE3_EXTENSION_NAME
-		extEXTDescriptorIndexing //<!VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME 
+		extKHRMaintenance3, //!< VK_KHR_MAINTENANCE3_EXTENSION_NAME
+		extEXTDescriptorIndexing //!< VK_EXT_DESCRIPTOR_INDEXING_EXTENSION_NAME 
 	};
 	
 	static const int ExtensionCount = extEXTDescriptorIndexing + 1;
