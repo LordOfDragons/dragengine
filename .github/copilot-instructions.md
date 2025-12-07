@@ -15,6 +15,17 @@ Drag[en]gine is a modular game engine written primarily in C++ with Python build
 - `vs/` - Visual Studio solution files for Windows builds
 - `ghdocs/` - GitHub Pages documentation
 
+## Excluded Files
+
+Files matching the following glob pattern must not be changed by copilot:
+- `src/modules/graphic/opengl/src/extensions/*gl*.h`
+- `src/modules/graphic/opengl/src/extensions/*khr*.h`
+- `src/modules/physics/bullet/Bullet/**/*
+- `src/modules/physics/bullet/patches/**/*`
+- `src/modules/vr/openxr/src/loader/loader_interfaces.h`
+- `src/modules/vr/openxr/src/extension/xdev/*`
+- `src/shared/vulkan/extern/include/**/*`
+
 ## Build System
 
 The project uses **SCons** (Python-based build system) for Linux/cross-platform builds and **Visual Studio** for Windows native builds.
