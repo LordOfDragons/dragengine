@@ -1013,8 +1013,8 @@ deoglRParticleEmitterInstanceType &type){
 	}
 	
 	const deoglRParticleEmitterType &etype = emitter.GetEmitter()->GetTypeAt(type.GetIndex());
-	const bool solid = skinTexture->GetSolid(); //;& ! etype.GetHasTransparency();
-	const bool hasHoles = skinTexture->GetHasHoles(); //;& ! etype.GetHasTransparency();
+	const bool solid = skinTexture->GetSolid(); // && !etype.GetHasTransparency();
+	const bool hasHoles = skinTexture->GetHasHoles(); // && !etype.GetHasTransparency();
 	
 	if(pSolid != solid){
 		return;

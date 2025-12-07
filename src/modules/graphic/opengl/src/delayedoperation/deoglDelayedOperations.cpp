@@ -926,7 +926,8 @@ void deoglDelayedOperations::pGenerateConeMap(deoglRSkin &skin, const deoglSkinT
 			coneMapArr = NULL;
 		}
 		
-		OGL_CHECK(pRenderThread, pglBlendEquation(GL_FUNC_ADD)); // important, reset it!		
+		OGL_CHECK(pRenderThread, pglBlendEquation(GL_FUNC_ADD)); // important, reset it!
+		
 	}catch(const deException &){
 		pRenderThread.GetFramebuffer().Activate(oldFBO);
 		

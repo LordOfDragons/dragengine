@@ -405,7 +405,7 @@ void debpColliderConstraint::pDetectConstraintType(){
 		// a hinge has 3 linear and 2 angular locks
 		}else if(pTypeInfo.countAngularLocks == 2){
 			if(configuration.GetEnableConstraintHinge()){
-				pConstraintType = ectHinge; // bugged since version 2.75 ! (doors flipping around at 0 point!)
+				pConstraintType = ectHinge; // bugged since version 2.75! (doors flipping around at 0 point!)
 			}
 			
 		// cone twist joints can be used to simulate 1 angular lock if all others are restricted

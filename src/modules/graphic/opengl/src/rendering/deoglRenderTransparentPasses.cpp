@@ -212,7 +212,7 @@ deoglRenderTransparentPasses::~deoglRenderTransparentPasses(){
 #define QUICK_DEBUG_START(lower, upper) \
 	if(renderThread.GetConfiguration().GetQuickDebug() > upper \
 	|| renderThread.GetConfiguration().GetQuickDebug() < lower){
-#define QUICK_DEBUG_END}
+#define QUICK_DEBUG_END }
 #else
 #define QUICK_DEBUG_START(lower, upper)
 #define QUICK_DEBUG_END

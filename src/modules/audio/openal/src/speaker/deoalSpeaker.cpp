@@ -265,7 +265,7 @@ void deoalSpeaker::Synchronize(){
 	// 
 	// NOTE extended to non-looping case otherwise moving out of range stops the sound
 	//      processing causing sound to start where it left of if entering range again
-	if(pSpeaker.GetPlaying()){ //  && ! pSpeaker.GetLooping()
+	if(pSpeaker.GetPlaying()){ //  && !pSpeaker.GetLooping()
 		if(pParentWorld){
 			pParentWorld->AddSyncSpeaker(this);
 		}

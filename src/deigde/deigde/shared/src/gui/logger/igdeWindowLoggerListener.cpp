@@ -60,4 +60,4 @@ void igdeWindowLoggerListener::MessageAdded(igdeLoggerHistory *history, igdeLogg
 void igdeWindowLoggerListener::HistoryCleared(igdeLoggerHistory *history){
 	// potentially called from threads. logger is locked while HistoryCleared() is called
 	pWindow.OnLogsCleared(); // potentially called from threads. only this method is safe!
-	}
+}

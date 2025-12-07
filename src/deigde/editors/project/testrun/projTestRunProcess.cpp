@@ -52,7 +52,8 @@
 #elif defined OS_W32
 #	include <dragengine/app/deOSWindows.h>
 #else
-#	error OS not supported!#endif
+#	error OS not supported!
+#endif
 
 #include <dragengine/deEngine.h>
 #include <dragengine/common/exceptions.h>
